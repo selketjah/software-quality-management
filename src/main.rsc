@@ -18,10 +18,9 @@ import Set;
 import util::Benchmark;
 
 
-public void caculateSIG(loc project){
+public void calculateSIG(loc project){
 	int timeInNanoSecondsBeforeRun = cpuTime();
 	int linesOfCode = calculatePhysicalLinesOfCode(project);
-	println(linesOfCode);
-	println(cpuTime() - timeInNanoSecondsBeforeRun);
+	println("Lines Of Code: <linesOfCode>");
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 }
