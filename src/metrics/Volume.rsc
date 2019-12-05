@@ -15,19 +15,9 @@ import util::Resources;
 import Relation;
 import Set;
 
-// Common methods of size estimation:
-//- LOC:
-//	any line of programming that is not a comment or a blank regardless of number of statements on the line
+
 //	LOC is any line of program text that is not a comment and blank lines, regardless of number of statements on the line
 //	includes all lines containing program headers, declarations & executable and non executable statements
-//	- advantages: 
-//		- size estimation
-//		- easy to count and calculate from dev code
-//				
-//	- disadvantage: 
-//		- LOC is lang & tech dependent
-//		-	Bad soft design may cause excessive LOC
-
 int calculatePhysicalLinesOfCode(loc project){
 	M3 model = createM3FromEclipseProject(project);
 	rel[loc definition, loc comments] docOverview = model.documentation;

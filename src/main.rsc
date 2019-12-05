@@ -15,10 +15,13 @@ import metrics::Volume;
 import util::Resources;
 import Relation;
 import Set;
+import util::Benchmark;
+
 
 public void caculateSIG(loc project){
+	int timeInNanoSecondsBeforeRun = cpuTime();
 	int linesOfCode = calculatePhysicalLinesOfCode(project);
 	println(linesOfCode);
+	println(cpuTime() - timeInNanoSecondsBeforeRun);
+	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 }
-
-
