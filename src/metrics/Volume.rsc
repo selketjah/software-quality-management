@@ -16,19 +16,21 @@ import analysers::LocAnalyser;
 import Relation;
 import Set;
 
+alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
 alias CommentLocation = tuple[int offset, int length];
+alias ComponentLOC = tuple[loc src, int size];
 
-public int calculatePhysicalLinesOfCode(loc project){
+public set[CompilationUnitLoc] calculatePhysicalLinesOfCode(loc project){
 	Resource currentProjectResource = getProject(project);
 
-	set[loc] fileLocations = listFiles(currentProjectResource);
+	list[loc] fileLocations = listFiles(currentProjectResource);
 	
-	rel[loc,int] fileSizeMap = {calculateLinesOfCode(fileLoc) | loc fileLoc <- fileLocations};
+	set[CompilationUnitLoc] projectCULocCollection = { calculateUnitSize(fileLoc) | loc fileLoc <- fileLocations};
 	
-	return sum(range(fileSizeMap));
+	return projectCULocCollection;
 }
 
-public tuple[loc src, int size] calculateLinesOfCode(loc source) {
+public ComponentLOC calculateLinesOfCode(loc source) {
 	M3 fileM3Model = createM3FromFile(source);
 	set[loc] commentLocations = range(fileM3Model.documentation);
 	
@@ -37,9 +39,10 @@ public tuple[loc src, int size] calculateLinesOfCode(loc source) {
 	str subject = readFile(source);
 	
 	int correctedOffset = 0;
+	
 	for(CommentLocation commentLocation <- commentLocationMap){
-		str before = substring(subject, 0, commentLocation.offset- correctedOffset);
-		str after =  substring(subject, commentLocation.offset -correctedOffset + commentLocation.length);
+		str before = substring(subject, 0, commentLocation.offset - correctedOffset);
+		str after =  substring(subject, commentLocation.offset - correctedOffset + commentLocation.length);
 		
 		subject = before + after;
 		correctedOffset = correctedOffset + commentLocation.length;
@@ -49,12 +52,38 @@ public tuple[loc src, int size] calculateLinesOfCode(loc source) {
 	return <source, size(linesOfCode)>;
 }
 
+public CompilationUnitLoc calculateUnitSize(loc file){
+	Declaration fileDec = createAstFromFile(file, false);
+	M3 fileM3Model = createM3FromFile(file);
+	ComponentLOC compilationUnitLoc;
+	set[ComponentLOC] strucUnitLoc={};
+	list[ComponentLOC] componentUnitLocCollection=[];
+	
+	rel[loc name,loc src] decls = fileM3Model.declarations;
+	
+	for(<loc name, loc src> <- decls){
+		if(isCompilationUnit(name)){
+			compilationUnitLoc = calculateLinesOfCode(src);
+		}
+
+		if(canContainMethods(name)){
+			strucUnitLoc += calculateLinesOfCode(src);
+		}
+		
+		if(isMethod(name)) {
+			componentUnitLocCollection +=calculateLinesOfCode(src);
+		}
+	}
+	
+	return <compilationUnitLoc, strucUnitLoc, componentUnitLocCollection>;
+}
+
 bool locationSortFunction(CommentLocation locA, CommentLocation locB){
 	return locA.offset < locB.offset;
 }
 
-public set[loc] listFiles(Resource currentProjectResource) {
-	return { a | /file(a) <- currentProjectResource, isJavaFile(a) };
+public list[loc] listFiles(Resource currentProjectResource) {
+	return [ a | /file(a) <- currentProjectResource, isJavaFile(a) ];
 }
 
 public set[loc] listMethods(Resource currentProjectResource) {

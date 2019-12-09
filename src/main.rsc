@@ -19,35 +19,36 @@ import Set;
 import util::Benchmark;
 import analysis::m3::Registry;
 
+
 public void calculateSIG(loc project){
 	int timeInNanoSecondsBeforeRun = cpuTime();
-	int linesOfCode = calculatePhysicalLinesOfCode(project);
-	println("Lines Of Code: <linesOfCode>");
+	set[CompilationUnitLoc] projectCULocCollection = calculatePhysicalLinesOfCode(project);
+	
+	int numberOfFiles = size(projectCULocCollection);
+	int numberOfStrucDefinitions = 0;
+	int linesOfCode = 0;
+	
+	for(CompilationUnitLoc cuLoc <- projectCULocCollection){
+		numberOfStrucDefinitions = numberOfStrucDefinitions + size(cuLoc.strucUnitLoc);
+		linesOfCode = linesOfCode + cuLoc.compilationUnit.size;
+	}
+	
+	println("numberOfFiles <numberOfFiles>");
+	println("numberOfStructDefinition (class, enum, interface, anonymous) <numberOfStrucDefinitions>" );
+	println("Total lines Of Code: <linesOfCode>");
+	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 }
 
-public void calculateMethodSize(loc file){
-	Declaration fileDec = createAstFromFile(file, false);
-	M3 fileM3Model = createM3FromFile(file);
-	println("total file size for <file> <calculateLinesOfCode(file).size>");
-	rel[loc name,loc src] decls = fileM3Model.declarations;
-	
-	for(<loc name, loc src> <- decls){
-		if(isMethod(name) || isClass(name)) {
-			println("<name> = <calculateLinesOfCode(src).size>");
-		}
-	}
-}
+
 
 public void main(){
-	println("Calculating Unit Size for Jabberpoint-le3/src/Style.java");
-	calculateMethodSize(|project://Jabberpoint-le3/src/Style.java|);
 	
 	println("Calculate LOC for jabberpoint");
 	calculateSIG(|project://Jabberpoint-le3|);
 	
 	println("Calculate LOC for smqllSQL");
-	calculateSIG(|project://smallsql|);
+	//calculateSIG(|project://smallsql|);
 	
 	println("Calculate LOC for hsqldb");
 	calculateSIG(|project://hsqldb|);

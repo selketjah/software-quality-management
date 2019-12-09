@@ -21,6 +21,7 @@ bool isMethod(loc l) = contains(l.scheme, "method") || contains(l.scheme, "const
 bool isField(loc l) = contains(l.scheme, "field");
 bool isPackage(loc l) = contains(l.scheme, "package");
 bool isImport(loc l) = contains(l.scheme, "import");
+bool isCompilationUnit(loc l) = contains(l.scheme, "compilationUnit");
 bool isJavaFile(loc l) = contains(l.extension, "java");
 
 bool canContainMethods(loc l) = isClass(l) || isInterface(l) || isEnum(l) || isAnonymousClass(l);
