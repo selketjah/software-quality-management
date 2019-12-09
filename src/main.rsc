@@ -24,3 +24,11 @@ public void calculateSIG(loc project){
 	println("Lines Of Code: <linesOfCode>");
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 }
+
+public void main(){
+	println("Calculate LOC for smqllSQL");
+	calculateSIG(|project://smallsql|);
+	
+	println("Calculate LOC for hsqldb");
+	calculateSIG(|project://hsqldb|);
+}

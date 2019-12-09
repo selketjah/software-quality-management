@@ -1,4 +1,4 @@
-module analyser::LocAnalyser
+module analysers::LocAnalyser
 
 import Message;
 import Set;

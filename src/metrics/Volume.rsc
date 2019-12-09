@@ -15,40 +15,47 @@ import util::Resources;
 import Relation;
 import Set;
 
+alias CommentLocation = tuple[int offset, int length];
 
 //	LOC is any line of program text that is not a comment and blank lines, regardless of number of statements on the line
 //	includes all lines containing program headers, declarations & executable and non executable statements
-int calculatePhysicalLinesOfCode(loc project){
-	M3 model = createM3FromEclipseProject(project);
-	rel[loc definition, loc comments] docOverview = model.documentation;
-	map[loc, [str]] fileSet=();
+public int calculatePhysicalLinesOfCode(loc project){
+	Resource currentProjectResource = getProject(project);
+
+	set[loc] fileLocations = listFiles(currentProjectResource);
 	
-	set[loc] fileLocationSet = { project+comments.path | <loc def, loc comments> <- docOverview};
-	map[loc, str] fileLocationTextMap = ( fileLoc : readFile(fileLoc) |loc fileLoc <- fileLocationSet);
-	map[loc, lrel[int offset,int length]] fileLocationCommentArrayMap = (fileLocation:getComments(docOverview, fileLocation, project)|loc fileLocation<-fileLocationSet);
-	rel[loc,int] fileLocationSizeMap = {};
+	rel[loc,int] fileSizeMap = {calculateFileSize(fileLoc) | loc fileLoc <- fileLocations};
 	
-	for(loc f <- fileLocationSet){
-		str contentWithoutComments = removeComments(fileLocationCommentArrayMap[f], fileLocationTextMap[f]);
-		
-		list[str] lines = [trim(line)  | line <- split("\n", contentWithoutComments), size(trim(line))>0];
-		
-		fileLocationSizeMap+=<f,size(lines)>;
-	}
-	
-	list[int] sizeList = [toList(currentSet)[0] | set[int] currentSet <- groupRangeByDomain(fileLocationSizeMap)];
-	return sum(sizeList);
+	return sum(range(fileSizeMap));
 }
 
-str removeComments(lrel[int offset,int length] commentsRel, str content){
+public tuple[loc offset, int size] calculateFileSize(loc file) {
+	// create m3 model for file
+	M3 fileM3Model = createM3FromFile(file);
 	
-	for(<int offset, int length> <- commentsRel){
-		str partInFile = substring(content,offset,offset+length);
-		content = replaceAll(content,partInFile, intercalate("", [" "| x<-[0..length]]));
+	set[loc] commentLocations = range(fileM3Model.documentation);
+	
+	lrel[int offset, int length] commentLocationMap=[ <commentLoc.offset, commentLoc.length> | loc commentLoc <-commentLocations];
+	commentLocationMap = sort(commentLocationMap, locationSortFunction);
+	str subject = readFile(file);
+	
+	int correctedOffset = 0;
+	for(CommentLocation commentLocation <- commentLocationMap){
+		str before = substring(subject, 0, commentLocation.offset- correctedOffset);
+		str after =  substring(subject, commentLocation.offset -correctedOffset + commentLocation.length);
+		
+		subject = before + after;
+		correctedOffset = correctedOffset + commentLocation.length;
 	}
-	return content;
+	
+	list[str] linesOfCode = ([trim(line) | str line <- split("\n", subject), size(trim(line)) > 0 ]);
+	return <file, size(linesOfCode)>;
 }
 
-lrel[int,int] getComments(rel[loc, loc] documentationOverview, loc fileLocation, loc project){
-	return [<comments.offset,comments.length> | <loc def, loc comments> <- documentationOverview, fileLocation == project+comments.path];
+bool locationSortFunction(CommentLocation locA, CommentLocation locB){
+	return locA.offset < locB.offset;
+}
+
+public set[loc] listFiles(Resource currentProjectResource) {
+	return { a | /file(a) <- currentProjectResource, a.extension == "java" };
 }
