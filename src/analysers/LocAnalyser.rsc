@@ -20,6 +20,8 @@ bool isAnonymousClass(loc l) = contains(l.scheme, "anonymousClass");
 bool isMethod(loc l) = contains(l.scheme, "method") || contains(l.scheme, "constructor");
 bool isField(loc l) = contains(l.scheme, "field");
 bool isPackage(loc l) = contains(l.scheme, "package");
+bool isImport(loc l) = contains(l.scheme, "import");
+bool isJavaFile(loc l) = contains(l.extension, "java");
 
 bool canContainMethods(loc l) = isClass(l) || isInterface(l) || isEnum(l) || isAnonymousClass(l);
 bool canContainFields(loc l) = isClass(l) || isInterface(l) || isAnonymousClass(l);

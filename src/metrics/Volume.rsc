@@ -12,32 +12,29 @@ import lang::java::m3::AST;
 import lang::java::jdt::m3::Core;
 import lang::java::jdt::m3::AST;
 import util::Resources;
+import analysers::LocAnalyser;
 import Relation;
 import Set;
 
 alias CommentLocation = tuple[int offset, int length];
 
-//	LOC is any line of program text that is not a comment and blank lines, regardless of number of statements on the line
-//	includes all lines containing program headers, declarations & executable and non executable statements
 public int calculatePhysicalLinesOfCode(loc project){
 	Resource currentProjectResource = getProject(project);
 
 	set[loc] fileLocations = listFiles(currentProjectResource);
 	
-	rel[loc,int] fileSizeMap = {calculateFileSize(fileLoc) | loc fileLoc <- fileLocations};
+	rel[loc,int] fileSizeMap = {calculateLinesOfCode(fileLoc) | loc fileLoc <- fileLocations};
 	
 	return sum(range(fileSizeMap));
 }
 
-public tuple[loc offset, int size] calculateFileSize(loc file) {
-	// create m3 model for file
-	M3 fileM3Model = createM3FromFile(file);
-	
+public tuple[loc src, int size] calculateLinesOfCode(loc source) {
+	M3 fileM3Model = createM3FromFile(source);
 	set[loc] commentLocations = range(fileM3Model.documentation);
 	
 	lrel[int offset, int length] commentLocationMap=[ <commentLoc.offset, commentLoc.length> | loc commentLoc <-commentLocations];
 	commentLocationMap = sort(commentLocationMap, locationSortFunction);
-	str subject = readFile(file);
+	str subject = readFile(source);
 	
 	int correctedOffset = 0;
 	for(CommentLocation commentLocation <- commentLocationMap){
@@ -49,7 +46,7 @@ public tuple[loc offset, int size] calculateFileSize(loc file) {
 	}
 	
 	list[str] linesOfCode = ([trim(line) | str line <- split("\n", subject), size(trim(line)) > 0 ]);
-	return <file, size(linesOfCode)>;
+	return <source, size(linesOfCode)>;
 }
 
 bool locationSortFunction(CommentLocation locA, CommentLocation locB){
@@ -57,5 +54,9 @@ bool locationSortFunction(CommentLocation locA, CommentLocation locB){
 }
 
 public set[loc] listFiles(Resource currentProjectResource) {
-	return { a | /file(a) <- currentProjectResource, a.extension == "java" };
+	return { a | /file(a) <- currentProjectResource, isJavaFile(a) };
+}
+
+public set[loc] listMethods(Resource currentProjectResource) {
+	return { a | /file(a) <- currentProjectResource, isJavaFile(a) && isMethod(a) };
 }
