@@ -17,8 +17,8 @@ import Relation;
 import Set;
 
 alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
-alias CommentLocation = tuple[int offset, int length];
 alias ComponentLOC = tuple[loc src, int size];
+alias CommentLocation = tuple[int offset, int length];
 
 public set[CompilationUnitLoc] calculatePhysicalLinesOfCode(loc project){
 	Resource currentProjectResource = getProject(project);

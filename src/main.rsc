@@ -40,15 +40,13 @@ public void calculateSIG(loc project){
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 }
 
-
-
 public void main(){
 	
 	println("Calculate LOC for jabberpoint");
 	calculateSIG(|project://Jabberpoint-le3|);
 	
-	println("Calculate LOC for smqllSQL");
-	//calculateSIG(|project://smallsql|);
+	println("Calculate LOC for smallSQL");
+	calculateSIG(|project://smallsql|);
 	
 	println("Calculate LOC for hsqldb");
 	calculateSIG(|project://hsqldb|);
