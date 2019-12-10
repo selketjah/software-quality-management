@@ -15,6 +15,7 @@ import util::Resources;
 import analysers::LocAnalyser;
 import Relation;
 import Set;
+import metrics::UnitTestCoverage;
 
 alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
 alias ComponentLOC = tuple[loc src, int size];
@@ -28,6 +29,31 @@ public set[CompilationUnitLoc] calculatePhysicalLinesOfCode(loc project){
 	set[CompilationUnitLoc] projectCULocCollection = { calculateUnitSize(fileLoc) | loc fileLoc <- fileLocations};
 	
 	return projectCULocCollection;
+}
+
+public CompilationUnitLoc calculateUnitSize(loc file){
+	M3 fileM3Model = createM3FromFile(file);
+	ComponentLOC compilationUnitLoc;
+	set[ComponentLOC] strucUnitLoc={};
+	list[ComponentLOC] componentUnitLocCollection=[];
+	
+	rel[loc name,loc src] decls = fileM3Model.declarations;
+	int assertCount ;
+	for(<loc name, loc src> <- decls){
+		if(isCompilationUnit(name)){
+			compilationUnitLoc = calculateLinesOfCode(src);
+		}
+
+		if(canContainMethods(name)){
+			strucUnitLoc += calculateLinesOfCode(src);
+		}
+		
+		if(isMethod(name)) {
+			componentUnitLocCollection +=calculateLinesOfCode(src);
+		}
+	}
+	
+	return <compilationUnitLoc, strucUnitLoc, componentUnitLocCollection>;
 }
 
 public ComponentLOC calculateLinesOfCode(loc source) {
@@ -52,31 +78,6 @@ public ComponentLOC calculateLinesOfCode(loc source) {
 	return <source, size(linesOfCode)>;
 }
 
-public CompilationUnitLoc calculateUnitSize(loc file){
-	Declaration fileDec = createAstFromFile(file, false);
-	M3 fileM3Model = createM3FromFile(file);
-	ComponentLOC compilationUnitLoc;
-	set[ComponentLOC] strucUnitLoc={};
-	list[ComponentLOC] componentUnitLocCollection=[];
-	
-	rel[loc name,loc src] decls = fileM3Model.declarations;
-	
-	for(<loc name, loc src> <- decls){
-		if(isCompilationUnit(name)){
-			compilationUnitLoc = calculateLinesOfCode(src);
-		}
-
-		if(canContainMethods(name)){
-			strucUnitLoc += calculateLinesOfCode(src);
-		}
-		
-		if(isMethod(name)) {
-			componentUnitLocCollection +=calculateLinesOfCode(src);
-		}
-	}
-	
-	return <compilationUnitLoc, strucUnitLoc, componentUnitLocCollection>;
-}
 
 bool locationSortFunction(CommentLocation locA, CommentLocation locB){
 	return locA.offset < locB.offset;
