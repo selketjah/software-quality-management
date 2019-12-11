@@ -16,15 +16,13 @@ import analysers::LocAnalyser;
 import Relation;
 import Set;
 import metrics::UnitTestCoverage;
+import metrics::Cache;
 
 alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
 alias ComponentLOC = tuple[loc src, int size];
 alias CommentLocation = tuple[int offset, int length];
 
-public set[CompilationUnitLoc] calculatePhysicalLinesOfCode(loc project){
-	Resource currentProjectResource = getProject(project);
-
-	list[loc] fileLocations = listFiles(currentProjectResource);
+public set[CompilationUnitLoc] calculatePhysicalLinesOfCode(list[loc] fileLocations){
 	
 	set[CompilationUnitLoc] projectCULocCollection = { calculateUnitSize(fileLoc) | loc fileLoc <- fileLocations};
 	
@@ -49,7 +47,9 @@ public CompilationUnitLoc calculateUnitSize(loc file){
 		}
 		
 		if(isMethod(name)) {
-			componentUnitLocCollection +=calculateLinesOfCode(src);
+			ComponentLOC currentLoc = calculateLinesOfCode(src);
+			currentLoc.size =currentLoc.size-2; 
+			componentUnitLocCollection +=currentLoc;
 		}
 	}
 	
@@ -75,6 +75,7 @@ public ComponentLOC calculateLinesOfCode(loc source) {
 	}
 	
 	list[str] linesOfCode = ([trim(line) | str line <- split("\n", subject), size(trim(line)) > 0 ]);
+	store(source, linesOfCode);
 	return <source, size(linesOfCode)>;
 }
 
