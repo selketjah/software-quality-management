@@ -52,7 +52,6 @@ public void calculateSIG(loc project){
 	println(detectClones(fileLocations));
 }
 
-
 public void main(){
 	
 	println("Calculate LOC for jabberpoint");
