@@ -23,7 +23,6 @@ alias ComponentLOC = tuple[loc src, int size];
 alias CommentLocation = tuple[int offset, int length];
 
 public set[CompilationUnitLoc] calculatePhysicalLinesOfCode(list[loc] fileLocations){
-	
 	set[CompilationUnitLoc] projectCULocCollection = { calculateUnitSize(fileLoc) | loc fileLoc <- fileLocations};
 	
 	return projectCULocCollection;

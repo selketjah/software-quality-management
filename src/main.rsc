@@ -42,11 +42,11 @@ public void calculateSIG(loc project){
 	println("numberOfFiles <numberOfFiles>");
 	println("numberOfStructDefinition (class, enum, interface, anonymous) <numberOfStrucDefinitions>" );
 	println("Total lines Of Code: <linesOfCode>");
-	Rank volumeRank = calculateVolumeRank(linesOfCode);
-	println("
-			'| Volume            | (LOC: <linesOfCode>) <convertRankToLiteral(volumeRank)> |
-			");
-	
+	//Rank volumeRank = calculateVolumeRank(linesOfCode);
+	//println("
+	//		'| Volume            | (LOC: <linesOfCode>) <convertRankToLiteral(volumeRank)> |
+	//		");
+	//
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 
 	println(detectClones(fileLocations));
