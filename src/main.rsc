@@ -20,10 +20,14 @@ import analysis::m3::Registry;
 import metrics::Volume;
 import scoring::categories::Volume;
 import scoring::Rank;
+import metrics::Cache;
+import util::Resources;
 
 public void calculateSIG(loc project){
 	int timeInNanoSecondsBeforeRun = cpuTime();
-	set[CompilationUnitLoc] projectCULocCollection = calculatePhysicalLinesOfCode(project);
+	Resource currentProjectResource = getProject(project);
+	list[loc] fileLocations = listFiles(currentProjectResource);
+	set[CompilationUnitLoc] projectCULocCollection = calculatePhysicalLinesOfCode(fileLocations);
 	
 	int numberOfFiles = size(projectCULocCollection);
 	int numberOfStrucDefinitions = 0;
@@ -41,9 +45,8 @@ public void calculateSIG(loc project){
 	println("
 			'| Volume            | (LOC: <linesOfCode>) <convertRankToLiteral(volumeRank)> |
 			");
-			
-	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 	
+	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 }
 
 
@@ -53,7 +56,7 @@ public void main(){
 	calculateSIG(|project://Jabberpoint-le3|);
 	
 	println("Calculate LOC for smallSQL");
-	calculateSIG(|project://smallsql|);
+	//calculateSIG(|project://smallsql|);
 	
 	//println("Calculate LOC for hsqldb");
 	//calculateSIG(|project://hsqldb|);
