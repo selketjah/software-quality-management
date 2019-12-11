@@ -33,14 +33,17 @@ public void calculateSIG(loc project){
 	int numberOfFiles = size(projectCULocCollection);
 	int numberOfStrucDefinitions = 0;
 	int linesOfCode = 0;
-	
+	int numberOfMethods = 0;
+	list[ComponentLOC] methodCollection = [];
 	for(CompilationUnitLoc cuLoc <- projectCULocCollection){
 		numberOfStrucDefinitions = numberOfStrucDefinitions + size(cuLoc.strucUnitLoc);
+		methodCollection = methodCollection + cuLoc.componentUnitLocCollection;
 		linesOfCode = linesOfCode + cuLoc.compilationUnit.size;
 	}
 	
 	println("numberOfFiles <numberOfFiles>");
 	println("numberOfStructDefinition (class, enum, interface, anonymous) <numberOfStrucDefinitions>" );
+	println("numberOfMethods <size(methodCollection)>");
 	println("Total lines Of Code: <linesOfCode>");
 	//Rank volumeRank = calculateVolumeRank(linesOfCode);
 	//println("
@@ -49,7 +52,7 @@ public void calculateSIG(loc project){
 	//
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 
-	println(detectClones(fileLocations));
+	println(detectClones(methodCollection));
 }
 
 public void main(){
