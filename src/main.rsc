@@ -45,14 +45,9 @@ public void calculateSIG(loc project){
 	println("numberOfStructDefinition (class, enum, interface, anonymous) <numberOfStrucDefinitions>" );
 	println("numberOfMethods <size(methodCollection)>");
 	println("Total lines Of Code: <linesOfCode>");
-	//Rank volumeRank = calculateVolumeRank(linesOfCode);
-	//println("
-	//		'| Volume            | (LOC: <linesOfCode>) <convertRankToLiteral(volumeRank)> |
-	//		");
-	//
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 
-	println(detectClones(methodCollection));
+	//println(detectClones(methodCollection));
 }
 
 public void main(){
