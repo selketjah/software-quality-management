@@ -11,7 +11,12 @@ import String;
 import util::Math;
 import metrics::Cache;
 
+lexical TerminalBrackets = "{"?![\n]*"}"? $;
+syntax TerminalBracketsSyntax
+  = TerminalBrackets;
+
 alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
+
 
 public set[loc] detectClones(list[ComponentLOC] methodComponentRefs){
  	
@@ -26,6 +31,7 @@ public set[loc] detectClones(list[ComponentLOC] methodComponentRefs){
 	println(compLoc.componentUnitLocCollection[2].src);
 	int count = 0;
 	for(loc f <- fLocations){
+		count = 0;
 		list[str] firstFileContents = read(f);
 		for(loc f2 <- fLocations){
 			if(f2 != f){
@@ -33,34 +39,31 @@ public set[loc] detectClones(list[ComponentLOC] methodComponentRefs){
 				list[str] firstIntersectedPart = firstFileContents & secondFileContents;
 				list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
 				
-				list[str] smallestIntersectedPart = secondIntersectedPart & firstIntersectedPart;
-				if(size(smallestIntersectedPart)>5){
-					
-					if(size(firstFileContents)>5){
-						count = calculateNumberOfDuplicates(smallestIntersectedPart, firstFileContents, 6, 0);
-						if(count >0){
-							println("found #<count> duplicates from <f2> in  <f>");						
-							//println("found #<count> duplicates");
-						}
-					}
-					if(size(secondFileContents)>5){
-						count = calculateNumberOfDuplicates(smallestIntersectedPart, secondFileContents, 6, 0);
-						if(count>0){
-											//println(smallestIntersectedPart);
-						
-							println("found #<count> duplicates from <f> in <f2>");
-						}
-					}
+				//if(f.path == "/src/MenuController.java"){
+				//	//println(firstIntersectedPart);
+				//}
+				
+				if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) < size(secondIntersectedPart) && !hasMoreSpecialCharThanOthers(firstIntersectedPart)){
+					count = calculateNumberOfDuplicates(firstIntersectedPart, secondIntersectedPart, 6, 0);
+				}else{
+					count = 0;
 				}
 				
+				if(count == 1 && f2.path == f.path){
+					count=0;
+				}
+				
+				if(count>0){
+					// further testing is needed....
+					println("duplicates found in <f> && <f2> #<count>");
+				}					
 			}
 		}
 	}
-		
+	
 	return {};
 }
 
-//O(N^2M)
 public int calculateNumberOfDuplicates(list[str] targetSubjects, list[str] sourceSubjects, int threshold, int startIndex){
 	if(size(targetSubjects) < threshold){return 0;}
 	
@@ -100,7 +103,7 @@ public int calculateNumberOfDuplicates(list[str] targetSubjects, list[str] sourc
 
 public real computeHash(str toBeHashed){
 	real p = 35.0;
-	real m = 1e15*9;
+	real m = 1e52*33;
 	
 	real hashVal = 0.0;
 	real pPow= 1.0;
@@ -117,4 +120,10 @@ public real computeHash(str toBeHashed){
 public int modulo(real a, real b){
 	
 	return toInt(a - b * toInt(a/b));
+}
+
+public bool hasMoreSpecialCharThanOthers(list[str] subjectList){
+	int numberOfTerminals = size([subject |str subject <- subjectList, subject == "}" || subject =="{" || subject == "});"]);
+	
+	return ((size(subjectList)-numberOfTerminals) < (size(subjectList)/2));
 }

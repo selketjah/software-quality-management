@@ -47,7 +47,7 @@ public void calculateSIG(loc project){
 	println("Total lines Of Code: <linesOfCode>");
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 
-	//println(detectClones(methodCollection));
+	println(detectClones(methodCollection));
 }
 
 public void main(){

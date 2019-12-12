@@ -46,6 +46,7 @@ public CompilationUnitLoc calculateUnitSize(loc file){
 		}
 		
 		if(isMethod(name)) {
+			
 			ComponentLOC currentLoc = calculateLinesOfCode(src);
 			currentLoc.size =currentLoc.size-2; 
 			componentUnitLocCollection +=currentLoc;
