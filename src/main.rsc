@@ -22,6 +22,7 @@ import scoring::categories::Volume;
 import scoring::Rank;
 import metrics::Cache;
 import metrics::Duplicates;
+import metrics::Complexity;
 import util::Resources;
 
 public void calculateSIG(loc project){
@@ -45,9 +46,13 @@ public void calculateSIG(loc project){
 	println("numberOfStructDefinition (class, enum, interface, anonymous) <numberOfStrucDefinitions>" );
 	println("numberOfMethods <size(methodCollection)>");
 	println("Total lines Of Code: <linesOfCode>");
-	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 
 	println(detectClones(methodCollection));
+	
+	set[ComplicationUnitComplexity] complicationUnitComplexity = calculateCyclomaticComplexity(fileLocations);
+	println(complicationUnitComplexity);
+	
+	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 }
 
 public void main(){
@@ -55,7 +60,7 @@ public void main(){
 	println("Calculate LOC for jabberpoint");
 	calculateSIG(|project://Jabberpoint-le3|);
 	
-	println("Calculate LOC for smallSQL");
+	//println("Calculate LOC for smallSQL");
 	//calculateSIG(|project://smallsql|);
 	
 	//println("Calculate LOC for hsqldb");

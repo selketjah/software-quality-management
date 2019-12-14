@@ -16,24 +16,32 @@ import analysers::LocAnalyser;
 import Relation;
 import Set;
 
-alias UnitComplexity = tuple[loc method, int size];
+alias UnitComplexity = tuple[str method, int size];
 alias ComplicationUnitComplexity = tuple[loc file, list[UnitComplexity] unitComplexities];
 
-//public set[ComplicationUnitComplexity] calculateCyclomaticComplexity(list[loc] fileLocations) {
+public set[ComplicationUnitComplexity] calculateCyclomaticComplexity(list[loc] fileLocations) {
+	ComplicationUnitComplexity complicationUnitComplexity;
+	set[ComplicationUnitComplexity] complicationUnitComplexitySet = {};
 	
-//}
+	for(loc fileLocation <- fileLocations){
+		complicationUnitComplexity = calculateFileCyclomaticComplexity(fileLocation);
+		complicationUnitComplexitySet += complicationUnitComplexity;
+	}
+	
+	return complicationUnitComplexitySet;
+}
 
 public ComplicationUnitComplexity calculateFileCyclomaticComplexity(loc fileLocation){
 	UnitComplexity unitComplexity;
 	list[UnitComplexity] unitComplexityCollection = [];
 	
-	M3 model = createM3FromFile(fileLocation);
 	Declaration declaration = createAstFromEclipseFile(fileLocation, false);
 	
 	visit(declaration) {
 		case method: \method(_, name, _, _, statement): {
 			int complexity = calculateUnitCyclomaticComplexity(statement);
-			println("Method: <name> - Complexity: <complexity>");
+			unitComplexity = <name, complexity>;
+			unitComplexityCollection += unitComplexity;
 		}
 	}
 	
