@@ -3,18 +3,26 @@ module metrics::Duplicates
 import IO;
 import List;
 
+import collections::Filter;
 import cryptograhpy::Hash;
+import \lexical::Import;
 
 alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
 
 public int findDuplicates(list[str]firstFileContents, list[str] secondFileContents){	
 	int count =0;
+	firstFileContents = removeImports(firstFileContents);
+	secondFileContents = removeImports(secondFileContents);
+	
 	list[str] firstIntersectedPart = firstFileContents & secondFileContents;
 	list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
 	
 	if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) < size(secondIntersectedPart) && 
 			!hasMoreSpecialCharThanOthers(firstIntersectedPart)){
 		count = calculateNumberOfDuplicates(firstIntersectedPart, secondIntersectedPart, 6, 0);
+	}else if(size(secondIntersectedPart) > 5 && size(secondIntersectedPart) < size(firstIntersectedPart) && 
+			!hasMoreSpecialCharThanOthers(secondIntersectedPart)){
+		count = calculateNumberOfDuplicates(secondIntersectedPart, firstIntersectedPart, 6, 0);
 	}else{
 		count = 0;
 	}

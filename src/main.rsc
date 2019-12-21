@@ -19,6 +19,12 @@ import metrics::UnitTestCoverage;
 import metrics::Volume;
 import resource::IO;
 
+
+import collections::Filter;
+import \lexical::Import;
+
+import String;
+
 public void calculateSIG(list[loc] fileLocations){
 	int timeInNanoSecondsBeforeRun = cpuTime();
 
@@ -58,6 +64,15 @@ public void calculateSIG(list[loc] fileLocations){
 			str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
 			
 			int count = findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents));
+			if(count>0){
+				println(count);
+			}
+			if(count == 1){
+				println("file1 <fileLoc> file2 <file2Loc>");
+				if(contains(fileLoc.path, "TextItem")){
+					println(firstFileContents);
+				}
+			}
 		}
 	}
 	
@@ -74,8 +89,24 @@ public void main(){
 	println("SIG MODEL Measurements for smallSQL");
 	currentProjectResource = getProject(|project://smallsql|);
 	fileLocations = listFiles(currentProjectResource);
-	calculateSIG(fileLocations);
+	//calculateSIG(fileLocations);
 	
 	println("SIG MODEL Measurements for hsqldb");
 	//calculateSIG(|project://hsqldb|);
+}
+
+public void testDuplication(){
+	str firstFileContents = getCompilationUnitAsStringWithoutComments(|project://Jabberpoint-le3/src/Style.java|);
+	str secondFileContents = getCompilationUnitAsStringWithoutComments(|project://Jabberpoint-le3/src/TextItem.java|);
+	
+	int count = findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents));
+	int count2 = findDuplicates(stringToTrimmedList(secondFileContents), stringToTrimmedList(firstFileContents));
+	
+	println(count);
+}
+
+public void testRemoveImports(){
+	str firstFileContents = getCompilationUnitAsStringWithoutComments(|project://Jabberpoint-le3/src/Style.java|);
+	
+	println(removeImports(stringToTrimmedList(firstFileContents)));
 }
