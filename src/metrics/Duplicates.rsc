@@ -10,7 +10,8 @@ import metrics::Volume;
 import String;
 import util::Math;
 import metrics::Cache;
-import cryptograhpy::hash;
+import cryptograhpy::Hash;
+import math::Modulo;
 
 alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
 
@@ -70,11 +71,6 @@ public int calculateNumberOfDuplicates(list[str] targetSubjects, list[str] sourc
 	}
 	
 	return sum;
-}
-
-public int modulo(real a, real b){
-	
-	return toInt(a - b * toInt(a/b));
 }
 
 public bool hasMoreSpecialCharThanOthers(list[str] subjectList){

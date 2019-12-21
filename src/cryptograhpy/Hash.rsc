@@ -1,4 +1,4 @@
-module cryptograhpy::hash
+module cryptograhpy::Hash
 
 public real computeHash(str toBeHashed){
 	real p = 35.0;
