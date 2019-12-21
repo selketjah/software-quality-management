@@ -1,23 +1,15 @@
 module metrics::Volume
 
-import Message;
-import Set;
 import IO;
 import String;
 import List;
-import Map;
-import util::Math;
 import lang::java::m3::Core;
-import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
 import util::Resources;
 import analysers::LocAnalyser;
 import Relation;
 import Set;
 import collections::Sort;
-import metrics::UnitTestCoverage;
-import metrics::Cache;
+
 alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
 alias ComponentLOC = tuple[loc src, int size];
 
