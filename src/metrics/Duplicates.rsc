@@ -1,12 +1,13 @@
 module metrics::Duplicates
 
+import IO;
 import List;
 
 import cryptograhpy::Hash;
 
 alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
 
-public void findDuplicates(list[str]firstFileContents, list[str] secondFileContents){	
+public int findDuplicates(list[str]firstFileContents, list[str] secondFileContents){	
 	int count =0;
 	list[str] firstIntersectedPart = firstFileContents & secondFileContents;
 	list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
@@ -18,14 +19,7 @@ public void findDuplicates(list[str]firstFileContents, list[str] secondFileConte
 		count = 0;
 	}
 	
-	if(count == 1 && f2.path == f.path){
-		count=0;
-	}
-	
-	if(count>0){
-		// further testing is needed....
-		println("duplicates found in <f> && <f2> #<count>");
-	}	
+	return count;
 }
 
 public int calculateNumberOfDuplicates(list[str] targetSubjects, list[str] sourceSubjects, int threshold, int startIndex){

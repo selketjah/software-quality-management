@@ -11,11 +11,13 @@ import util::Resources;
 
 import scoring::Rank;
 import scoring::categories::Volume;
+import string::Trim;
 import metrics::Cache;
 import metrics::Complexity;
 import metrics::Duplicates;
 import metrics::UnitTestCoverage;
 import metrics::Volume;
+import resource::IO;
 
 public void calculateSIG(list[loc] fileLocations){
 	int timeInNanoSecondsBeforeRun = cpuTime();
@@ -55,7 +57,7 @@ public void calculateSIG(list[loc] fileLocations){
 			str firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
 			str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
 			
-			findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents));
+			int count = findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents));
 		}
 	}
 	
@@ -72,7 +74,7 @@ public void main(){
 	println("SIG MODEL Measurements for smallSQL");
 	currentProjectResource = getProject(|project://smallsql|);
 	fileLocations = listFiles(currentProjectResource);
-	//calculateSIG(fileLocations);
+	calculateSIG(fileLocations);
 	
 	println("SIG MODEL Measurements for hsqldb");
 	//calculateSIG(|project://hsqldb|);

@@ -10,6 +10,8 @@ import util::Resources;
 
 import analysers::LocAnalyser;
 import collections::Sort;
+import resource::IO;
+import string::Trim;
 
 alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
 alias ComponentLOC = tuple[loc src, int size];
@@ -24,7 +26,6 @@ public CompilationUnitLoc calculateUnitSize(loc file){
 	int assertCount ;
 	for(<loc name, loc src> <- decls){
 		if(isCompilationUnit(name)){
-			println(src);
 			compilationUnitLoc = calculateLinesOfCode(src);
 		}
 
@@ -70,17 +71,4 @@ public str getCompilationUnitAsStringWithoutComments(loc source){
 	}
 	
 	return subject;
-}
-
-
-public list[str] stringToTrimmedList(str dataString){
-	return ([trim(line) | str line <- split("\n", dataString), size(trim(line)) > 0 ]);
-}
-
-public list[loc] listFiles(Resource currentProjectResource) {
-	return [ a | /file(a) <- currentProjectResource, isJavaFile(a) ];
-}
-
-public set[loc] listMethods(Resource currentProjectResource) {
-	return { a | /file(a) <- currentProjectResource, isJavaFile(a) && isMethod(a) };
 }
