@@ -6,11 +6,12 @@ import List;
 import collections::Filter;
 import cryptograhpy::Hash;
 import \lexical::Import;
+import metrics::Cache;
+import structs::Duplicates;
 
-alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
-
-public int findDuplicates(list[str]firstFileContents, list[str] secondFileContents){	
-	int count =0;
+public int findDuplicates(list[str]firstFileContents, list[str] secondFileContents){
+	list[DuplicatePairs] pairs = [];	
+	int count = 0;
 	firstFileContents = removeImports(firstFileContents);
 	secondFileContents = removeImports(secondFileContents);
 	
@@ -19,23 +20,28 @@ public int findDuplicates(list[str]firstFileContents, list[str] secondFileConten
 	
 	if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) < size(secondIntersectedPart) && 
 			!hasMoreSpecialCharThanOthers(firstIntersectedPart)){
-		count = calculateNumberOfDuplicates(firstIntersectedPart, secondIntersectedPart, 6, 0);
+			
+		count = caculateDuplicates(firstIntersectedPart, secondIntersectedPart, 6);
 	}else if(size(secondIntersectedPart) > 5 && size(secondIntersectedPart) < size(firstIntersectedPart) && 
 			!hasMoreSpecialCharThanOthers(secondIntersectedPart)){
-		count = calculateNumberOfDuplicates(secondIntersectedPart, firstIntersectedPart, 6, 0);
+			
+		count = caculateDuplicates(secondIntersectedPart, firstIntersectedPart, 6);
 	}else{
 		count = 0;
 	}
 	
-	return count;
+	return (count>0)?count-1:count;
 }
 
-public int calculateNumberOfDuplicates(list[str] targetSubjects, list[str] sourceSubjects, int threshold, int startIndex){
+public int caculateDuplicates(list[str] targetSubjects, list[str] sourceSubjects, int threshold, int startIndex = 0){
 	if(size(targetSubjects) < threshold){return 0;}
+	
+	set[DuplicatePairs] pairs = {};
 	
 	//get all hashes for all part of size #threshold
 	int maxIndex = size(targetSubjects)-threshold;
 	list[real] intersectedPartHashes = [];
+	
 	real intersectedPartHash = computeHash(intercalate(" ",targetSubjects));
 	
 	int j = 0;

@@ -67,12 +67,6 @@ public void calculateSIG(list[loc] fileLocations){
 			if(count>0){
 				println(count);
 			}
-			if(count == 1){
-				println("file1 <fileLoc> file2 <file2Loc>");
-				if(contains(fileLoc.path, "TextItem")){
-					println(firstFileContents);
-				}
-			}
 		}
 	}
 	
