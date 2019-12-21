@@ -33,6 +33,7 @@ public void calculateSIG(list[loc] fileLocations){
 	int linesOfCode = 0;
 	int numberOfMethods = 0;
 	int totalNumberOfAsserts = 0;
+	int customCount = 0;
 	set[CompilationUnitLoc] projectCULocCollection = {};
 	set[CompilationUnitComplexity] compilationUnitComplexitySet = {};
 	list[AssertCount] assertCounts=[];
@@ -42,7 +43,6 @@ public void calculateSIG(list[loc] fileLocations){
 	CompilationUnitLoc compilationUnitLoc;
 	list[loc] fileLocationsDuplicateList = fileLocations;
 	loc locationToBeRemoved;
-	int customCount = 0;
 	
 	for(loc fileLoc <- fileLocations){
 		

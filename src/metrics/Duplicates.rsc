@@ -10,10 +10,7 @@ import metrics::Volume;
 import String;
 import util::Math;
 import metrics::Cache;
-
-lexical TerminalBrackets = "{"?![\n]*"}"? $;
-syntax TerminalBracketsSyntax
-  = TerminalBrackets;
+import cryptograhpy::hash;
 
 alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
 
@@ -73,22 +70,6 @@ public int calculateNumberOfDuplicates(list[str] targetSubjects, list[str] sourc
 	}
 	
 	return sum;
-}
-
-public real computeHash(str toBeHashed){
-	real p = 35.0;
-	real m = 1e52*33;
-	
-	real hashVal = 0.0;
-	real pPow= 1.0;
-	setPrecision(0);
-	for(int c <- chars(toBeHashed)){
-		hashVal = toReal(modulo((hashVal + toReal(c - chars("a")[0] + 1) * pPow), m));
-
-		pPow = toReal(modulo((pPow * p),m));
-	}
-	
-	return hashVal;
 }
 
 public int modulo(real a, real b){
