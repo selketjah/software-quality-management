@@ -14,10 +14,12 @@ layout Whitespace = [\t\n\r\ ]*;
 
 syntax AssertStatementSyntax
   = Assert;
+
+alias AssertCount = tuple[loc fileLoc, int count];
   
-int countAssertsInFile (loc file){
+AssertCount countAssertsInFile (loc fileLoc){
 	int count = 0;
-	str fileContents = readFile(file);
+	str fileContents = readFile(fileLoc);
 	list[str] instructions = split(";", fileContents);
 	
 	list[str] lines= ([ replaceAll(trim(a)," ","") | a <- instructions, /^assert((?![\s])[a-z0-9])*\s*\(.*\).*$/i := trim(a) ]);
@@ -25,7 +27,7 @@ int countAssertsInFile (loc file){
 		count = sum([((isAssertStatement(line))? 1 : 0) | line <- lines]);
 	}
 
-    return count;
+    return <fileLoc, count>;
 }
 
 bool isAssertStatement(str subject){

@@ -24,6 +24,5 @@ private loc getTmpFileLocationFromLocRef(loc src){
 	str path = substring(replaceAll(src.path, "/","-"),1)+"-<src.begin.line>-<src.end.line>.txt";
 	loc tmpFile = tmpFileLocation + path;
 	//get full path on local machine
-	//println(resolveLocation(tmpFile));
 	return tmpFile;
 }

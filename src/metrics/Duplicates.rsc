@@ -17,14 +17,12 @@ syntax TerminalBracketsSyntax
 
 alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
 
-
 public set[loc] detectClones(list[ComponentLOC] methodComponentRefs){
  	
 	// take 2 locations and check detection
 	// the compilationunit is needed in order to gain acces to individual raw method loc 
 	CompilationUnitLoc compLoc = calculateUnitSize(|project://Jabberpoint-le3/src/SlideViewerFrame.java|);
 	
-	// O(N)
 	list[loc] fLocations = [ cu.src | ComponentLOC cu <- methodComponentRefs];
 	
 	println(compLoc.componentUnitLocCollection[1].src);

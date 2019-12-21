@@ -22,12 +22,6 @@ alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC]
 alias ComponentLOC = tuple[loc src, int size];
 alias CommentLocation = tuple[int offset, int length];
 
-public set[CompilationUnitLoc] calculatePhysicalLinesOfCode(list[loc] fileLocations){
-	set[CompilationUnitLoc] projectCULocCollection = { calculateUnitSize(fileLoc) | loc fileLoc <- fileLocations};
-	
-	return projectCULocCollection;
-}
-
 public CompilationUnitLoc calculateUnitSize(loc file){
 	M3 fileM3Model = createM3FromFile(file);
 	ComponentLOC compilationUnitLoc;
