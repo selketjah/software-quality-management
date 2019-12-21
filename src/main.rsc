@@ -1,30 +1,21 @@
 module main
 
+import IO;
+import lang::java::m3::Core;
+import List;
 import Message;
 import Set;
-import IO;
-import String;
-import List;
-import Map;
-import util::Math;
-import lang::java::m3::Core;
-import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
-import analysers::LocAnalyser;
-import util::Resources;
-import Relation;
-import Set;
 import util::Benchmark;
-import analysis::m3::Registry;
-import metrics::Volume;
-import scoring::categories::Volume;
-import scoring::Rank;
-import metrics::Cache;
-import metrics::Duplicates;
-import metrics::Complexity;
+import util::Math;
 import util::Resources;
+
+import scoring::Rank;
+import scoring::categories::Volume;
+import metrics::Cache;
+import metrics::Complexity;
+import metrics::Duplicates;
 import metrics::UnitTestCoverage;
+import metrics::Volume;
 
 public void calculateSIG(list[loc] fileLocations){
 	int timeInNanoSecondsBeforeRun = cpuTime();

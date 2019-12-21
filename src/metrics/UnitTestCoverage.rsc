@@ -2,9 +2,9 @@ module metrics::UnitTestCoverage
 
 import Exception;
 import IO;
+import lang::std::ASCII;
 import ParseTree;
 import String;
-import lang::std::ASCII;
 
 lexical Assert = "assert"[a-z _ A-Z]+"("![\n]*")" $;
 layout Whitespace = [\t\n\r\ ]*;

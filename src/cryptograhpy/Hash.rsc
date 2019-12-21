@@ -1,6 +1,8 @@
 module cryptograhpy::Hash
+
 import String;
 import util::Math;
+
 import math::Modulo;
 
 public real computeHash(str toBeHashed){

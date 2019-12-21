@@ -1,13 +1,14 @@
 module metrics::Volume
 
 import IO;
-import String;
-import List;
 import lang::java::m3::Core;
-import util::Resources;
-import analysers::LocAnalyser;
+import List;
 import Relation;
 import Set;
+import String;
+import util::Resources;
+
+import analysers::LocAnalyser;
 import collections::Sort;
 
 alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];

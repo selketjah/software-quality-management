@@ -1,7 +1,7 @@
 module analysers::LocAnalyser
 
-import String;
 import lang::java::m3::Core; 
+import String;
 
 bool isAnonymousClass(loc l) = contains(l.scheme, "anonymousClass");
 bool isJavaFile(loc l) = contains(l.extension, "java");

@@ -1,8 +1,9 @@
 module metrics::Cache
-import ValueIO;
+
 import analysis::graphs::Graph;
 import IO;
 import String;
+import ValueIO;
 
 loc tmpFileLocation = |tmp:///sqm|;
 
