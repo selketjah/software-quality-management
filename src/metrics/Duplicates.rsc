@@ -39,10 +39,6 @@ public set[loc] detectClones(list[ComponentLOC] methodComponentRefs){
 				list[str] firstIntersectedPart = firstFileContents & secondFileContents;
 				list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
 				
-				//if(f.path == "/src/MenuController.java"){
-				//	//println(firstIntersectedPart);
-				//}
-				
 				if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) < size(secondIntersectedPart) && !hasMoreSpecialCharThanOthers(firstIntersectedPart)){
 					count = calculateNumberOfDuplicates(firstIntersectedPart, secondIntersectedPart, 6, 0);
 				}else{

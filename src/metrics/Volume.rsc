@@ -57,14 +57,14 @@ public CompilationUnitLoc calculateUnitSize(loc file){
 }
 
 public ComponentLOC calculateLinesOfCode(loc source) {
+	int correctedOffset = 0;	
+	list[str] linesOfCode;
 	M3 fileM3Model = createM3FromFile(source);
 	set[loc] commentLocations = range(fileM3Model.documentation);
-	
 	lrel[int offset, int length] commentLocationMap=[ <commentLoc.offset, commentLoc.length> | loc commentLoc <-commentLocations];
-	commentLocationMap = sort(commentLocationMap, locationSortFunction);
 	str subject = readFile(source);
 	
-	int correctedOffset = 0;
+	commentLocationMap = sort(commentLocationMap, locationSortFunction);
 	
 	for(CommentLocation commentLocation <- commentLocationMap){
 		str before = substring(subject, 0, commentLocation.offset - correctedOffset);
@@ -74,7 +74,7 @@ public ComponentLOC calculateLinesOfCode(loc source) {
 		correctedOffset = correctedOffset + commentLocation.length;
 	}
 	
-	list[str] linesOfCode = ([trim(line) | str line <- split("\n", subject), size(trim(line)) > 0 ]);
+	linesOfCode = ([trim(line) | str line <- split("\n", subject), size(trim(line)) > 0 ]);
 	store(source, linesOfCode);
 	return <source, size(linesOfCode)>;
 }

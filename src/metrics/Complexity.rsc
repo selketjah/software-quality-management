@@ -17,21 +17,9 @@ import Relation;
 import Set;
 
 alias UnitComplexity = tuple[str method, int size];
-alias ComplicationUnitComplexity = tuple[loc file, list[UnitComplexity] unitComplexities];
+alias CompilationUnitComplexity = tuple[loc file, list[UnitComplexity] unitComplexities];
 
-public set[ComplicationUnitComplexity] calculateCyclomaticComplexity(list[loc] fileLocations) {
-	ComplicationUnitComplexity complicationUnitComplexity;
-	set[ComplicationUnitComplexity] complicationUnitComplexitySet = {};
-	
-	for(loc fileLocation <- fileLocations){
-		complicationUnitComplexity = calculateFileCyclomaticComplexity(fileLocation);
-		complicationUnitComplexitySet += complicationUnitComplexity;
-	}
-	
-	return complicationUnitComplexitySet;
-}
-
-public ComplicationUnitComplexity calculateFileCyclomaticComplexity(loc fileLocation){
+public CompilationUnitComplexity calculateFileCyclomaticComplexity(loc fileLocation){
 	UnitComplexity unitComplexity;
 	list[UnitComplexity] unitComplexityCollection = [];
 	

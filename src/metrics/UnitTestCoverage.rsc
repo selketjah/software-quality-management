@@ -35,7 +35,8 @@ bool isAssertStatement(str subject){
 		visit (pt) {
 	        case (AssertStatementSyntax)`<Assert _>`: return true; 
 		}
-	} catch ParseError(loc l): {
-		println("I found a parse error at line <l.begin.line>, column <l.begin.column> in file <l>");}
+	} catch ParseError(loc fLoc): {
+		return false;
+	}
 	return false;
 }
