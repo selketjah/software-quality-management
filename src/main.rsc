@@ -26,42 +26,6 @@ import metrics::Complexity;
 import util::Resources;
 import metrics::UnitTestCoverage;
 
-// to be removed .. used as a referece for now
-
-//public void calculateSIG(loc project){
-//	int timeInNanoSecondsBeforeRun = cpuTime();
-//	Resource currentProjectResource = getProject(project);
-//	list[loc] fileLocations = listFiles(currentProjectResource);
-//	set[CompilationUnitLoc] projectCULocCollection = calculatePhysicalLinesOfCode(fileLocations);
-//	
-//	int numberOfFiles = size(projectCULocCollection);
-//	int numberOfStrucDefinitions = 0;
-//	int linesOfCode = 0;
-//	int numberOfMethods = 0;
-//	
-//	list[ComponentLOC] methodCollection = [];
-//	for(CompilationUnitLoc cuLoc <- projectCULocCollection){
-//		numberOfStrucDefinitions = numberOfStrucDefinitions + size(cuLoc.strucUnitLoc);
-//		methodCollection = methodCollection + cuLoc.componentUnitLocCollection;
-//		linesOfCode = linesOfCode + cuLoc.compilationUnit.size;
-//	}
-//	
-//	//println("numberOfFiles <numberOfFiles>");
-//	//println("numberOfStructDefinition (class, enum, interface, anonymous) <numberOfStrucDefinitions>" );
-//	//println("numberOfMethods <size(methodCollection)>");
-//	//println("Total lines Of Code: <linesOfCode>");
-//
-//	//println(detectClones(methodCollection));
-//	
-//	set[ComplicationUnitComplexity] complicationUnitComplexity = calculateCyclomaticComplexity(fileLocations);
-//	//println(complicationUnitComplexity);
-//	
-//	
-//	
-//	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
-//}
-
-
 public void calculateSIG(list[loc] fileLocations){
 	int timeInNanoSecondsBeforeRun = cpuTime();
 
@@ -72,25 +36,24 @@ public void calculateSIG(list[loc] fileLocations){
 	set[CompilationUnitLoc] projectCULocCollection = {};
 	set[CompilationUnitComplexity] compilationUnitComplexitySet = {};
 	list[AssertCount] assertCounts=[];
+	list[str] currentFileContents=[];
 	CompilationUnitComplexity compilationUnitComplexity;
 	AssertCount assertCount;
 	CompilationUnitLoc compilationUnitLoc;
-	println("SIG MODEL Measurements");	
 	
 	for(loc fileLoc <- fileLocations){
 		
 		compilationUnitLoc = calculateUnitSize(fileLoc);
 		compilationUnitComplexity = calculateFileCyclomaticComplexity(fileLoc);
 		assertCount= countAssertsInFile(fileLoc);
-		
+				
 		projectCULocCollection += compilationUnitLoc;
 		assertCounts += assertCount;		
 		compilationUnitComplexitySet += compilationUnitComplexity;
 		
 		numberOfStrucDefinitions += size(compilationUnitLoc.strucUnitLoc);
 		linesOfCode += compilationUnitLoc.compilationUnit.size;	
-		totalNumberOfAsserts += assertCount.count;
-		
+		totalNumberOfAsserts += assertCount.count;		
 	}
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
@@ -99,19 +62,15 @@ public void calculateSIG(list[loc] fileLocations){
 public void main(){
 	Resource currentProjectResource = getProject(|project://Jabberpoint-le3|);
 	list[loc] fileLocations = listFiles(currentProjectResource);
-	println("Calculate LOC for jabberpoint");
 	
-	//calculateSIG(|project://Jabberpoint-le3|);
-	println("NLogN");
+	println("SIG MODEL Measurements for jabberpoint");
 	calculateSIG(fileLocations);
 	
-	println("Calculate LOC for smallSQL");
-	//calculateSIG(|project://smallsql|);
+	println("SIG MODEL Measurements for smallSQL");
 	currentProjectResource = getProject(|project://smallsql|);
-	println("NLogN");
 	fileLocations = listFiles(currentProjectResource);
-	calculateSIG(fileLocations);
+	//calculateSIG(fileLocations);
 	
-	//println("Calculate LOC for hsqldb");
+	println("SIG MODEL Measurements for hsqldb");
 	//calculateSIG(|project://hsqldb|);
 }
