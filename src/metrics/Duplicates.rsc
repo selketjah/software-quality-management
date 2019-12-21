@@ -17,50 +17,29 @@ syntax TerminalBracketsSyntax
 
 alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
 
-public set[loc] detectClones(list[ComponentLOC] methodComponentRefs){
- 	
-	// take 2 locations and check detection
-	// the compilationunit is needed in order to gain acces to individual raw method loc 
-	CompilationUnitLoc compLoc = calculateUnitSize(|project://Jabberpoint-le3/src/SlideViewerFrame.java|);
+public void findDuplicates(list[str]firstFileContents, list[str] secondFileContents){
+	list[str] firstIntersectedPart = firstFileContents & secondFileContents;
+	list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
 	
-	list[loc] fLocations = [ cu.src | ComponentLOC cu <- methodComponentRefs];
-	
-	println(compLoc.componentUnitLocCollection[1].src);
-	println(compLoc.componentUnitLocCollection[2].src);
-	int count = 0;
-	for(loc f <- fLocations){
+	if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) < size(secondIntersectedPart) && 
+			!hasMoreSpecialCharThanOthers(firstIntersectedPart)){
+		count = calculateNumberOfDuplicates(firstIntersectedPart, secondIntersectedPart, 6, 0);
+	}else{
 		count = 0;
-		list[str] firstFileContents = read(f);
-		for(loc f2 <- fLocations){
-			if(f2 != f){
-				list[str] secondFileContents = read(f2);
-				list[str] firstIntersectedPart = firstFileContents & secondFileContents;
-				list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
-				
-				if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) < size(secondIntersectedPart) && !hasMoreSpecialCharThanOthers(firstIntersectedPart)){
-					count = calculateNumberOfDuplicates(firstIntersectedPart, secondIntersectedPart, 6, 0);
-				}else{
-					count = 0;
-				}
-				
-				if(count == 1 && f2.path == f.path){
-					count=0;
-				}
-				
-				if(count>0){
-					// further testing is needed....
-					println("duplicates found in <f> && <f2> #<count>");
-				}					
-			}
-		}
 	}
 	
-	return {};
+	if(count == 1 && f2.path == f.path){
+		count=0;
+	}
+	
+	if(count>0){
+		// further testing is needed....
+		println("duplicates found in <f> && <f2> #<count>");
+	}	
 }
 
 public int calculateNumberOfDuplicates(list[str] targetSubjects, list[str] sourceSubjects, int threshold, int startIndex){
 	if(size(targetSubjects) < threshold){return 0;}
-	
 	
 	//get all hashes for all part of size #threshold
 	int maxIndex = size(targetSubjects)-threshold;

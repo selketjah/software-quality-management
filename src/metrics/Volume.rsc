@@ -33,6 +33,7 @@ public CompilationUnitLoc calculateUnitSize(loc file){
 	for(<loc name, loc src> <- decls){
 		if(isCompilationUnit(name)){
 			compilationUnitLoc = calculateLinesOfCode(src);
+			println(src);
 		}
 
 		if(canContainMethods(name)){
@@ -69,6 +70,7 @@ public ComponentLOC calculateLinesOfCode(loc source) {
 	}
 	
 	linesOfCode = ([trim(line) | str line <- split("\n", subject), size(trim(line)) > 0 ]);
+	
 	store(source, linesOfCode);
 	return <source, size(linesOfCode)>;
 }

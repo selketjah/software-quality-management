@@ -40,6 +40,9 @@ public void calculateSIG(list[loc] fileLocations){
 	CompilationUnitComplexity compilationUnitComplexity;
 	AssertCount assertCount;
 	CompilationUnitLoc compilationUnitLoc;
+	list[loc] fileLocationsDuplicateList = fileLocations;
+	loc locationToBeRemoved;
+	int customCount = 0;
 	
 	for(loc fileLoc <- fileLocations){
 		
@@ -53,7 +56,15 @@ public void calculateSIG(list[loc] fileLocations){
 		
 		numberOfStrucDefinitions += size(compilationUnitLoc.strucUnitLoc);
 		linesOfCode += compilationUnitLoc.compilationUnit.size;	
-		totalNumberOfAsserts += assertCount.count;		
+		totalNumberOfAsserts += assertCount.count;
+		
+		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
+		
+		for(loc file2Loc <- fileLocationsDuplicateList){
+			findDuplicates(read(fileLoc), read(file2Loc));
+		}
+		
+		
 	}
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
