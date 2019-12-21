@@ -21,11 +21,11 @@ public list[str] read(loc src) {
 }
 
 private loc getTmpFileLocationFromLocRef(loc src){
-	if(!src.begin){
-		println(src);
-	}
-	str path = substring(replaceAll(src.path, "/","-"),1)+"-<src.begin.line>-<src.end.line>.txt";
+	
+	//str path = substring(replaceAll(src.path, "/","-"),1)+"-<src.begin.line>-<src.end.line>.txt";
+	str path = substring(replaceAll(src.path, "/","-"),1)+".txt";
 	loc tmpFile = tmpFileLocation + path;
 	//get full path on local machine
+	println(tmpFile);
 	return tmpFile;
 }

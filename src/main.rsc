@@ -61,10 +61,11 @@ public void calculateSIG(list[loc] fileLocations){
 		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
 		
 		for(loc file2Loc <- fileLocationsDuplicateList){
-			findDuplicates(read(fileLoc), read(file2Loc));
+			str firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
+			str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
+			
+			findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents));
 		}
-		
-		
 	}
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");

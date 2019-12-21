@@ -17,7 +17,8 @@ syntax TerminalBracketsSyntax
 
 alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
 
-public void findDuplicates(list[str]firstFileContents, list[str] secondFileContents){
+public void findDuplicates(list[str]firstFileContents, list[str] secondFileContents){	
+	int count =0;
 	list[str] firstIntersectedPart = firstFileContents & secondFileContents;
 	list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
 	
