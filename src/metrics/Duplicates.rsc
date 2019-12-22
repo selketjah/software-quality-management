@@ -10,25 +10,109 @@ import metrics::Cache;
 import structs::Duplicates;
 import string::Trim;
 
-public int findDuplicates(list[str]firstFileContents, list[str] secondFileContents){
+public int findDuplicates(list[str]firstFileContents, list[str] secondFileContents, bool isSameFile){
+	DuplicateLocMap pairsFoundMap = getDuplicateDataFromCache();
 	
 	int count = 0;
+	//compute hash for first 6 lines 
+	int treshold = 6;
+	int fromIndex = 0;
+	int toIndex =  fromIndex + treshold-1;
+	int occurencesFound = 0;
+	
 	firstFileContents = trimTerminalChars(removeImports(firstFileContents));
 	secondFileContents = trimTerminalChars(removeImports(secondFileContents));
 	
-	// shouldn't intersect!
-	list[str] firstIntersectedPart = firstFileContents & secondFileContents;
-	list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
+	list[str] intersectedPart1 = firstFileContents & secondFileContents;
+	list[str] intersectedPart2 = secondFileContents & firstFileContents;
 	
-	if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) <= size(secondIntersectedPart)){
-		count = caculateDuplicates(firstIntersectedPart, secondIntersectedPart, 6);
-	}else if(size(secondIntersectedPart) > 5 && size(secondIntersectedPart) <= size(firstIntersectedPart)){
-		count = caculateDuplicates(secondIntersectedPart, firstIntersectedPart, 6);
-	}else{
-		count = 0;
+	if(size(intersectedPart1) < treshold || size(intersectedPart2)<6){ return 0; }
+	
+	int sum=0;
+	
+	while(size(firstFileContents) > toIndex){
+		
+		//check for duplicate code
+		list[str] currentSubjectCode = firstFileContents[fromIndex..toIndex];
+		str subjecctForComparisonStr = intercalate(" ",currentSubjectCode);
+		real subjectHash = computeHash(subjecctForComparisonStr);
+		// if no match is found in the move 1 position
+		// if match is found move 6 positions
+		occurencesFound = checkForOccurence(subjectHash, secondFileContents, isSameFile, fromIndex, pairsFoundMap);
+		
+		if(occurencesFound>0) {
+			fromIndex += treshold;
+			
+			
+			
+			sum= sum+(occurencesFound);
+		}
+		
+		fromIndex+=1;
+		toIndex = fromIndex + treshold-1;
 	}
 	
-	return count;
+	//
+	//if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) <= size(secondIntersectedPart)){
+	//	count = caculateDuplicates(firstIntersectedPart, secondIntersectedPart, 6);
+	//}else if(size(secondIntersectedPart) > 5 && size(secondIntersectedPart) <= size(firstIntersectedPart)){
+	//	count = caculateDuplicates(secondIntersectedPart, firstIntersectedPart, 6);
+	//}else{
+	//	count = 0;
+	//}
+	//
+	//return count;
+	
+	return sum;
+}
+
+public int checkForOccurence(real referenceHash, list[str] fileContents, bool isSameFile, int originalStart, DuplicateLocMap duplicationMap){
+	
+	int occurencesFound = 0;
+	int treshold = 6;
+	int fromIndex = 0;
+	
+	if(isSameFile && fromIndex == originalStart){
+		fromIndex +=treshold;
+	}
+	
+	int toIndex =  fromIndex + treshold-1;
+	
+	while(size(fileContents) > toIndex){
+		
+		//check for duplicate code
+		list[str] currentSubjectCode = fileContents[fromIndex..toIndex];
+		str subjecctForComparisonStr = intercalate(" ",currentSubjectCode);
+		real subjectHash = computeHash(subjecctForComparisonStr);
+		
+		if(subjectHash == referenceHash){			
+			addToDuplicationMap(duplicationMap,referenceHash, subjecctForComparisonStr);
+			
+			fromIndex += treshold;
+			occurencesFound +=1;
+		}else{
+			fromIndex += 1;
+		}
+		
+		if(isSameFile && fromIndex == originalStart){
+			fromIndex +=treshold;
+		}
+				
+		toIndex = fromIndex + treshold-1;
+	}
+	
+	return occurencesFound;
+}
+
+public DuplicateLocMap addToDuplicationMap(DuplicateLocMap duplicationMap, real refHash, str dataString){
+	if(refHash in duplicationMap){
+		dupLoc = duplicationMap[refHash];
+		dupLoc.locations += [|tmp://asd|];
+	}else{
+		dupLoc = <dataString, [|tmp://as|]>;
+		duplicationMap[refHash] = dupLoc;
+	}
+	return duplicationMap;		
 }
 
 public int caculateDuplicates(list[str] targetSubjects, list[str] sourceSubjects, int threshold, int startIndex = 0){

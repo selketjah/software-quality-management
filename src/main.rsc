@@ -57,17 +57,18 @@ public void calculateSIG(list[loc] fileLocations){
 		linesOfCode += compilationUnitLoc.compilationUnit.size;	
 		totalNumberOfAsserts += assertCount.count;
 		
-		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
 		
 		for(loc file2Loc <- fileLocationsDuplicateList){
 			str firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
 			str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
 			
-			int count = findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents));
+			int count = findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents), fileLoc == file2Loc);
 			if(count>0){
 				println(count);
 			}
 		}
+		
+		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
 	}
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
@@ -87,22 +88,4 @@ public void main(){
 	
 	println("SIG MODEL Measurements for hsqldb");
 	//calculateSIG(|project://hsqldb|);
-}
-
-public void testDuplication(){
-	str firstFileContents = getCompilationUnitAsStringWithoutComments(|project://Jabberpoint-le3/src/Style.java|);
-	str secondFileContents = getCompilationUnitAsStringWithoutComments(|project://Jabberpoint-le3/src/TextItem.java|);
-	println(trimTerminalChars(stringToTrimmedList(firstFileContents)) & trimTerminalChars(stringToTrimmedList(secondFileContents)));
-	println(trimTerminalChars(trimTerminalChars(stringToTrimmedList(secondFileContents)) & stringToTrimmedList(firstFileContents)));
-	int count = findDuplicates(trimTerminalChars(stringToTrimmedList(firstFileContents)), trimTerminalChars(stringToTrimmedList(secondFileContents)));
-	int count2 = findDuplicates(trimTerminalChars(stringToTrimmedList(secondFileContents)), trimTerminalChars(stringToTrimmedList(firstFileContents)));
-	
-	println(count);
-	println(count2);
-}
-
-public void testRemoveImports(){
-	str firstFileContents = getCompilationUnitAsStringWithoutComments(|project://Jabberpoint-le3/src/Style.java|);
-	
-	println(removeImports(stringToTrimmedList(firstFileContents)));
 }
