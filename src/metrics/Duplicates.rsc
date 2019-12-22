@@ -8,72 +8,77 @@ import cryptograhpy::Hash;
 import \lexical::Import;
 import metrics::Cache;
 import structs::Duplicates;
+import string::Trim;
 
 public int findDuplicates(list[str]firstFileContents, list[str] secondFileContents){
-	list[DuplicatePairs] pairs = [];	
-	int count = 0;
-	firstFileContents = removeImports(firstFileContents);
-	secondFileContents = removeImports(secondFileContents);
 	
+	int count = 0;
+	firstFileContents = trimTerminalChars(removeImports(firstFileContents));
+	secondFileContents = trimTerminalChars(removeImports(secondFileContents));
+	
+	// shouldn't intersect!
 	list[str] firstIntersectedPart = firstFileContents & secondFileContents;
 	list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
 	
-	if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) < size(secondIntersectedPart) && 
-			!hasMoreSpecialCharThanOthers(firstIntersectedPart)){
-			
+	if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) <= size(secondIntersectedPart)){
 		count = caculateDuplicates(firstIntersectedPart, secondIntersectedPart, 6);
-	}else if(size(secondIntersectedPart) > 5 && size(secondIntersectedPart) < size(firstIntersectedPart) && 
-			!hasMoreSpecialCharThanOthers(secondIntersectedPart)){
-			
+	}else if(size(secondIntersectedPart) > 5 && size(secondIntersectedPart) <= size(firstIntersectedPart)){
 		count = caculateDuplicates(secondIntersectedPart, firstIntersectedPart, 6);
 	}else{
 		count = 0;
 	}
 	
-	return (count>0)?count-1:count;
+	return count;
 }
 
 public int caculateDuplicates(list[str] targetSubjects, list[str] sourceSubjects, int threshold, int startIndex = 0){
 	if(size(targetSubjects) < threshold){return 0;}
 	
-	set[DuplicatePairs] pairs = {};
+	DuplicateLocMap pairsFoundMap = getDuplicateDataFromCache();
+	int sum = 0;
+	int j = startIndex;
+
+	DuplicateCodeLocations dupLoc;
+	int maxIndex = size(targetSubjects) - threshold;
+
+	rel[real, str] intersectedPartHashes = {};
+	list[real] targetHashes = [];
 	
 	//get all hashes for all part of size #threshold
-	int maxIndex = size(targetSubjects)-threshold;
-	list[real] intersectedPartHashes = [];
-	
-	real intersectedPartHash = computeHash(intercalate(" ",targetSubjects));
-	
-	int j = 0;
 	do{
 		list[str] subjectsForComparison = [targetSubjects[i] | int i <- [j..(j+threshold)]];
-		intersectedPartHashes = intersectedPartHashes + computeHash(intercalate(" ",subjectsForComparison));
+		str subjecctForComparisonStr = intercalate(" ",subjectsForComparison);
+		println(subjectsForComparison);
+		intersectedPartHashes[computeHash(subjecctForComparisonStr)] = subjecctForComparisonStr;
 		
 		j = j+threshold;
 	}while(j < maxIndex);
 		
-	list[real] targetHashes = [];
+	
 	maxIndex = size(sourceSubjects)-threshold;
 	
 	//get all hashes for all part of size #threshold
 	for(int i <- [startIndex..maxIndex]){
-		list[str] subjectsForComparison = [sourceSubjects[i] | int i <- [i..(i+threshold)]];
+		list[str] subjectsForComparison = [sourceSubjects[i] | int i <- [i..(i + threshold)]];
 		targetHashes = targetHashes + computeHash(intercalate(" ",subjectsForComparison));
 	}
 	
-	map[real, int] distributedTargetHash= distribution(targetHashes);
-	int sum = 0;
-	for(real hash <- intersectedPartHashes){
+	map[real, int] distributedTargetHash = distribution(targetHashes);
+	for(<real hash, str subj> <- intersectedPartHashes){
 		if(hash in distributedTargetHash){
+			if(hash in pairsFoundMap){
+				dupLoc = pairsFound[hash];
+				dupLoc.locations += |tmp://asd|;
+			}else{
+				dupLoc = <subj, [|tmp://as|]>;
+				pairsFoundMap[hash] = dupLoc;
+			}
+			
 			sum= sum+(distributedTargetHash[hash]);
 		}
 	}
 	
-	return sum;
-}
-
-public bool hasMoreSpecialCharThanOthers(list[str] subjectList){
-	int numberOfTerminals = size([subject |str subject <- subjectList, subject == "}" || subject =="{" || subject == "});"]);
+	println(pairsFoundMap);
 	
-	return ((size(subjectList)-numberOfTerminals) < (size(subjectList)/2));
+	return sum;
 }

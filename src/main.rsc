@@ -92,11 +92,13 @@ public void main(){
 public void testDuplication(){
 	str firstFileContents = getCompilationUnitAsStringWithoutComments(|project://Jabberpoint-le3/src/Style.java|);
 	str secondFileContents = getCompilationUnitAsStringWithoutComments(|project://Jabberpoint-le3/src/TextItem.java|);
-	
-	int count = findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents));
-	int count2 = findDuplicates(stringToTrimmedList(secondFileContents), stringToTrimmedList(firstFileContents));
+	println(trimTerminalChars(stringToTrimmedList(firstFileContents)) & trimTerminalChars(stringToTrimmedList(secondFileContents)));
+	println(trimTerminalChars(trimTerminalChars(stringToTrimmedList(secondFileContents)) & stringToTrimmedList(firstFileContents)));
+	int count = findDuplicates(trimTerminalChars(stringToTrimmedList(firstFileContents)), trimTerminalChars(stringToTrimmedList(secondFileContents)));
+	int count2 = findDuplicates(trimTerminalChars(stringToTrimmedList(secondFileContents)), trimTerminalChars(stringToTrimmedList(firstFileContents)));
 	
 	println(count);
+	println(count2);
 }
 
 public void testRemoveImports(){

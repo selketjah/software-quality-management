@@ -21,14 +21,18 @@ public list[str] read(loc src) {
    return fileDataList;
 }
 
-public void cacheDupliccateData(set[DuplicatePairs] duplicateData){
-	loc tmpFileLocation = tmpLocation + "duplication-data.sqm";
+public void cacheDupliccateData(DuplicateLocMap duplicateData){
+	loc tmpFileLocation = tmpFileLocation + "duplication-data.sqm";
 	writeTextValueFile(tmpFileLocation, duplicateData);
 }
 
-public set[DuplicatePairs] getDuplicateDataFromCache(){
-	loc tmpFileLocation = tmpLocation + "duplication-data.sqm";
-	return readTextValueFile(#list[str],tmpFileLocation);
+public DuplicateLocMap getDuplicateDataFromCache(){
+	loc tmpFileLocation = tmpFileLocation + "duplication-data.sqm";
+	if(exists(tmpFileLocation)){
+		return readTextValueFile(#map[real, tuple[str code, list[loc] locations]],tmpFileLocation);
+	}else{
+		return ();
+	}
 }
 
 private loc getTmpFileLocationFromLocRef(loc src){

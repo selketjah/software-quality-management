@@ -2,14 +2,14 @@ module \lexical::Import
 
 import IO;
 import ParseTree;
-import lang::java::\syntax::Java15;
+import lang::java::\syntax::Java18;
 
 bool isImportStatement(str subject){
 	try{ 
-		pt = parse(#ImportDec, subject);
+		pt = parse(#ImportDeclaration, subject);
 		
 		visit (pt) {
-	        case ImportDec: {
+	        case ImportDeclaration: {
 	        	return true;
 	        }
 		}
