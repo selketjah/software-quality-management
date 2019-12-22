@@ -22,7 +22,7 @@ tuple[int lower, int upper] MINUS_BOUNDS 		= <665000, 1310000>;
 	Parameters:
 	- int volume: Lines of code (LOC)
 }
-Rank calculateVolumeRank(int volume) {
+public Rank determineVolumeRank(int volume) {
 	if (volume < PLUSPLUS_BOUNDS.lower) {
 		return Rank::\tbd();
 	} else if (volume >= PLUSPLUS_BOUNDS.lower && volume < PLUSPLUS_BOUNDS.upper) {
