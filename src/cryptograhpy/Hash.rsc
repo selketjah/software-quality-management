@@ -8,7 +8,7 @@ import math::Modulo;
 public real computeHash(str toBeHashed){
 	real p = 35.0;
 	//m = a random but large number
-	real m = 1e52*33;
+	real m = 1e52*123;
 	
 	real hashVal = 0.0;
 	real pPow= 1.0;

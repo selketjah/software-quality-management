@@ -19,7 +19,6 @@ import metrics::UnitTestCoverage;
 import metrics::Volume;
 import resource::IO;
 
-
 import collections::Filter;
 import \lexical::Import;
 
@@ -57,7 +56,8 @@ public void calculateSIG(list[loc] fileLocations){
 		linesOfCode += compilationUnitLoc.compilationUnit.size;	
 		totalNumberOfAsserts += assertCount.count;
 		
-		
+		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
+
 		for(loc file2Loc <- fileLocationsDuplicateList){
 			str firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
 			str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
@@ -67,8 +67,6 @@ public void calculateSIG(list[loc] fileLocations){
 				println(count);
 			}
 		}
-		
-		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
 	}
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
