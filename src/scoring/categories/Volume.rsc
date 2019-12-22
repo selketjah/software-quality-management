@@ -11,10 +11,10 @@ import scoring::Rank;
 
 
 // These bounds are taken from page 34 of the SIG model report
-tuple[int lower, int upper] PLUSPLUS_BOUNDS 	= <0, 66000>;
-tuple[int lower, int upper] PLUS_BOUNDS 		= <66000, 246000>;
-tuple[int lower, int upper] NEUTRAL_BOUNDS 		= <246000, 665000>;
-tuple[int lower, int upper] MINUS_BOUNDS 		= <665000, 1310000>;
+tuple[int lower, int upper] PLUSPLUS_BOUNDS = <0, 66000>;
+tuple[int lower, int upper] PLUS_BOUNDS = <66000, 246000>;
+tuple[int lower, int upper] NEUTRAL_BOUNDS = <246000, 665000>;
+tuple[int lower, int upper] MINUS_BOUNDS = <665000, 1310000>;
 
 @doc{
 	Calulates the rank level of this metric.
