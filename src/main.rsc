@@ -5,6 +5,7 @@ import lang::java::m3::Core;
 import List;
 import Message;
 import Set;
+import Map;
 import util::Benchmark;
 import util::Math;
 import util::Resources;
@@ -62,9 +63,10 @@ public void calculateSIG(list[loc] fileLocations){
 			str firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
 			str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
 			
-			int count = findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents), fileLoc == file2Loc);
-			if(count>0){
-				println(count);
+			map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateLocations = listClonesIn(fileLoc, file2Loc);
+			
+			if(size(duplicateLocations)>0){
+				println(size(duplicateLocations));
 			}
 		}
 	}
