@@ -16,8 +16,8 @@ import structs::Duplicates;
 import string::Trim;
 
 public map[real, tuple[list[loc] locations, list[str] originalCode]] listClonesIn(loc firstSrc, str firstFileStr, loc secondSrc, str secondFileStr){	
-	list[str] firstFileContents  = trimTerminalChars(stringToTrimmedList(firstFileStr));
-	list[str] secondFileContents  = trimTerminalChars(stringToTrimmedList(secondFileStr));
+	list[str] firstFileContents  = (stringToTrimmedList(firstFileStr));
+	list[str] secondFileContents  = (stringToTrimmedList(secondFileStr));
 	
 	list[tuple[int startInd, int endInd]] duplicateLocations = [];
 	map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateCodeLocations = ();  

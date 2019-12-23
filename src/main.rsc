@@ -77,10 +77,6 @@ public void calculateSIG(list[loc] fileLocations){
 				fileDataMap += (file2Loc:secondFileContents);
 			}
 			
-			i+=1;
-			
-			//str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
-			//
 			map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateLocations = listClonesIn(fileLoc, firstFileContents,file2Loc, secondFileContents);
 			
 			if(size(duplicateLocations)>0){
