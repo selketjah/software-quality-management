@@ -59,13 +59,7 @@ public void calculateSIG(list[loc] fileLocations){
 		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
 
 		for(loc file2Loc <- fileLocationsDuplicateList){
-			str firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
-			str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
-			
-			int count = findDuplicates(stringToTrimmedList(firstFileContents), stringToTrimmedList(secondFileContents), fileLoc == file2Loc);
-			if(count>0){
-				println(count);
-			}
+			str tmp = ("duplication check should go here");
 		}
 	}
 	
