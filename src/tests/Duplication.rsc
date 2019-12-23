@@ -11,43 +11,58 @@ import cryptograhpy::Hash;
 
 public test bool longestListSubStringTest(){
 	
-	str firstFileStr= getCompilationUnitAsStringWithoutComments(|project://sqm-assignment/src/tests/data/Style.java|);
-	str secondFileStr= getCompilationUnitAsStringWithoutComments(|project://sqm-assignment/src/tests/data/TextItem.java|);
+	loc firstSrc = |project://sqm-assignment/src/tests/data/Style.java|;
+	loc secondSrc = |project://sqm-assignment/src/tests/data/TextItem.java|;
+
+	str firstFileStr= getCompilationUnitAsStringWithoutComments(firstSrc);
+	str secondFileStr= getCompilationUnitAsStringWithoutComments(secondSrc);
 	
 	list[str] firstFileContents  = trimTerminalChars(stringToTrimmedList(firstFileStr));
 	list[str] secondFileContents  = trimTerminalChars(stringToTrimmedList(secondFileStr));
 	
-	//println(firstFileContents);
-	bool hasDuplicates = false;
-	//get largest piece of duplicate code in current file
+	list[tuple[int startInd, int endInd]] duplicateLocations = [];
+	map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateCodeLocations = ();  
+	
+	bool duplicateCodeFound = false;
+	
+	//get largest piece of duplicate code in current file, remove from it and check again
 	do{
-		//println(size(secondFileContents));
+		
 		lrel[int, int] duplicateCodeRel = LCSubList(createHashes(firstFileContents), createHashes(secondFileContents), size(firstFileContents), size(secondFileContents));
+		
 		//we have this block, now remove those lines from our base list and rerun
-		// count number of successive lines
-		//println(secondFileContents[min(range(duplicateCodeRel))]);
+		//count number of successive lines
 		
-		tuple[int startInd, int endInd] currentDuplicate= <min(domain(duplicateCodeRel)), max(domain(duplicateCodeRel))>;
 		
-		// remove from second suspect
-		int refSize = size(secondFileContents);
-		list[str] tmpFileContents = secondFileContents[0..min(range(duplicateCodeRel))];
-		tmpFileContents += secondFileContents[max(range(duplicateCodeRel))+1..size(secondFileContents)];
-		secondFileContents = tmpFileContents;
+		duplicateCodeFound =size(duplicateCodeRel)>5;
 		
-		//println("<refSize - size(secondFileContents)> == <size(duplicateCodeRel)>");
-		println(currentDuplicate);
-		hasDuplicates = size(duplicateCodeRel)>5 && size(secondFileContents)>5;
+		if(duplicateCodeFound){
 
-	}while(hasDuplicates);
+			tuple[int startInd, int endInd] currentDuplicate= <min(range(duplicateCodeRel)), max(range(duplicateCodeRel))>;		
+			duplicateLocations += currentDuplicate;
+			list[str] duplicatedLinesOfCodeList = secondFileContents[currentDuplicate.startInd .. currentDuplicate.endInd+1];
+			real currentHash = computeHash(intercalate("", duplicatedLinesOfCodeList));
 	
-	//remove duplicate part and recheck
+			if(currentHash in duplicateCodeLocations) {
+				tuple[list[loc] locations, list[str] originalCode] duplicateCode= duplicateCodeLocations[currentHash];
+				duplicateCode.locations = duplicateCode.locations + secondSrc;
+			}else {
+				duplicateCodeLocations[currentHash] = <[secondSrc], duplicatedLinesOfCodeList>;
+			}
 	
-	//for(<int i, int j> <- duplicateCodeRel){
-	//	println("<firstFileContents[i]> \>\>\> <secondFileContents[j]>");
-	//}
-	
-	return size([]) >= 6;
+			// remove from second contents array
+			list[str] tmpFileContents = secondFileContents[0..currentDuplicate.startInd];
+			
+			tmpFileContents += secondFileContents[currentDuplicate.endInd+1..size(secondFileContents)];
+			
+			secondFileContents = tmpFileContents;
+		}
+		duplicateCodeFound = duplicateCodeFound && size(secondFileContents)>5;
+		
+	}while(duplicateCodeFound);
+	//println(size(duplicateLocations));
+	return size(duplicateLocations) == 3;
+	//return true;
 }
 
 public list[real] createHashes(list[str] fileContents){
