@@ -41,12 +41,22 @@ public void calculateSIG(list[loc] fileLocations){
 	AssertCount assertCount;
 	CompilationUnitLoc compilationUnitLoc;
 	list[loc] fileLocationsDuplicateList = fileLocations;
+	map[loc, str] fileDataMap = ();
 	loc locationToBeRemoved;
+	int i=0;
+	str firstFileContents;
+	str secondFileContents;
 	
 	for(loc fileLoc <- fileLocations){
+		if(fileLoc in fileDataMap){
+			firstFileContents = fileDataMap[fileLoc];
+		}else {
+			firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
+			fileDataMap += (fileLoc:firstFileContents);
+		}
 		
 		compilationUnitLoc = calculateUnitSize(fileLoc);
-		compilationUnitComplexity = calculateFileCyclomaticComplexity(fileLoc);
+		compilationUnitComplexity = calculateFileCyclomaticComplexity(fileLoc, firstFileContents);
 		assertCount= countAssertsInFile(fileLoc);
 				
 		projectCULocCollection += compilationUnitLoc;
@@ -60,10 +70,18 @@ public void calculateSIG(list[loc] fileLocations){
 		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
 
 		for(loc file2Loc <- fileLocationsDuplicateList){
-			str firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
-			str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
+			if(file2Loc in fileDataMap){
+				secondFileContents = fileDataMap[file2Loc];
+			}else {
+				secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
+				fileDataMap += (file2Loc:secondFileContents);
+			}
 			
-			map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateLocations = listClonesIn(fileLoc, file2Loc);
+			i+=1;
+			
+			//str secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
+			//
+			map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateLocations = listClonesIn(fileLoc, firstFileContents,file2Loc, secondFileContents);
 			
 			if(size(duplicateLocations)>0){
 				println("number of duplicates found in <fileLoc> and <file2Loc>: size(duplicateLocations)");

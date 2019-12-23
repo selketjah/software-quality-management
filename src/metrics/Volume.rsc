@@ -57,7 +57,7 @@ public str getCompilationUnitAsStringWithoutComments(loc source){
 	int correctedOffset = 0;
 	M3 fileM3Model = createM3FromFile(source);
 	set[loc] commentLocations = range(fileM3Model.documentation);
-	lrel[int offset, int length] commentLocationMap= [<commentLoc.offset, commentLoc.length> | loc commentLoc <-commentLocations];
+	lrel[int offset, int length] commentLocationMap = [<commentLoc.offset, commentLoc.length> | loc commentLoc <-commentLocations];
 	str subject = readFile(source);
 	
 	commentLocationMap = sort(commentLocationMap, locationSortFunction);
