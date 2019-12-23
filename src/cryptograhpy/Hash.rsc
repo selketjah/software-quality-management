@@ -21,3 +21,7 @@ public real computeHash(str toBeHashed){
 	
 	return hashVal;
 }
+
+public list[real] createHashes(list[str] fileContents){
+	return [computeHash(subj)| str subj <- fileContents];
+}
