@@ -66,7 +66,7 @@ public void calculateSIG(list[loc] fileLocations){
 			map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateLocations = listClonesIn(fileLoc, file2Loc);
 			
 			if(size(duplicateLocations)>0){
-				println(size(duplicateLocations));
+				println("number of duplicates found in <fileLoc> and <file2Loc>: size(duplicateLocations)");
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public void main(){
 	println("SIG MODEL Measurements for smallSQL");
 	currentProjectResource = getProject(|project://smallsql|);
 	fileLocations = listFiles(currentProjectResource);
-	//calculateSIG(fileLocations);
+	calculateSIG(fileLocations);
 	
 	println("SIG MODEL Measurements for hsqldb");
 	//calculateSIG(|project://hsqldb|);
