@@ -32,8 +32,8 @@ public Average calculateAverages(set[CompilationUnitMetric] compilationUnitMetri
 		totalSize += totals.totalSize;
 	}
 	
-	real sizeAverage = totalSize / totalNumberOfUnits;
-	real complexityAverage = totalComplexity / totalNumberOfUnits;
+	real sizeAverage = (totalSize / totalNumberOfUnits) * 100;
+	real complexityAverage = (totalComplexity / totalNumberOfUnits) * 100;
 	
 	return <sizeAverage, complexityAverage>;
 }
