@@ -1,17 +1,7 @@
 module analysers::LocAnalyser
 
-import Message;
-import Set;
-import IO;
+import lang::java::m3::Core; 
 import String;
-import List;
-import Map;
-import util::Math;
-import lang::java::m3::Core;
-import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
-import util::Resources;
 
 bool isAnonymousClass(loc l) = contains(l.scheme, "anonymousClass");
 bool isJavaFile(loc l) = contains(l.extension, "java");

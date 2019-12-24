@@ -2,122 +2,76 @@ module metrics::Duplicates
 
 import IO;
 import List;
-import lang::java::m3::Core;
-import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
-import metrics::Volume;
-import String;
-import util::Math;
+
+import collections::Filter;
+import cryptograhpy::Hash;
+import \lexical::Import;
 import metrics::Cache;
+import structs::Duplicates;
+import string::Trim;
 
-lexical TerminalBrackets = "{"?![\n]*"}"? $;
-syntax TerminalBracketsSyntax
-  = TerminalBrackets;
-
-alias DuplicatePairs = map[loc,tuple[int size, list[str] duplicateSrc]];
-
-public set[loc] detectClones(list[ComponentLOC] methodComponentRefs){
- 	
-	// take 2 locations and check detection
-	// the compilationunit is needed in order to gain acces to individual raw method loc 
-	CompilationUnitLoc compLoc = calculateUnitSize(|project://Jabberpoint-le3/src/SlideViewerFrame.java|);
+public int findDuplicates(list[str]firstFileContents, list[str] secondFileContents, bool isSameFile){
+	DuplicateLocMap pairsFoundMap = getDuplicateDataFromCache();
 	
-	list[loc] fLocations = [ cu.src | ComponentLOC cu <- methodComponentRefs];
-	
-	println(compLoc.componentUnitLocCollection[1].src);
-	println(compLoc.componentUnitLocCollection[2].src);
 	int count = 0;
-	for(loc f <- fLocations){
-		count = 0;
-		list[str] firstFileContents = read(f);
-		for(loc f2 <- fLocations){
-			if(f2 != f){
-				list[str] secondFileContents = read(f2);
-				list[str] firstIntersectedPart = firstFileContents & secondFileContents;
-				list[str] secondIntersectedPart =  secondFileContents & firstFileContents;
-				
-				if(size(firstIntersectedPart) > 5 && size(firstIntersectedPart) < size(secondIntersectedPart) && !hasMoreSpecialCharThanOthers(firstIntersectedPart)){
-					count = calculateNumberOfDuplicates(firstIntersectedPart, secondIntersectedPart, 6, 0);
-				}else{
-					count = 0;
+	//compute hash for first 6 lines
+	int treshold = 6;
+	int fromIndex = 0;
+	int toIndex =  fromIndex + treshold-1;
+	int occurencesFound = 0;
+	
+	firstFileContents = trimTerminalChars(removeImports(firstFileContents));
+	secondFileContents = trimTerminalChars(removeImports(secondFileContents));
+	
+	list[str] intersectedPart = firstFileContents & secondFileContents;
+	
+	if(size(intersectedPart) < treshold){ return 0; }
+	
+	int sum=0;
+	list[real] subjectHashes =[];
+	list[real] referenceHashes = createHashesFromFile(firstFileContents, treshold);
+	if(!isSameFile){
+		subjectHashes = createHashesFromFile(intersectedPart, treshold);
+	}else{
+		subjectHashes = referenceHashes;
+	}
+	
+	if(!isSameFile){
+		list[real] intersectedHashes = referenceHashes & subjectHashes;
+		list[real] resultList=[];
+		
+		if(size(intersectedHashes)>0){
+			int previousIndex =0;
+			for(real intersectHash <- intersectedHashes){
+				int referenceIndex = indexOf(referenceHashes, intersectHash);
+				if(referenceIndex-1 != previousIndex){
+				//}else{
+					resultList += intersectHash;
+					previousIndex=referenceIndex;
 				}
-				
-				if(count == 1 && f2.path == f.path){
-					count=0;
-				}
-				
-				if(count>0){
-					// further testing is needed....
-					println("duplicates found in <f> && <f2> #<count>");
-				}					
 			}
-		}
-	}
-	
-	return {};
-}
-
-public int calculateNumberOfDuplicates(list[str] targetSubjects, list[str] sourceSubjects, int threshold, int startIndex){
-	if(size(targetSubjects) < threshold){return 0;}
-	
-	
-	//get all hashes for all part of size #threshold
-	int maxIndex = size(targetSubjects)-threshold;
-	list[real] intersectedPartHashes = [];
-	real intersectedPartHash = computeHash(intercalate(" ",targetSubjects));
-	
-	int j = 0;
-	do{
-		list[str] subjectsForComparison = [targetSubjects[i] | int i <- [j..(j+threshold)]];
-		intersectedPartHashes = intersectedPartHashes + computeHash(intercalate(" ",subjectsForComparison));
-		
-		j = j+threshold;
-	}while(j < maxIndex);
-		
-	list[real] targetHashes = [];
-	maxIndex = size(sourceSubjects)-threshold;
-	
-	//get all hashes for all part of size #threshold
-	for(int i <- [startIndex..maxIndex]){
-		list[str] subjectsForComparison = [sourceSubjects[i] | int i <- [i..(i+threshold)]];
-		targetHashes = targetHashes + computeHash(intercalate(" ",subjectsForComparison));
-	}
-	
-	map[real, int] distributedTargetHash= distribution(targetHashes);
-	int sum = 0;
-	for(real hash <- intersectedPartHashes){
-		if(hash in distributedTargetHash){
-			sum= sum+(distributedTargetHash[hash]);
+			
+			if(size(resultList)+1 > 5-1){
+				//these should be conseucutive lines...
+				println("duplicate counts <size(resultList)+1>");
+			}			
 		}
 	}
 	
 	return sum;
 }
 
-public real computeHash(str toBeHashed){
-	real p = 35.0;
-	real m = 1e52*33;
-	
-	real hashVal = 0.0;
-	real pPow= 1.0;
-	setPrecision(0);
-	for(int c <- chars(toBeHashed)){
-		hashVal = toReal(modulo((hashVal + toReal(c - chars("a")[0] + 1) * pPow), m));
+public list[real] createHashesFromFile(list[str] fileContents, int treshold){
+	return [computeHash(subj)| str subj <- fileContents];
+}
 
-		pPow = toReal(modulo((pPow * p),m));
+public DuplicateLocMap addToDuplicationMap(DuplicateLocMap duplicationMap, real refHash, str dataString){
+	if(refHash in duplicationMap){
+		dupLoc = duplicationMap[refHash];
+		dupLoc.locations += [|tmp://asd|];
+	}else{
+		dupLoc = <dataString, [|tmp://as|]>;
+		duplicationMap[refHash] = dupLoc;
 	}
-	
-	return hashVal;
-}
-
-public int modulo(real a, real b){
-	
-	return toInt(a - b * toInt(a/b));
-}
-
-public bool hasMoreSpecialCharThanOthers(list[str] subjectList){
-	int numberOfTerminals = size([subject |str subject <- subjectList, subject == "}" || subject =="{" || subject == "});"]);
-	
-	return ((size(subjectList)-numberOfTerminals) < (size(subjectList)/2));
+	return duplicationMap;		
 }

@@ -1,30 +1,28 @@
 module main
 
+import IO;
+import lang::java::m3::Core;
+import List;
 import Message;
 import Set;
-import IO;
-import String;
-import List;
-import Map;
-import util::Math;
-import lang::java::m3::Core;
-import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
-import analysers::LocAnalyser;
-import util::Resources;
-import Relation;
-import Set;
 import util::Benchmark;
-import analysis::m3::Registry;
-import metrics::Volume;
-import scoring::categories::Volume;
-import scoring::Rank;
-import metrics::Cache;
-import metrics::Duplicates;
-import metrics::Complexity;
+import util::Math;
 import util::Resources;
+
+import scoring::Rank;
+import scoring::categories::Volume;
+import string::Trim;
+import metrics::Cache;
+import metrics::Complexity;
+import metrics::Duplicates;
 import metrics::UnitTestCoverage;
+import metrics::Volume;
+import resource::IO;
+
+import collections::Filter;
+import \lexical::Import;
+
+import String;
 
 public void calculateSIG(list[loc] fileLocations){
 	int timeInNanoSecondsBeforeRun = cpuTime();
@@ -33,6 +31,7 @@ public void calculateSIG(list[loc] fileLocations){
 	int linesOfCode = 0;
 	int numberOfMethods = 0;
 	int totalNumberOfAsserts = 0;
+	int customCount = 0;
 	set[CompilationUnitLoc] projectCULocCollection = {};
 	set[CompilationUnitComplexity] compilationUnitComplexitySet = {};
 	list[AssertCount] assertCounts=[];
@@ -40,6 +39,8 @@ public void calculateSIG(list[loc] fileLocations){
 	CompilationUnitComplexity compilationUnitComplexity;
 	AssertCount assertCount;
 	CompilationUnitLoc compilationUnitLoc;
+	list[loc] fileLocationsDuplicateList = fileLocations;
+	loc locationToBeRemoved;
 	
 	for(loc fileLoc <- fileLocations){
 		
@@ -53,7 +54,13 @@ public void calculateSIG(list[loc] fileLocations){
 		
 		numberOfStrucDefinitions += size(compilationUnitLoc.strucUnitLoc);
 		linesOfCode += compilationUnitLoc.compilationUnit.size;	
-		totalNumberOfAsserts += assertCount.count;		
+		totalNumberOfAsserts += assertCount.count;
+		
+		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
+
+		for(loc file2Loc <- fileLocationsDuplicateList){
+			str tmp = ("duplication check should go here");
+		}
 	}
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");

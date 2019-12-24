@@ -1,26 +1,20 @@
 module metrics::Volume
 
-import Message;
-import Set;
 import IO;
-import String;
-import List;
-import Map;
-import util::Math;
 import lang::java::m3::Core;
-import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
-import util::Resources;
-import analysers::LocAnalyser;
+import List;
 import Relation;
 import Set;
-import metrics::UnitTestCoverage;
-import metrics::Cache;
+import String;
+import util::Resources;
+
+import analysers::LocAnalyser;
+import collections::Sort;
+import resource::IO;
+import string::Trim;
 
 alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
 alias ComponentLOC = tuple[loc src, int size];
-alias CommentLocation = tuple[int offset, int length];
 
 public CompilationUnitLoc calculateUnitSize(loc file){
 	M3 fileM3Model = createM3FromFile(file);
@@ -51,11 +45,19 @@ public CompilationUnitLoc calculateUnitSize(loc file){
 }
 
 public ComponentLOC calculateLinesOfCode(loc source) {
-	int correctedOffset = 0;	
 	list[str] linesOfCode;
+	
+	str subject = getCompilationUnitAsStringWithoutComments(source);
+	
+	linesOfCode = stringToTrimmedList(subject);
+	return <source, size(linesOfCode)>;
+}
+
+public str getCompilationUnitAsStringWithoutComments(loc source){
+	int correctedOffset = 0;
 	M3 fileM3Model = createM3FromFile(source);
 	set[loc] commentLocations = range(fileM3Model.documentation);
-	lrel[int offset, int length] commentLocationMap=[ <commentLoc.offset, commentLoc.length> | loc commentLoc <-commentLocations];
+	lrel[int offset, int length] commentLocationMap= [<commentLoc.offset, commentLoc.length> | loc commentLoc <-commentLocations];
 	str subject = readFile(source);
 	
 	commentLocationMap = sort(commentLocationMap, locationSortFunction);
@@ -68,20 +70,5 @@ public ComponentLOC calculateLinesOfCode(loc source) {
 		correctedOffset = correctedOffset + commentLocation.length;
 	}
 	
-	linesOfCode = ([trim(line) | str line <- split("\n", subject), size(trim(line)) > 0 ]);
-	store(source, linesOfCode);
-	return <source, size(linesOfCode)>;
-}
-
-
-bool locationSortFunction(CommentLocation locA, CommentLocation locB){
-	return locA.offset < locB.offset;
-}
-
-public list[loc] listFiles(Resource currentProjectResource) {
-	return [ a | /file(a) <- currentProjectResource, isJavaFile(a) ];
-}
-
-public set[loc] listMethods(Resource currentProjectResource) {
-	return { a | /file(a) <- currentProjectResource, isJavaFile(a) && isMethod(a) };
+	return subject;
 }

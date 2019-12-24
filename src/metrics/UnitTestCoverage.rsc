@@ -1,19 +1,12 @@
 module metrics::UnitTestCoverage
+
 import Exception;
 import IO;
+import lang::std::ASCII;
 import ParseTree;
 import String;
-import lang::java::m3::Core;
-import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
-import lang::std::ASCII;
 
-lexical Assert = "assert"[a-z _ A-Z]+"("![\n]*")" $;
-layout Whitespace = [\t\n\r\ ]*;
-
-syntax AssertStatementSyntax
-  = Assert;
+import \lexical::Assert;
 
 alias AssertCount = tuple[loc fileLoc, int count];
   
@@ -28,17 +21,4 @@ AssertCount countAssertsInFile (loc fileLoc){
 	}
 
     return <fileLoc, count>;
-}
-
-bool isAssertStatement(str subject){
-	try{ 
-		pt = parse(#AssertStatementSyntax, subject);
-		
-		visit (pt) {
-	        case (AssertStatementSyntax)`<Assert _>`: return true; 
-		}
-	} catch ParseError(loc fLoc): {
-		return false;
-	}
-	return false;
 }
