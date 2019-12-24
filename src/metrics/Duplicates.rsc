@@ -16,8 +16,8 @@ import structs::Duplicates;
 import string::Trim;
 
 public map[real, tuple[list[loc] locations, list[str] originalCode]] listClonesIn(loc firstSrc, str firstFileStr, loc secondSrc, str secondFileStr){	
-	list[str] firstFileContents  = (stringToTrimmedList(firstFileStr));
-	list[str] secondFileContents  = (stringToTrimmedList(secondFileStr));
+	list[str] firstFileContents  = removeImports(stringToTrimmedList(firstFileStr));
+	list[str] secondFileContents  = removeImports(stringToTrimmedList(secondFileStr));
 	
 	list[tuple[int startInd, int endInd]] duplicateLocations = [];
 	map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateCodeLocations = ();  
@@ -58,6 +58,10 @@ public map[real, tuple[list[loc] locations, list[str] originalCode]] listClonesI
 		
 	}while(duplicateCodeFound);
 	
+	if(firstSrc == secondSrc){
+		println("same file!");
+	}
+	
 	return duplicateCodeLocations;
 }
 
@@ -69,7 +73,6 @@ lrel[int, int] LCSubList(list[str] X, list[str] Y, int m, int n)
     // common suffix of X[0..i-1] and Y[0..j-1]. The first row and 
     // first column entries have no logical meaning, they are used only 
     // for simplicity of program 
-    //int LCStuff[][] = new int[m + 1][n + 1];
     map[int, map[int, int]] LCStuff = (mI:(nI:0 | int nI <- [0..n])  | int mI  <- [0 .. m]);
     int result = 0;  // To store length of the longest common substring 
     // Following steps build LCSuff[m+1][n+1] in bottom up fashion 

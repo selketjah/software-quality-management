@@ -3,6 +3,7 @@ module \lexical::Import
 import IO;
 import ParseTree;
 import lang::java::\syntax::Java18;
+import String;
 
 bool isImportStatement(str subject){
 	try{ 
@@ -17,4 +18,8 @@ bool isImportStatement(str subject){
 		return false;
 	}
 	return false;
+}
+
+bool isImportStatementString(str subject){
+	return startsWith(subject, "import ");
 }

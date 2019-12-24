@@ -43,11 +43,14 @@ public void calculateSIG(list[loc] fileLocations){
 	list[loc] fileLocationsDuplicateList = fileLocations;
 	map[loc, str] fileDataMap = ();
 	loc locationToBeRemoved;
-	int i=0;
 	str firstFileContents;
 	str secondFileContents;
+	int numberOfFiles = size(fileLocations);
+	int currentCloneMapSize=0;
+	map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateLocations = ();
 	
 	for(loc fileLoc <- fileLocations){
+		
 		if(fileLoc in fileDataMap){
 			firstFileContents = fileDataMap[fileLoc];
 		}else {
@@ -67,7 +70,6 @@ public void calculateSIG(list[loc] fileLocations){
 		linesOfCode += compilationUnitLoc.compilationUnit.size;	
 		totalNumberOfAsserts += assertCount.count;
 		
-		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
 
 		for(loc file2Loc <- fileLocationsDuplicateList){
 			if(file2Loc in fileDataMap){
@@ -77,29 +79,37 @@ public void calculateSIG(list[loc] fileLocations){
 				fileDataMap += (file2Loc:secondFileContents);
 			}
 			
-			map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateLocations = listClonesIn(fileLoc, firstFileContents,file2Loc, secondFileContents);
-			
-			if(size(duplicateLocations)>0){
-				println("number of duplicates found in <fileLoc> and <file2Loc>: size(duplicateLocations)");
+			map[real, tuple[list[loc] locations, list[str] originalCode]] currentlyDetectedClonesMap = listClonesIn(fileLoc, firstFileContents,file2Loc, secondFileContents);
+			currentCloneMapSize =  size(currentlyDetectedClonesMap);
+			if(currentCloneMapSize > 0){
+				//duplicateLocations += currentlyDetectedClonesMap;
+				println("number of duplicates found in <fileLoc> and <file2Loc>: <size(range(currentlyDetectedClonesMap))>");
 			}
 		}
+		
+		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
+		
 	}
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
+	
+	//println(duplicateLocations);
 }
 
 public void main(){
 	Resource currentProjectResource = getProject(|project://Jabberpoint-le3|);
 	list[loc] fileLocations = listFiles(currentProjectResource);
 	
-	println("SIG MODEL Measurements for jabberpoint");
-	calculateSIG(fileLocations);
+	//println("SIG MODEL Measurements for jabberpoint");
+	//calculateSIG(fileLocations);
 	
 	println("SIG MODEL Measurements for smallSQL");
 	currentProjectResource = getProject(|project://smallsql|);
 	fileLocations = listFiles(currentProjectResource);
 	calculateSIG(fileLocations);
 	
-	println("SIG MODEL Measurements for hsqldb");
-	//calculateSIG(|project://hsqldb|);
+	//println("SIG MODEL Measurements for hsqldb");
+	//currentProjectResource = getProject(|project://hsqldb|);
+	//fileLocations = listFiles(currentProjectResource);
+	//calculateSIG(fileLocations);
 }
