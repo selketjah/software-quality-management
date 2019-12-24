@@ -3,19 +3,19 @@ module metrics::Complexity
 import IO;
 import lang::java::jdt::m3::AST;
 
-alias UnitComplexity = tuple[str method, int size];
+alias UnitComplexity = tuple[loc method, int size];
 alias CompilationUnitComplexity = tuple[loc file, list[UnitComplexity] unitComplexities];
 
 public CompilationUnitComplexity calculateFileCyclomaticComplexity(loc fileLocation){
 	UnitComplexity unitComplexity;
 	list[UnitComplexity] unitComplexityCollection = [];
 	
-	Declaration declaration = createAstFromEclipseFile(fileLocation, false);
+	Declaration declaration = createAstFromFile(fileLocation, false);
 	
 	visit(declaration) {
 		case method: \method(_, name, _, _, statement): {
 			int complexity = calculateUnitCyclomaticComplexity(statement);
-			unitComplexity = <name, complexity>;
+			unitComplexity = <method.src, complexity>;
 			unitComplexityCollection += unitComplexity;
 		}
 	}
