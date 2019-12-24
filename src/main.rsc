@@ -17,6 +17,7 @@ import metrics::Complexity;
 import metrics::Duplicates;
 import metrics::UnitTestCoverage;
 import metrics::Volume;
+import metrics::UnitMetrics;
 import resource::IO;
 
 import collections::Filter;
@@ -32,27 +33,33 @@ public void calculateSIG(list[loc] fileLocations){
 	int numberOfMethods = 0;
 	int totalNumberOfAsserts = 0;
 	int customCount = 0;
+	
 	set[CompilationUnitLoc] projectCULocCollection = {};
-	set[CompilationUnitComplexity] compilationUnitComplexitySet = {};
 	list[AssertCount] assertCounts=[];
 	list[str] currentFileContents=[];
-	CompilationUnitComplexity compilationUnitComplexity;
+	
 	AssertCount assertCount;
 	CompilationUnitLoc compilationUnitLoc;
+	
+	set[CompilationUnitMetric] compilationUnitMetricSet = {};
+	CompilationUnitMetric compilationUnitMetric;
+	
+	
 	list[loc] fileLocationsDuplicateList = fileLocations;
 	loc locationToBeRemoved;
 	
 	for(loc fileLoc <- fileLocations){
 		
 		compilationUnitLoc = calculateUnitSize(fileLoc);
-		compilationUnitComplexity = calculateFileCyclomaticComplexity(fileLoc);
-		assertCount= countAssertsInFile(fileLoc);
+		compilationUnitMetric = calculateUnitMetrics(fileLoc);
+		assertCount = countAssertsInFile(fileLoc);
 				
 		projectCULocCollection += compilationUnitLoc;
 		assertCounts += assertCount;		
-		compilationUnitComplexitySet += compilationUnitComplexity;
+		compilationUnitMetricSet += compilationUnitMetric;
 		
 		numberOfStrucDefinitions += size(compilationUnitLoc.strucUnitLoc);
+		numberOfMethods += size(compilationUnitLoc.componentUnitLocCollection);
 		linesOfCode += compilationUnitLoc.compilationUnit.size;	
 		totalNumberOfAsserts += assertCount.count;
 		
@@ -67,7 +74,7 @@ public void calculateSIG(list[loc] fileLocations){
 }
 
 public void main(){
-	Resource currentProjectResource = getProject(|project://Jabberpoint-le3|);
+	Resource currentProjectResource = getProject(|project://JabberPoint|);
 	list[loc] fileLocations = listFiles(currentProjectResource);
 	
 	println("SIG MODEL Measurements for jabberpoint");

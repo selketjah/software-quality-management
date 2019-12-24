@@ -3,26 +3,6 @@ module metrics::Complexity
 import IO;
 import lang::java::jdt::m3::AST;
 
-alias UnitComplexity = tuple[loc method, int size];
-alias CompilationUnitComplexity = tuple[loc file, list[UnitComplexity] unitComplexities];
-
-public CompilationUnitComplexity calculateFileCyclomaticComplexity(loc fileLocation){
-	UnitComplexity unitComplexity;
-	list[UnitComplexity] unitComplexityCollection = [];
-	
-	Declaration declaration = createAstFromFile(fileLocation, false);
-	
-	visit(declaration) {
-		case method: \method(_, name, _, _, statement): {
-			int complexity = calculateUnitCyclomaticComplexity(statement);
-			unitComplexity = <method.src, complexity>;
-			unitComplexityCollection += unitComplexity;
-		}
-	}
-	
-	return <fileLocation, unitComplexityCollection>;
-}
-
 public int calculateUnitCyclomaticComplexity(Statement statement) {
 	// https://stackoverflow.com/questions/40064886/obtaining-cyclomatic-complexity
 

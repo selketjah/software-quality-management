@@ -44,6 +44,12 @@ public CompilationUnitLoc calculateUnitSize(loc file){
 	return <compilationUnitLoc, strucUnitLoc, componentUnitLocCollection>;
 }
 
+public int calculateUnitVolume(loc src){
+	ComponentLOC currentLoc = calculateLinesOfCode(src);
+	currentLoc.size =currentLoc.size-2;
+	return currentLoc.size; 
+}
+
 public ComponentLOC calculateLinesOfCode(loc source) {
 	list[str] linesOfCode;
 	
