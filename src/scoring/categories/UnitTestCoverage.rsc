@@ -15,13 +15,13 @@ tuple[int lower, int upper] NEUTRAL_BOUNDS = <60, 80>;
 tuple[int lower, int upper] MINUS_BOUNDS = <20, 60>;
 
 public Rank determineUnitTestCoverageRank(int unitTestCoveragePercentage) {
-	if(unitTestCoveragePercentage >= PLUSPLUS_BOUNDS.lower || unitTestCoveragePercentage < PLUSPLUS_BOUNDS.upper) {
+	if(unitTestCoveragePercentage >= PLUSPLUS_BOUNDS.lower && unitTestCoveragePercentage < PLUSPLUS_BOUNDS.upper) {
 		return \plusplus();
-	} else if (unitTestCoveragePercentage >= PLUS_BOUNDS.lower || unitTestCoveragePercentage < PLUS_BOUNDS.upper) {
+	} else if (unitTestCoveragePercentage >= PLUS_BOUNDS.lower && unitTestCoveragePercentage < PLUS_BOUNDS.upper) {
 		return \plus();
-	} else if (unitTestCoveragePercentage >= NEUTRAL_BOUNDS.lower || unitTestCoveragePercentage < NEUTRAL_BOUNDS.upper) {
+	} else if (unitTestCoveragePercentage >= NEUTRAL_BOUNDS.lower && unitTestCoveragePercentage < NEUTRAL_BOUNDS.upper) {
 		return \neutral();
-	} else if (unitTestCoveragePercentage >= MINUS_BOUNDS.lower || unitTestCoveragePercentage < MINUS_BOUNDS.upper) {
+	} else if (unitTestCoveragePercentage >= MINUS_BOUNDS.lower && unitTestCoveragePercentage < MINUS_BOUNDS.upper) {
 		return \minus();
 	} else {
 		return \minusminus();
