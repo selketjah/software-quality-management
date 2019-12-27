@@ -6,6 +6,7 @@ import util::Math;
 import String;
 import List;
 import ListRelation;
+import Map;
 
 import collections::Filter;
 import cryptograhpy::Hash;
@@ -15,55 +16,103 @@ import metrics::Volume;
 import structs::Duplicates;
 import string::Trim;
 
-public map[real, tuple[list[loc] locations, list[str] originalCode]] listClonesIn(loc firstSrc, str firstFileStr, loc secondSrc, str secondFileStr){	
+
+public map[real, tuple[list[loc] locations, list[str] originalCode]] listClonesIn(loc firstSrc, str firstFileStr, loc secondSrc, str secondFileStr){
+	map[str, list[int]] firstFileDuplicateEntryMap = ();
+	map[str, list[int]] secondFileDuplicateEntryMap = ();
+	
 	list[str] firstFileContents  = removeImports(stringToTrimmedList(firstFileStr));
 	list[str] secondFileContents  = removeImports(stringToTrimmedList(secondFileStr));
 	
-	list[tuple[int startInd, int endInd]] duplicateLocations = [];
-	map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateCodeLocations = ();  
-	
-	bool duplicateCodeFound = false;
-	int ind=0;
-	//get largest piece of duplicate code in current file, remove from it and check again
-	do{
-		
-		lrel[int, int] duplicateCodeRel = LCSubList((firstFileContents), (secondFileContents), size(firstFileContents), size(secondFileContents));
-		
-		//we have this block, now remove those lines from our base list and rerun
-		//count number of successive lines until no references are left
-		
-		duplicateCodeFound =size(duplicateCodeRel)>5;
-		
-		if(duplicateCodeFound){
-
-			tuple[int startInd, int endInd] currentDuplicate= <min(range(duplicateCodeRel)), max(range(duplicateCodeRel))>;		
-			duplicateLocations += currentDuplicate;
-			list[str] duplicatedLinesOfCodeList = secondFileContents[currentDuplicate.startInd .. currentDuplicate.endInd+1];
-			real currentHash = computeHash(intercalate("", duplicatedLinesOfCodeList));
-	
-			if(currentHash in duplicateCodeLocations) {
-				tuple[list[loc] locations, list[str] originalCode] duplicateCode= duplicateCodeLocations[currentHash];
-				duplicateCode.locations = duplicateCode.locations + secondSrc;
-			}else {
-				duplicateCodeLocations[currentHash] = <[secondSrc], duplicatedLinesOfCodeList>;
-			}
-	
-			list[str] tmpFileContents = secondFileContents[0..currentDuplicate.startInd];
-			
-			tmpFileContents += secondFileContents[currentDuplicate.endInd+1..size(secondFileContents)];
-			
-			secondFileContents = tmpFileContents;
-		}
-		duplicateCodeFound = duplicateCodeFound && size(secondFileContents)>5;
-		
-	}while(duplicateCodeFound);
-	
-	if(firstSrc == secondSrc){
-		println("same file!");
+	list[str] fileContentsIntersection = secondFileContents & firstFileContents;
+	 
+	if(size(fileContentsIntersection)<5){
+		return ();
 	}
 	
-	return duplicateCodeLocations;
+	firstFileDuplicateEntryMap = mapDuplicates(firstFileContents, fileContentsIntersection);
+	secondFileDuplicateEntryMap = mapDuplicates(secondFileContents, fileContentsIntersection);
+	
+	list[int] firstDupList= ([] | it + firstFileDuplicateEntryMap[strLoc] | str strLoc <- firstFileDuplicateEntryMap);
+	list[int] secondDupList= ([] | it + secondFileDuplicateEntryMap[strLoc] | str strLoc <- secondFileDuplicateEntryMap);
+	
+	
+	dupList = sort(firstDupList);
+	dupList = sort(secondDupList);
+
+	println((groupSequence(firstDupList)));
+	println((groupSequence(secondDupList)));
+	return ();
 }
+
+public map[str, list[int]] mapDuplicates(list[str] subjectList, list[str] needleList){
+	map[str, list[int]] duplicateEntryMap = ();
+	str lineOfCode;
+	
+	for(int i <- [0..size(subjectList)]){
+		lineOfCode = subjectList[i];
+		if(indexOf(needleList, lineOfCode) > -1){
+		
+			if(lineOfCode in duplicateEntryMap){
+				list[int]  matchingElementList = duplicateEntryMap[lineOfCode];
+				matchingElementList += i;
+				duplicateEntryMap[lineOfCode] = matchingElementList;
+			}else{
+				duplicateEntryMap[lineOfCode] = [i];
+			}
+		}
+	}
+	
+	return duplicateEntryMap;
+}
+
+public list[list[int]] groupSequence(list[int] lst){
+    list[list[int]] res = [[lst[0]]]; 
+  
+    for(int i <- [1 .. size(lst)]){ 
+        if(lst[i-1]+1 == lst[i]) {
+        
+            res[size(res)-1] = res[size(res)-1] + lst[i]; 
+  		}
+        else{ 
+            res += [[lst[i]]];
+        }
+  	} 
+    return res;
+}
+
+//	do{
+//		
+//		lrel[int, int] duplicateCodeRel = LCSubList((firstFileContents), (secondFileContents), size(firstFileContents), size(secondFileContents));
+//		
+//		//we have this block, now remove those lines from our base list and rerun
+//		//count number of successive lines until no references are left
+//		
+//		duplicateCodeFound =size(duplicateCodeRel)>5;
+//		
+//		if(duplicateCodeFound){
+//
+//			tuple[int startInd, int endInd] currentDuplicate= <min(range(duplicateCodeRel)), max(range(duplicateCodeRel))>;		
+//			duplicateLocations += currentDuplicate;
+//			list[str] duplicatedLinesOfCodeList = secondFileContents[currentDuplicate.startInd .. currentDuplicate.endInd+1];
+//			real currentHash = computeHash(intercalate("", duplicatedLinesOfCodeList));
+//	
+//			if(currentHash in duplicateCodeLocations) {
+//				tuple[list[loc] locations, list[str] originalCode] duplicateCode= duplicateCodeLocations[currentHash];
+//				duplicateCode.locations = duplicateCode.locations + secondSrc;
+//			}else {
+//				duplicateCodeLocations[currentHash] = <[secondSrc], duplicatedLinesOfCodeList>;
+//			}
+//	
+//			list[str] tmpFileContents = secondFileContents[0..currentDuplicate.startInd];
+//			
+//			tmpFileContents += secondFileContents[currentDuplicate.endInd+1..size(secondFileContents)];
+//			
+//			secondFileContents = tmpFileContents;
+//		}
+//		duplicateCodeFound = duplicateCodeFound && size(secondFileContents)>5;
+//		
+//	}while(duplicateCodeFound);
 
 lrel[int, int] LCSubList(list[str] X, list[str] Y, int m, int n)  
 {
