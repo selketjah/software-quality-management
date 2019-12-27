@@ -15,13 +15,13 @@ tuple[int lower, int upper] NEUTRAL_BOUNDS = <5, 10>;
 tuple[int lower, int upper] MINUS_BOUNDS = <10, 20>;
 
 public Rank determineDuplicationRank(int duplicationPercentage) {
-	if (duplicationPercentage >= PLUSPLUS_BOUNDS.lower || duplicationPercentage < PLUSPLUS_BOUNDS.upper) {
+	if (duplicationPercentage >= PLUSPLUS_BOUNDS.lower && duplicationPercentage < PLUSPLUS_BOUNDS.upper) {
 		return \plusplus();
-	} else if (duplicationPercentage >= PLUS_BOUNDS.lower || duplicationPercentage < PLUS_BOUNDS.upper) {
+	} else if (duplicationPercentage >= PLUS_BOUNDS.lower && duplicationPercentage < PLUS_BOUNDS.upper) {
 		return \plus();
-	} else if (duplicationPercentage >= NEUTRAL_BOUNDS.lower || duplicationPercentage < NEUTRAL_BOUNDS.upper) {
+	} else if (duplicationPercentage >= NEUTRAL_BOUNDS.lower && duplicationPercentage < NEUTRAL_BOUNDS.upper) {
 		return \neutral();
-	} else if (duplicationPercentage >= MINUS_BOUNDS.lower || duplicationPercentage < MINUS_BOUNDS.upper) {
+	} else if (duplicationPercentage >= MINUS_BOUNDS.lower && duplicationPercentage < MINUS_BOUNDS.upper) {
 		return \minus();
 	} else {
 		return \minusminus();

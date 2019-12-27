@@ -21,6 +21,7 @@ import metrics::UnitTestCoverage;
 import metrics::Volume;
 import metrics::UnitMetrics;
 import resource::IO;
+import string::Print;
 
 import collections::Filter;
 import \lexical::Import;
@@ -72,9 +73,11 @@ public void calculateSIG(list[loc] fileLocations){
 		}
 	}
 	
-	Metrics metrics = <linesOfCode, compilationUnitMetricSet, 0, totalNumberOfAsserts>;
+	Metrics metrics = <linesOfCode, compilationUnitMetricSet, 15, totalNumberOfAsserts>;
 	Ranks ranks = determineRanks(metrics);
 	Average averages = calculateAverages(compilationUnitMetricSet);
+	
+	printResult(ranks);
 	
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
@@ -85,12 +88,12 @@ public void main(){
 	list[loc] fileLocations = listFiles(currentProjectResource);
 	
 	println("SIG MODEL Measurements for jabberpoint");
-	calculateSIG(fileLocations);
+	//calculateSIG(fileLocations);
 	
 	println("SIG MODEL Measurements for smallSQL");
 	currentProjectResource = getProject(|project://smallsql|);
 	fileLocations = listFiles(currentProjectResource);
-	//calculateSIG(fileLocations);
+	calculateSIG(fileLocations);
 	
 	println("SIG MODEL Measurements for hsqldb");
 	//calculateSIG(|project://hsqldb|);
