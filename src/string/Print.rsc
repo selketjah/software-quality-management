@@ -7,6 +7,7 @@ import Map;
 
 import scoring::Rank;
 import scoring::Ranking;
+import scoring::Average;
 import scoring::Maintainability;
 
 // Constants
@@ -152,19 +153,34 @@ private str renderRanking(Ranks ranks) {
 		'| Unit test coverage | <fillUp(convertRankToLiteral(ranks.unitTestCoverage), RANK_FILL_UP_AMOUNT)> |
 		'-----------------------------------------------
 		'
-		'Overall Rank: <convertRankToLiteral(ranks.overall)>
-		'
-		'
 		'Maintainability Aspects:
 		'<renderMaintainability(ranks.maintainability)>
+		'
+		'Overall Rank: <convertRankToLiteral(ranks.overall)>
+		'
 		'
 		'**************************************************
 	");
 }
 
-public void printResult(Ranks ranks) {
+private str renderStatistics(int volume, int numberOfUnits, int duplication, Average averages) {
+	return ("
+		'**************************************************
+		'
+		'Lines of code: <volume>
+		'Nuber of units: <numberOfUnits>
+		'Average unit size: <averages.size>%
+		'Average complexity: <averages.complexity>%
+		'Duplication: <duplication>%
+		'
+		'**************************************************
+	");
+}
+
+public void printResult(int volume, int numberOfUnits, int duplication, Average averages, Ranks ranks) {
 	println("Category Legends:\n<renderCategoryLegendTables()>\n");
+	println("\nStatistics:");
+	println("\n<renderStatistics(volume, numberOfUnits, duplication, averages)>\n");
 	println("\nMaintainability Reports:");
-	println("\n<renderRanking(ranks)>\n");
-	
+	println("\n<renderRanking(ranks)>\n");	
 }

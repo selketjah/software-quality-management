@@ -84,18 +84,10 @@ private Rank determineUnitTestCoveragePercentageRank(int volume, int asserts) {
 }
 
 public Ranks determineRanks(Metrics metrics) {
-
-	println("Volume: <metrics.volume> ");
-
-	Rank volumeRank = determineVolumeRank(metrics.volume);
-	
-	println("Volume rank: <convertRankToLiteral(volumeRank)> ");
-	
+	Rank volumeRank = determineVolumeRank(metrics.volume);	
 	Rank unitTestCoverageRank = determineUnitTestCoveragePercentageRank(metrics.volume, metrics.totalAssertStatements);
 	
-	println("Duplication: <metrics.duplicationPercentage> %");
 	Rank duplicationRank = determineDuplicationRank(metrics.duplicationPercentage);
-	println("Duplication rank:<convertRankToLiteral(duplicationRank)> ");
 	tuple[Rank unitSizeRank, Rank unitComplexityRank] compilationUnitRanks = determineCompilationUnitRank(metrics.volume, metrics.compilationUnitMetrics);
 	
 	Rank overallRank = calculateAverageRank([volumeRank, compilationUnitRanks.unitSizeRank, compilationUnitRanks.unitComplexityRank, duplicationRank, unitTestCoverageRank]);

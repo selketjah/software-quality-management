@@ -77,7 +77,7 @@ public void calculateSIG(list[loc] fileLocations){
 	Ranks ranks = determineRanks(metrics);
 	Average averages = calculateAverages(compilationUnitMetricSet);
 	
-	printResult(ranks);
+	printResult(linesOfCode, numberOfMethods, 15, averages, ranks);
 	
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
