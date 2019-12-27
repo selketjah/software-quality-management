@@ -1,12 +1,17 @@
 module scoring::Average
 
+import IO;
+import Set;
+import List;
+import Map;
+import util::Math;
 
 import metrics::UnitMetrics;
 
-alias Average = tuple[real size, real complexity];
+alias Average = tuple[int size, int complexity];
 alias Totals = tuple[int numberOfUnits, int totalSize, int totalComplexity];
 
-private Totals calculateTotals(list[CompilationUnitMetric] compilationUnitMetrics) {
+private Totals calculateTotals(list[UnitMetric] compilationUnitMetrics) {
 	int numberOfUnits = size(compilationUnitMetrics);
 	int totalComplexity = 0;
 	int totalSize = 0;
@@ -24,7 +29,7 @@ public Average calculateAverages(set[CompilationUnitMetric] compilationUnitMetri
 	int totalComplexity = 0;
 	int totalSize = 0;
 		
-	for(<loc source, list[CompilationUnitMetric] compilationUnitMetric> <- compilationUnitMetrics) {
+	for(<loc source, list[UnitMetric] compilationUnitMetric> <- compilationUnitMetrics) {
 		Totals totals = calculateTotals(compilationUnitMetric);
 		
 		totalNumberOfUnits += totals.numberOfUnits;
@@ -32,8 +37,8 @@ public Average calculateAverages(set[CompilationUnitMetric] compilationUnitMetri
 		totalSize += totals.totalSize;
 	}
 	
-	real sizeAverage = (totalSize / totalNumberOfUnits) * 100;
-	real complexityAverage = (totalComplexity / totalNumberOfUnits) * 100;
+	int sizeAverage = percent(totalSize, totalNumberOfUnits);
+	int complexityAverage =  percent(totalComplexity, totalNumberOfUnits);
 	
 	return <sizeAverage, complexityAverage>;
 }

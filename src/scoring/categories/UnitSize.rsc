@@ -9,10 +9,10 @@ import util::Math;
 import scoring::Rank;
 import scoring::RiskLevel;
 
-// These bounds are taken from https://docs.sonarqube.org/display/SONARQUBE45/SIG+Maintainability+Model+Plugin
-tuple[int lower, int upper] SIMPLE_BOUNDS 	= <0, 10>;
-tuple[int lower, int upper] MODERATE_BOUNDS = <10, 50>;
-tuple[int lower, int upper] HIGH_BOUNDS 	= <50, 100>;
+// These bounds are taken from page 11 of the 'Deriving metric thresholds from benchmark data' paper
+tuple[int lower, int upper] SIMPLE_BOUNDS 	= <0, 30>;
+tuple[int lower, int upper] MODERATE_BOUNDS = <30, 44>;
+tuple[int lower, int upper] HIGH_BOUNDS 	= <44, 74>;
 
 // classification for entire project, based on % present of previous bounds
 // anything above <50, 15, 5> is considered --
@@ -22,13 +22,13 @@ tuple[int moderate, int high, int veryHigh] NEUTRAL_BOUNDS = <40, 10, 0>;
 tuple[int moderate, int high, int veryHigh] MINUS_BOUNDS = <50, 15, 5>;
 
 public RiskLevel determineRiskLevelForUnitSize(int unitSize) {
-	if (cyclomaticComplexity < SIMPLE_BOUNDS.lower) {
+	if (unitSize < SIMPLE_BOUNDS.lower) {
 		return RiskLevel::\tbd();
-	} else if (cyclomaticComplexity >= SIMPLE_BOUNDS.lower && cyclomaticComplexity <= SIMPLE_BOUNDS.upper) {
+	} else if (unitSize >= SIMPLE_BOUNDS.lower && unitSize <= SIMPLE_BOUNDS.upper) {
 		return \simple();
-	} else if (cyclomaticComplexity >= MODERATE_BOUNDS.lower && cyclomaticComplexity <= MODERATE_BOUNDS.upper) {
+	} else if (unitSize >= MODERATE_BOUNDS.lower && unitSize <= MODERATE_BOUNDS.upper) {
 		return \moderate();
-	} else if (cyclomaticComplexity >= HIGH_BOUNDS.lower && cyclomaticComplexity <= HIGH_BOUNDS.upper) {
+	} else if (unitSize >= HIGH_BOUNDS.lower && unitSize <= HIGH_BOUNDS.upper) {
 		return \high();
 	} else {
 		return \veryhigh();

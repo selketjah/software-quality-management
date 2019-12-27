@@ -10,7 +10,9 @@ import util::Math;
 import util::Resources;
 
 import scoring::Rank;
-import scoring::categories::Volume;
+import scoring::Ranking;
+import scoring::Average;
+
 import string::Trim;
 import metrics::Cache;
 import metrics::Complexity;
@@ -69,6 +71,11 @@ public void calculateSIG(list[loc] fileLocations){
 			str tmp = ("duplication check should go here");
 		}
 	}
+	
+	Metrics metrics = <linesOfCode, compilationUnitMetricSet, 0, totalNumberOfAsserts>;
+	Ranks ranks = determineRanks(metrics);
+	Average averages = calculateAverages(compilationUnitMetricSet);
+	
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
 }

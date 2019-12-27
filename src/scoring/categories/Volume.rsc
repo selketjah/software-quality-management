@@ -10,7 +10,7 @@ import util::Math;
 import scoring::Rank;
 
 
-// // These risk bounds and ranking are taken from page 5 of the 'A Practical Model for Measuring Maintainability'
+// // These risk bounds and ranking are taken from page 5 of the 'A Practical Model for Measuring Maintainability' paper
 tuple[int lower, int upper] PLUSPLUS_BOUNDS = <0, 66000>;
 tuple[int lower, int upper] PLUS_BOUNDS = <66000, 246000>;
 tuple[int lower, int upper] NEUTRAL_BOUNDS = <246000, 665000>;
