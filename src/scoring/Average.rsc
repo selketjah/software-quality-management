@@ -8,7 +8,7 @@ import util::Math;
 
 import metrics::UnitMetrics;
 
-alias Average = tuple[int size, int complexity];
+alias Average = tuple[real size, real complexity];
 alias Totals = tuple[int numberOfUnits, int totalSize, int totalComplexity];
 
 private Totals calculateTotals(list[UnitMetric] compilationUnitMetrics) {
@@ -37,8 +37,8 @@ public Average calculateAverages(set[CompilationUnitMetric] compilationUnitMetri
 		totalSize += totals.totalSize;
 	}
 	
-	int sizeAverage = percent(totalSize, totalNumberOfUnits);
-	int complexityAverage =  percent(totalComplexity, totalNumberOfUnits);
+	real sizeAverage = toReal(totalSize) / toReal(totalNumberOfUnits);
+	real complexityAverage =  toReal(totalSize) / toReal(totalComplexity);
 	
 	return <sizeAverage, complexityAverage>;
 }

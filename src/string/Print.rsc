@@ -169,8 +169,8 @@ private str renderStatistics(int volume, int numberOfUnits, int duplication, Ave
 		'
 		'Lines of code: <volume>
 		'Nuber of units: <numberOfUnits>
-		'Average unit size: <averages.size>%
-		'Average complexity: <averages.complexity>%
+		'Average unit size: <averages.size>
+		'Average complexity: <averages.complexity>
 		'Duplication: <duplication>%
 		'
 		'**************************************************
