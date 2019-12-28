@@ -100,13 +100,13 @@ public void main(){
 	Resource currentProjectResource = getProject(|project://Jabberpoint-le3|);
 	list[loc] fileLocations = listFiles(currentProjectResource);
 	
-	println("SIG MODEL Measurements for jabberpoint");
-	calculateSIG(fileLocations);
-	
-	//println("SIG MODEL Measurements for smallSQL");
-	//currentProjectResource = getProject(|project://smallsql|);
-	//fileLocations = listFiles(currentProjectResource);
+	//println("SIG MODEL Measurements for jabberpoint");
 	//calculateSIG(fileLocations);
+	
+	println("SIG MODEL Measurements for smallSQL");
+	currentProjectResource = getProject(|project://smallsql|);
+	fileLocations = listFiles(currentProjectResource);
+	calculateSIG(fileLocations);
 	
 	//println("SIG MODEL Measurements for hsqldb");
 	//currentProjectResource = getProject(|project://hsqldb|);

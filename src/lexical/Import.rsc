@@ -2,7 +2,6 @@ module \lexical::Import
 
 import IO;
 import ParseTree;
-import lang::java::\syntax::Java18;
 import String;
 
 bool isImportStatement(str subject){
@@ -20,6 +19,11 @@ bool isImportStatement(str subject){
 	return false;
 }
 
+
 bool isImportStatementString(str subject){
 	return startsWith(subject, "import ");
+}
+
+bool isImportStatementRegex(str subject){
+	return /^import\s.*;$/ := subject;
 }

@@ -30,18 +30,39 @@ public map[real, tuple[list[loc] locations, list[str] originalCode]] listClonesI
 		return ();
 	}
 	
+	if(firstSrc == secondSrc){
+		fileContentsIntersection = firstFileContents;
+	}
+	
 	firstFileDuplicateEntryMap = mapDuplicates(firstFileContents, fileContentsIntersection);
 	secondFileDuplicateEntryMap = mapDuplicates(secondFileContents, fileContentsIntersection);
+	
+	//if same file remove all single entries
+	if(firstSrc ==secondSrc){
+		
+		for(str mapperKey <- domain(firstFileDuplicateEntryMap)){
+			if(size(firstFileDuplicateEntryMap[mapperKey]) ==  1){
+				firstFileDuplicateEntryMap = delete(firstFileDuplicateEntryMap, mapperKey);
+			}
+		}
+		secondFileDuplicateEntryMap = firstFileDuplicateEntryMap;
+	}
 	
 	list[int] firstDupList= ([] | it + firstFileDuplicateEntryMap[strLoc] | str strLoc <- firstFileDuplicateEntryMap);
 	list[int] secondDupList= ([] | it + secondFileDuplicateEntryMap[strLoc] | str strLoc <- secondFileDuplicateEntryMap);
 	
+	firstDupList = sort(firstDupList);
+	secondDupList = sort(secondDupList);
 	
-	dupList = sort(firstDupList);
-	dupList = sort(secondDupList);
-
-	println((groupSequence(firstDupList)));
-	println((groupSequence(secondDupList)));
+	list[list[int]] filteredFirstDupList = [sequenceList | list[int] sequenceList <- groupSequence(firstDupList), size(sequenceList)>5];
+	list[list[int]] filteredSecondDupList = [sequenceList | list[int] sequenceList <- groupSequence(secondDupList), size(sequenceList)>5];
+	
+	if(size(filteredFirstDupList) >0  || size(filteredSecondDupList) > 0){
+		println("f1: <firstSrc> f2: <secondSrc>");
+		println(size(filteredFirstDupList));
+		println(size(filteredSecondDupList));
+	}
+	
 	return ();
 }
 
@@ -51,8 +72,7 @@ public map[str, list[int]] mapDuplicates(list[str] subjectList, list[str] needle
 	
 	for(int i <- [0..size(subjectList)]){
 		lineOfCode = subjectList[i];
-		if(indexOf(needleList, lineOfCode) > -1){
-		
+		if(lineOfCode in needleList){
 			if(lineOfCode in duplicateEntryMap){
 				list[int]  matchingElementList = duplicateEntryMap[lineOfCode];
 				matchingElementList += i;
