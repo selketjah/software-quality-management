@@ -87,13 +87,11 @@ public void calculateSIG(list[loc] fileLocations){
 			}
 		}
 		
-				fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
+		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
 		
 	}
 	
 	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
-	
-	//println(duplicateLocations);
 }
 
 public void main(){
@@ -103,13 +101,13 @@ public void main(){
 	//println("SIG MODEL Measurements for jabberpoint");
 	//calculateSIG(fileLocations);
 	
-	println("SIG MODEL Measurements for smallSQL");
-	currentProjectResource = getProject(|project://smallsql|);
-	fileLocations = listFiles(currentProjectResource);
-	calculateSIG(fileLocations);
-	
-	//println("SIG MODEL Measurements for hsqldb");
-	//currentProjectResource = getProject(|project://hsqldb|);
+	//println("SIG MODEL Measurements for smallSQL");
+	//currentProjectResource = getProject(|project://smallsql|);
 	//fileLocations = listFiles(currentProjectResource);
 	//calculateSIG(fileLocations);
+	
+	println("SIG MODEL Measurements for hsqldb");
+	currentProjectResource = getProject(|project://hsqldb|);
+	fileLocations = listFiles(currentProjectResource);
+	calculateSIG(fileLocations);
 }

@@ -87,6 +87,8 @@ public map[str, list[int]] mapDuplicates(list[str] subjectList, list[str] needle
 }
 
 public list[list[int]] groupSequence(list[int] lst){
+	if(size(lst)==0) return [];
+	
     list[list[int]] res = [[lst[0]]]; 
   
     for(int i <- [1 .. size(lst)]){ 
