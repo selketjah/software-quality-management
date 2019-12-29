@@ -15,7 +15,7 @@ public CompilationUnitMetric calculateUnitMetrics(loc fileLocation) {
 	list[UnitMetric] unitMetricCollection = [];
 	
 	visit(declaration) {
-		case method:\method(_, name, _, _, statement): {
+		case method: \method(_, name, _, _, statement): {
 			int complexity = calculateUnitCyclomaticComplexity(statement);
 			int size = calculateUnitVolume(method.src);			
 			unitMetric = <name, method.src, complexity, size>;
