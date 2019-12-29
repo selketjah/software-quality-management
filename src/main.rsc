@@ -84,7 +84,7 @@ public void calculateSIG(list[loc] fileLocations){
 }
 
 public void main(){
-	Resource currentProjectResource = getProject(|project://JabberPoint|);
+	Resource currentProjectResource = getProject(|project://Jabberpoint-le3|);
 	list[loc] fileLocations = listFiles(currentProjectResource);
 	
 	println("SIG MODEL Measurements for jabberpoint");
