@@ -20,10 +20,17 @@ public ComponentLOC calculateLinesOfCode(loc src, list[str] linesOfCode) {
 	return <src, size(linesOfCode)>;
 }
 
+public int calculateUnitVolume(loc src){
+	return size(srcToLoc(src))-2;
+}
+
 public list[str] srcToLoc(loc source){
 	str subject = getCompilationUnitAsStringWithoutComments(source);
-	
 	return stringToTrimmedList(subject);
+}
+
+public ComponentLOC calculateLinesOfCode(loc src, list[str] linesOfCode) {
+	return <src, size(linesOfCode)>;
 }
 
 public str getCompilationUnitAsStringWithoutComments(loc source){
