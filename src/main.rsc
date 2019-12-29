@@ -15,6 +15,7 @@ import analysers::LocAnalyser;
 import scoring::Rank;
 import scoring::Ranking;
 import scoring::Average;
+import String;
 
 import string::Trim;
 import metrics::Cache;
@@ -25,10 +26,7 @@ import metrics::Volume;
 import metrics::UnitMetrics;
 import resource::IO;
 import string::Print;
-
 import collections::Filter;
-
-import String;
 
 public void main(){
 	//calculateSIG(|project://Jabberpoint-le3|);
@@ -57,21 +55,20 @@ public void calculateSIG(loc project){
 	list[ComponentLOC] methodHolderSizeList = [calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- methodHolders];
 	//methods per method holder
 	
-	list[ComponentLOC] methodSizeList = [calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- methods];
+	map[loc, ComponentLOC] methodSizeList = (src:calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- methods);
 	
 	//O(N log N)
 	println("checking for duplicates");
 
 	for(loc src <- toList(range(methodHolders))){
-		compilationUnitMetricSet += calculateUnitMetrics(src);
+		compilationUnitMetricSet += calculateUnitMetrics(src, methodSizeList);
 		for(loc src2 <- methodHolderDup){
 			duplicationMap += listClonesIn(src, compilationUnitMap[src],src2, compilationUnitMap[src2]);
 		}
 		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));				
 	}
 	
-	
-	volume = ((0 | it + componentLoc.size | ComponentLOC componentLoc <- methodSizeList));
+	volume = ((0 | it + methodSizeList[src].size | loc src <- methodSizeList));
 	Metrics metrics = <volume, compilationUnitMetricSet, 15, 0>;
 	Ranks ranks = determineRanks(metrics);
 	Average averages = calculateAverages(compilationUnitMetricSet);
