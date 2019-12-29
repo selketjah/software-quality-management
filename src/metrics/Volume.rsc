@@ -16,41 +16,14 @@ import string::Trim;
 alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
 alias ComponentLOC = tuple[loc src, int size];
 
-public CompilationUnitLoc calculateUnitSize(loc file){
-	M3 fileM3Model = createM3FromFile(file);
-	ComponentLOC compilationUnitLoc;
-	set[ComponentLOC] strucUnitLoc={};
-	list[ComponentLOC] componentUnitLocCollection=[];
-	
-	rel[loc name,loc src] decls = fileM3Model.declarations;
-	int assertCount ;
-	for(<loc name, loc src> <- decls){
-		if(isCompilationUnit(name)){
-			compilationUnitLoc = calculateLinesOfCode(src);
-		}
-
-		if(canContainMethods(name)){
-			strucUnitLoc += calculateLinesOfCode(src);
-		}
-		
-		if(isMethod(name)) {
-			
-			ComponentLOC currentLoc = calculateLinesOfCode(src);
-			currentLoc.size =currentLoc.size-2; 
-			componentUnitLocCollection +=currentLoc;
-		}
-	}
-	
-	return <compilationUnitLoc, strucUnitLoc, componentUnitLocCollection>;
+public ComponentLOC calculateLinesOfCode(loc src, list[str] linesOfCode) {
+	return <src, size(linesOfCode)>;
 }
 
-public ComponentLOC calculateLinesOfCode(loc source) {
-	list[str] linesOfCode;
-	
+public list[str] srcToLoc(loc source){
 	str subject = getCompilationUnitAsStringWithoutComments(source);
 	
-	linesOfCode = stringToTrimmedList(subject);
-	return <source, size(linesOfCode)>;
+	return stringToTrimmedList(subject);
 }
 
 public str getCompilationUnitAsStringWithoutComments(loc source){

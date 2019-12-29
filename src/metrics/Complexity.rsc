@@ -2,15 +2,16 @@ module metrics::Complexity
 
 import IO;
 import lang::java::jdt::m3::AST;
+import lang::java::jdt::m3::Core;
 
 alias UnitComplexity = tuple[str method, int size];
 alias CompilationUnitComplexity = tuple[loc file, list[UnitComplexity] unitComplexities];
 
-public CompilationUnitComplexity calculateFileCyclomaticComplexity(loc fileLocation, str fileAsString){
+public CompilationUnitComplexity calculateFileCyclomaticComplexity(loc fileLocation){
 	UnitComplexity unitComplexity;
 	list[UnitComplexity] unitComplexityCollection = [];
-	//
-	Declaration declaration = createAstFromFile(fileLocation, false);
+	
+	Declaration declaration = createAstFromEclipseFile(fileLocation, false);
 	
 	visit(declaration) {
 		case method: \method(_, name, _, _, statement): {

@@ -2,14 +2,16 @@ module main
 
 import IO;
 import lang::java::m3::Core;
+import lang::java::jdt::m3::Core;
 import List;
 import Message;
 import Set;
 import Map;
+import Relation;
 import util::Benchmark;
 import util::Math;
 import util::Resources;
-
+import analysers::LocAnalyser;
 import scoring::Rank;
 import scoring::categories::Volume;
 import string::Trim;
@@ -19,95 +21,45 @@ import metrics::Duplicates;
 import metrics::UnitTestCoverage;
 import metrics::Volume;
 import resource::IO;
-
 import collections::Filter;
-import \lexical::Import;
 
 import String;
 
-public void calculateSIG(list[loc] fileLocations){
-	int timeInNanoSecondsBeforeRun = cpuTime();
-
-	int numberOfStrucDefinitions = 0;
-	int linesOfCode = 0;
-	int numberOfMethods = 0;
-	int totalNumberOfAsserts = 0;
-	int customCount = 0;
-	set[CompilationUnitLoc] projectCULocCollection = {};
-	set[CompilationUnitComplexity] compilationUnitComplexitySet = {};
-	list[AssertCount] assertCounts=[];
-	list[str] currentFileContents=[];
-	CompilationUnitComplexity compilationUnitComplexity;
-	AssertCount assertCount;
-	CompilationUnitLoc compilationUnitLoc;
-	list[loc] fileLocationsDuplicateList = fileLocations;
-	map[loc, str] fileDataMap = ();
-	loc locationToBeRemoved;
-	str firstFileContents;
-	str secondFileContents;
-	int numberOfFiles = size(fileLocations);
-	int currentCloneMapSize=0;
-	map[real, tuple[list[loc] locations, list[str] originalCode]] duplicateLocations = ();
-	
-	for(loc fileLoc <- fileLocations){
-		
-		if(fileLoc in fileDataMap){
-			firstFileContents = fileDataMap[fileLoc];
-		}else {
-			firstFileContents = getCompilationUnitAsStringWithoutComments(fileLoc);
-			fileDataMap += (fileLoc:firstFileContents);
-		}
-		
-		compilationUnitLoc = calculateUnitSize(fileLoc);
-		compilationUnitComplexity = calculateFileCyclomaticComplexity(fileLoc, firstFileContents);
-		assertCount= countAssertsInFile(fileLoc);
-				
-		projectCULocCollection += compilationUnitLoc;
-		assertCounts += assertCount;		
-		compilationUnitComplexitySet += compilationUnitComplexity;
-		
-		numberOfStrucDefinitions += size(compilationUnitLoc.strucUnitLoc);
-		linesOfCode += compilationUnitLoc.compilationUnit.size;	
-		totalNumberOfAsserts += assertCount.count;
-		
-
-		for(loc file2Loc <- fileLocationsDuplicateList){
-			if(file2Loc in fileDataMap){
-				secondFileContents = fileDataMap[file2Loc];
-			}else {
-				secondFileContents = getCompilationUnitAsStringWithoutComments(file2Loc);
-				fileDataMap += (file2Loc:secondFileContents);
-			}
-			
-			map[real, tuple[list[loc] locations, list[str] originalCode]] currentlyDetectedClonesMap = listClonesIn(fileLoc, firstFileContents,file2Loc, secondFileContents);
-			currentCloneMapSize =  size(currentlyDetectedClonesMap);
-			if(currentCloneMapSize > 0){
-				//duplicateLocations += currentlyDetectedClonesMap;
-				println("number of duplicates found in <fileLoc> and <file2Loc>: <size(range(currentlyDetectedClonesMap))>");
-			}
-		}
-		
-		fileLocationsDuplicateList = delete(fileLocationsDuplicateList,indexOf(fileLocationsDuplicateList, fileLoc));
-		
-	}
-	
-	println("It took <(cpuTime() - timeInNanoSecondsBeforeRun)/pow(10,9)>s");
+public void main(){
+	//calculateSIG(|project://Jabberpoint-le3|);
+	//calculateSIG(|project://smallsql|);
+	calculateSIG(|project://hsqldb|);
 }
 
-public void main(){
-	Resource currentProjectResource = getProject(|project://Jabberpoint-le3|);
-	list[loc] fileLocations = listFiles(currentProjectResource);
+public void calculateSIG(loc project){
+	M3 currentProject = createM3FromEclipseProject(project);
+	int numberOfDuplicateLines=0;
+	rel[loc name,loc src] compilationUnits = {<name,src> | <loc name, loc src> <- currentProject.declarations, isCompilationUnit(name)}; 
+	rel[loc name,loc src] methodHolders = {<name,src> | <loc name, loc src> <- currentProject.declarations, canContainMethods(name) && !isAnonymousClass(name)};
 	
-	//println("SIG MODEL Measurements for jabberpoint");
-	//calculateSIG(fileLocations);
+	list[loc] methodHolderDup = toList(range(methodHolders));
 	
-	//println("SIG MODEL Measurements for smallSQL");
-	//currentProjectResource = getProject(|project://smallsql|);
-	//fileLocations = listFiles(currentProjectResource);
-	//calculateSIG(fileLocations);
+	rel[loc name,loc src] methods = {<name,src> | <loc name, loc src> <- currentProject.declarations, isMethod(name)};
+	rel[loc, set[list[int]]] duplicationMap={};
+	map[loc src, list[str] linesOfCode] compilationUnitMap = (src:srcToLoc(src) | <loc name, loc src> <- compilationUnits)
+															 + (src:srcToLoc(src) | <loc name, loc src> <- methodHolders)
+															 + (src:srcToLoc(src) | <loc name, loc src> <- methods);
+
+	list[ComponentLOC] compilationUnitSizeList = [calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- compilationUnits];
+	list[ComponentLOC] methodHolderSizeList = [calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- methodHolders];
+	list[ComponentLOC] methodsSizeList = [calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- methods];
+	list[CompilationUnitComplexity] complexityList = [];
 	
-	println("SIG MODEL Measurements for hsqldb");
-	currentProjectResource = getProject(|project://hsqldb|);
-	fileLocations = listFiles(currentProjectResource);
-	calculateSIG(fileLocations);
+	//O(N log N)
+	println("checking for duplicates");
+
+	for(loc src <- toList(range(methodHolders))){
+		complexityList+=calculateFileCyclomaticComplexity(src);
+		for(loc src2 <- methodHolderDup){
+			duplicationMap += listClonesIn(src, compilationUnitMap[src],src2, compilationUnitMap[src2]);
+		}
+		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));				
+	}
+	
+	volume = ((0.0 | it + componentLoc.size | ComponentLOC componentLoc <- compilationUnitSizeList));
 }
