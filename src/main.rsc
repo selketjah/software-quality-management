@@ -32,8 +32,8 @@ import structs::Duplicates;
 import collections::Filter;
 
 public void main(){
-	//calculateSIG(|project://Jabberpoint-le3|);
-	calculateSIG(|project://smallsql|);
+	calculateSIG(|project://Jabberpoint-le3|);
+	//calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
@@ -53,7 +53,7 @@ public void calculateSIG(loc project){
 	
 	println("checking for duplicates");
 	DuplicateCodeRel duplicationRel = calculateDuplicates(methodHolders, compilationUnitMap);
-	compilationUnitMetricSet += {calculateUnitMetrics(src) | <loc name, loc src> <- methodHolders};
+	compilationUnitMetricSet += {calculateUnitMetrics(src, methodSizeRel) | <loc name, loc src> <- methodHolders};
 		
 	volume = ((0 | it + size | <loc src, int size>  <- compilationUnitSizeRel));
 	Metrics metrics = <volume, compilationUnitMetricSet, 15, 0>;
