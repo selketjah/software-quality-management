@@ -13,11 +13,14 @@ import collections::Sort;
 import resource::IO;
 import string::Trim;
 
-alias CompilationUnitLoc = tuple[ComponentLOC compilationUnit, set[ComponentLOC] strucUnitLoc, list[ComponentLOC] componentUnitLocCollection];
-alias ComponentLOC = tuple[loc src, int size];
+alias ComponentLOC = rel[loc src, int size];
 
-public ComponentLOC calculateLinesOfCode(loc src, list[str] linesOfCode) {
-	return <src, size(linesOfCode)>;
+public ComponentLOC calculateLinesOfCode(rel[loc name,loc src] unitRelation, map[loc src, list[str] linesOfCode] compilationUnitMap){
+	return {<src, calculateLinesOfCode(src, compilationUnitMap[src])> | <loc name, loc src> <- unitRelation};
+}
+
+public int calculateLinesOfCode(loc src, list[str] linesOfCode) {
+	return size(linesOfCode);
 }
 
 public int calculateUnitVolume(loc src){

@@ -17,7 +17,7 @@ import scoring::Ranking;
 import scoring::Average;
 import String;
 
-import string::Trim;
+import analysers::M3Analyser; 
 import metrics::Cache;
 import metrics::Complexity;
 import metrics::Duplicates;
@@ -26,49 +26,36 @@ import metrics::Volume;
 import metrics::UnitMetrics;
 import resource::IO;
 import string::Print;
+import string::Trim;
+import structs::Duplicates;
+
 import collections::Filter;
 
 public void main(){
-	//calculateSIG(|project://Jabberpoint-le3|);
-	calculateSIG(|project://smallsql|);
+	calculateSIG(|project://Jabberpoint-le3|);
+	//calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
 public void calculateSIG(loc project){
-	M3 currentProject = createM3FromEclipseProject(project);
-	int numberOfDuplicateLines=0;
+	M3 currentProjectModel = createM3FromEclipseProject(project);
+	
 	set[CompilationUnitMetric] compilationUnitMetricSet = {};
-	CompilationUnitMetric compilationUnitMetric;
 	
-	rel[loc name,loc src] compilationUnits = {<name,src> | <loc name, loc src> <- currentProject.declarations, isCompilationUnit(name)}; 
-	rel[loc name,loc src] methodHolders = {<name,src> | <loc name, loc src> <- currentProject.declarations, canContainMethods(name) && !isAnonymousClass(name)};
+	rel[loc name,loc src] compilationUnits = getCompilationUnitsFromM3(currentProjectModel);  
+	rel[loc name,loc src] methodHolders = getMethodHoldingDeclerationsFromM3(currentProjectModel);
+	rel[loc name,loc src] methods = getMethodsFromM3(currentProjectModel);
+	map[loc src, list[str] linesOfCode] compilationUnitMap = getLinesOfCode(compilationUnits, methodHolders, methods); 
+		
+	ComponentLOC compilationUnitSizeRel = calculateLinesOfCode(compilationUnits, compilationUnitMap);
+	ComponentLOC methodHolderSizeRel = calculateLinesOfCode(methodHolders, compilationUnitMap);
+	ComponentLOC methodSizeRel = calculateLinesOfCode(methods, compilationUnitMap);
 	
-	list[loc] methodHolderDup = toList(range(methodHolders));
-	
-	rel[loc name,loc src] methods = {<name,src> | <loc name, loc src> <- currentProject.declarations, isMethod(name)};
-	rel[loc, set[list[int]]] duplicationMap={};
-	map[loc src, list[str] linesOfCode] compilationUnitMap = (src:srcToLoc(src) | <loc name, loc src> <- compilationUnits)
-															 + (src:srcToLoc(src) | <loc name, loc src> <- methodHolders)
-															 + (src:srcToLoc(src) | <loc name, loc src> <- methods);
-
-	list[ComponentLOC] compilationUnitSizeList = [calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- compilationUnits];
-	list[ComponentLOC] methodHolderSizeList = [calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- methodHolders];
-	//methods per method holder
-	
-	map[loc, ComponentLOC] methodSizeList = (src:calculateLinesOfCode(src, compilationUnitMap[src]) | <loc name, loc src> <- methods);
-	
-	//O(N log N)
 	println("checking for duplicates");
-
-	for(loc src <- toList(range(methodHolders))){
-		compilationUnitMetricSet += calculateUnitMetrics(src, methodSizeList);
-		for(loc src2 <- methodHolderDup){
-			duplicationMap += listClonesIn(src, compilationUnitMap[src],src2, compilationUnitMap[src2]);
-		}
-		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));				
-	}
-	
-	volume = ((0 | it + methodSizeList[src].size | loc src <- methodSizeList));
+	DuplicateCodeRel duplicationRel = calculateDuplicates(methodHolders, compilationUnitMap);
+	compilationUnitMetricSet += {calculateUnitMetrics(src, methodSizeRel) | <loc name, loc src> <- methodHolders};
+		
+	volume = ((0 | it + size | <loc src, int size>  <- compilationUnitSizeRel));
 	Metrics metrics = <volume, compilationUnitMetricSet, 15, 0>;
 	Ranks ranks = determineRanks(metrics);
 	Average averages = calculateAverages(compilationUnitMetricSet);
