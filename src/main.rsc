@@ -32,8 +32,8 @@ import structs::Duplicates;
 import collections::Filter;
 
 public void main(){
-	calculateSIG(|project://Jabberpoint-le3|);
-	//calculateSIG(|project://smallsql|);
+	//calculateSIG(|project://Jabberpoint-le3|);
+	calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
@@ -45,17 +45,21 @@ public void calculateSIG(loc project){
 	rel[loc name,loc src] compilationUnits = getCompilationUnitsFromM3(currentProjectModel);  
 	rel[loc name,loc src] methodHolders = getMethodHoldingDeclerationsFromM3(currentProjectModel);
 	rel[loc name,loc src] methods = getMethodsFromM3(currentProjectModel);
-	map[loc src, list[str] linesOfCode] compilationUnitMap = getLinesOfCode(compilationUnits, methodHolders, methods); 
-		
+	
+	map[loc src, list[str] linesOfCode]  compilationUnitMap = getLinesOfCode2(compilationUnits, methodHolders, methods); 
+	
 	ComponentLOC compilationUnitSizeRel = calculateLinesOfCode(compilationUnits, compilationUnitMap);
 	ComponentLOC methodHolderSizeRel = calculateLinesOfCode(methodHolders, compilationUnitMap);
 	ComponentLOC methodSizeRel = calculateLinesOfCode(methods, compilationUnitMap);
 	
-	println("checking for duplicates");
+	//println("calculate clones");
 	DuplicateCodeRel duplicationRel = calculateDuplicates(methodHolders, compilationUnitMap);
+	//println("calculate CC");
 	compilationUnitMetricSet += {calculateUnitMetrics(src, methodSizeRel) | <loc name, loc src> <- methodHolders};
-		
-	volume = ((0 | it + size | <loc src, int size>  <- compilationUnitSizeRel));
+	//println("calculate unit test coverage");
+	UnitTestCoverageMap unitTestCoverageMap = createUnitTestCoverageMap(methodSizeRel,methods, compilationUnitMap, currentProjectModel);
+	
+	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
 	Metrics metrics = <volume, compilationUnitMetricSet, 15, 0>;
 	Ranks ranks = determineRanks(metrics);
 	Average averages = calculateAverages(compilationUnitMetricSet);

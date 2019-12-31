@@ -2,23 +2,27 @@ module metrics::UnitTestCoverage
 
 import Exception;
 import IO;
+import lang::java::m3::Core;
 import lang::std::ASCII;
 import ParseTree;
 import String;
 
-import \lexical::Assert;
+import metrics::Volume;
 
-alias AssertCount = tuple[loc fileLoc, int count];
-  
-AssertCount countAssertsInFile (loc fileLoc){
-	int count = 0;
-	str fileContents = readFile(fileLoc);
-	list[str] instructions = split(";", fileContents);
-	
-	list[str] lines= ([ replaceAll(trim(a)," ","") | a <- instructions, /^assert((?![\s])[a-z0-9])*\s*\(.*\).*$/i := trim(a) ]);
-	if(size(lines)>0){
-		count = sum([((isAssertStatement(line))? 1 : 0) | line <- lines]);
+alias UnitTestCoverageMap = map[loc, tuple[int numberOfAsserts, int locCoverage]];
+
+public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel, rel[loc name,loc src] methods,map[loc src, list[str] linesOfCode]  compilationUnitMap, M3 model){
+	UnitTestCoverageMap testCoverageMap = ();
+	for(<loc name, loc src> <- methods){
+		//println(compilationUnitMap[src].content);
+		int numberOfAsserts = (0 | it +1 |str locStr <- compilationUnitMap[src], /assert[a-zA-Z]+\s*[\(].*[\)]/ := locStr);
+		 
+		if(numberOfAsserts > 0){
+			int size = calculateInvokedLinesOfCode(name, methodSizeRel, model);
+			
+			testCoverageMap += (src: <numberOfAsserts, size>);
+		}
 	}
-
-    return <fileLoc, count>;
+	
+	return testCoverageMap;
 }
