@@ -6,7 +6,7 @@ import Set;
 import util::Math;
 import String;
 import List;
-import ListRelation;
+import Relation;
 import Map;
 
 import collections::Filter;
@@ -14,14 +14,28 @@ import cryptograhpy::Hash;
 import \lexical::Import;
 import metrics::Cache;
 import metrics::Volume;
+import metrics::UnitMetrics;
 import structs::Duplicates;
 import string::Trim;
 
+public DuplicateCodeRel calculateDuplicates(rel[loc name,loc src] methodHolders, map[loc src, list[str] linesOfCode] compilationUnitMap){
+	DuplicateCodeRel duplicationRel = {};
+	list[loc] methodHolderDup = toList(range(methodHolders));
+	//O(N log N)
+	for(loc src <- toList(range(methodHolders))){
+		for(loc src2 <- methodHolderDup){
+			duplicationRel += listClonesIn(src, compilationUnitMap[src],src2, compilationUnitMap[src2]);
+		}
+		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));				
+	}
+	
+	return duplicationRel;
+}
 
 // O(n)
-public rel[loc, set[list[int]]] listClonesIn(loc firstSrc, list[str] firstFileContents, loc secondSrc, list[str] secondFileContents, int treshold = 6){
+public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, loc secondSrc, list[str] secondFileContents, int treshold = 6){
 	bool isSameFile = firstSrc == secondSrc;
-	rel[loc, set[list[int]]] resultMap={};
+	DuplicateCodeRel resultMap={};
 	list[str] fileContentsIntersection = secondFileContents & firstFileContents;
 	
 	 

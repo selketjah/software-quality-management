@@ -25,3 +25,4 @@ public CompilationUnitMetric calculateUnitMetrics(loc fileLocation, map[loc, Com
 	
 	return <fileLocation, unitMetricCollection>;
 }
+
