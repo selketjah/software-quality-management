@@ -1,4 +1,3 @@
 module structs::Duplicates
 
-alias DuplicateCodeLocations = tuple[str code, list[loc] locations];
-alias DuplicateLocMap = map[real, DuplicateCodeLocations];
+alias DuplicateCodeRel = rel[loc, set[list[int]]];
