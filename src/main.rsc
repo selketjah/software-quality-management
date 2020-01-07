@@ -63,7 +63,12 @@ public void calculateSIG(loc project){
 	Metrics metrics = <volume, compilationUnitMetricSet, 15, 0>;
 	Ranks ranks = determineRanks(metrics);
 	Average averages = calculateAverages(compilationUnitMetricSet);
-	int numberOfDuplicatedLines = (0 | it + size(lstIndexes) | list[int] lstIndexes <- ({} | it + dupSet |<loc src, set[list[int]] dupSet> <- duplicationRel));
+		
+	int numberOfDuplicatedLines = (0 | it + size(dup(([]| it + lstIndexes | list[int] lstIndexes <- dupSet))) |<loc src, set[list[int]] dupSet> <- duplicationRel);
 	
 	printResult(volume, size(methods), percent(numberOfDuplicatedLines, volume), averages, ranks);
+}
+
+public list[int] mergeList(list[int] xList, list[int] yList){
+	return merge(xList, yList);
 }

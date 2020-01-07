@@ -24,7 +24,8 @@ public DuplicateCodeRel calculateDuplicates(rel[loc name,loc src] methodHolders,
 	//O(N log N)
 	for(loc src <- toList(range(methodHolders))){
 		for(loc src2 <- methodHolderDup){
-			duplicationRel += listClonesIn(src, compilationUnitMap[src],src2, compilationUnitMap[src2]);
+			DuplicateCodeRel codeRel = listClonesIn(src, compilationUnitMap[src],src2, compilationUnitMap[src2]);
+			duplicationRel += codeRel;
 		}
 		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));				
 	}
@@ -50,12 +51,19 @@ public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, 
 	set[list[int]] firstFileDuplicateEntrySet = mapDuplicates(firstFileContents, fileContentsIntersection, isSameFile);
 	set[list[int]] secondFileDuplicateEntrySet;
 	
-	firstFileDuplicateEntrySet = { l | list[int] l <- firstFileDuplicateEntrySet, size(l)>=treshold && size(l) < size(firstFileContents)};
-	resultMap = {<firstSrc, firstFileDuplicateEntrySet>}; 
+	 
 	
 	if(!isSameFile){
+		firstFileDuplicateEntrySet = { l | list[int] l <- firstFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(firstFileContents)};
+		resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
 		secondFileDuplicateEntrySet = mapDuplicates(secondFileContents, fileContentsIntersection, isSameFile);
-		resultMap += <secondSrc, { l | list[int] l <- secondFileDuplicateEntrySet, size(l)>=treshold && size(l) < size(secondFileContents)}>;
+		resultMap += <secondSrc, { l | list[int] l <- secondFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(secondFileContents)}>;
+	}else{
+		firstFileDuplicateEntrySet = { l | list[int] l <- firstFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(firstFileContents)};
+		if(size(firstFileDuplicateEntrySet)!=1){
+			firstFileDuplicateEntrySet = { };
+		}
+		resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
 	}
 	
 	return resultMap;
