@@ -110,7 +110,6 @@ public set[list[int]] mapDuplicates(list[str] subjectList, list[str] needleList,
 public list[list[int]] groupSequence(list[int] lst){
 	
 	if(size(lst) < 6) return [];
-	//lst = quickSort(lst, 0, size(lst)-1);
 	lst=sort(lst);
     list[int] start_bound = [i | int i <- [0 .. size(lst)-1], (lst[i] != lst[i-1]+1) && lst[i + 1] == lst[i]+1];
     list[int] end_bound = [i | int i <- [1 .. size(lst)], lst[i] == lst[i-1]+1 && ((i == size(lst)-1)? true:lst[i + 1] != lst[i]+1)];
