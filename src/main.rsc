@@ -33,8 +33,8 @@ import collections::Filter;
 
 public void main(){
 	//calculateSIG(|project://Jabberpoint-le3|);
-	calculateSIG(|project://smallsql|);
-	//calculateSIG(|project://hsqldb|);
+	//calculateSIG(|project://smallsql|);
+	calculateSIG(|project://hsqldb|);
 }
 
 public void calculateSIG(loc project){

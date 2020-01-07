@@ -48,19 +48,17 @@ public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, 
 		fileContentsIntersection = firstFileContents;
 	}
 	
-	set[list[int]] firstFileDuplicateEntrySet = mapDuplicates(firstFileContents, fileContentsIntersection, isSameFile);
+	set[list[int]] firstFileDuplicateEntrySet = mapDuplicates(firstFileContents, toSet(fileContentsIntersection), isSameFile);
 	set[list[int]] secondFileDuplicateEntrySet;
 	
-	 
-	
+	firstFileDuplicateEntrySet = { l | list[int] l <- firstFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(firstFileContents)};
+
 	if(!isSameFile){
-		firstFileDuplicateEntrySet = { l | list[int] l <- firstFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(firstFileContents)};
 		resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
-		secondFileDuplicateEntrySet = mapDuplicates(secondFileContents, fileContentsIntersection, isSameFile);
+		secondFileDuplicateEntrySet = mapDuplicates(secondFileContents, toSet(fileContentsIntersection), isSameFile);
 		resultMap += <secondSrc, { l | list[int] l <- secondFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(secondFileContents)}>;
 	}else{
-		firstFileDuplicateEntrySet = { l | list[int] l <- firstFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(firstFileContents)};
-		if(size(firstFileDuplicateEntrySet)!=1){
+		if(size(firstFileDuplicateEntrySet) != 1){
 			firstFileDuplicateEntrySet = { };
 		}
 		resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
@@ -69,7 +67,7 @@ public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, 
 	return resultMap;
 }
 
-public set[list[int]] mapDuplicates(list[str] subjectList, list[str] needleList, bool isSameFile, int treshold=6){
+public set[list[int]] mapDuplicates(list[str] subjectList, set[str] needleList, bool isSameFile, int treshold=6){
 	map[str, set[int]] duplicateEntryMap = ();
 	map[int, list[int]] indListMap=();
 	set[list[int]] result ={};
@@ -79,13 +77,11 @@ public set[list[int]] mapDuplicates(list[str] subjectList, list[str] needleList,
 		lineOfCode = subjectList[i];
 		
 		if(lineOfCode in needleList){
-			if(lineOfCode in duplicateEntryMap){
-				set[int] matchingElementList = duplicateEntryMap[lineOfCode];
+			
+				set[int] matchingElementList = duplicateEntryMap[lineOfCode]?{};
 				matchingElementList += i;
 				duplicateEntryMap[lineOfCode] = matchingElementList;
-			}else{
-				duplicateEntryMap[lineOfCode] = {i};
-			}
+			
 			
 			if(i-1 in indListMap){
 				list[int] indexList = indListMap[i-1];
