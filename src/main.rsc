@@ -15,6 +15,7 @@ import analysers::LocAnalyser;
 import scoring::Rank;
 import scoring::Ranking;
 import scoring::Average;
+import scoring::Percentage;
 import String;
 
 import analysers::M3Analyser; 
@@ -32,7 +33,7 @@ import structs::Duplicates;
 import collections::Filter;
 
 public void main(){
-	//calculateSIG(|project://Jabberpoint-le3|);
+	//calculateSIG(|project://JabberPoint|);
 	//calculateSIG(|project://smallsql|);
 	calculateSIG(|project://hsqldb|);
 }
@@ -60,15 +61,17 @@ public void calculateSIG(loc project){
 	UnitTestCoverageMap unitTestCoverageMap = createUnitTestCoverageMap(methodSizeRel,methods, compilationUnitMap, currentProjectModel);
 	
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
-	Metrics metrics = <volume, compilationUnitMetricSet, 15, 0>;
-	Ranks ranks = determineRanks(metrics);
-	Average averages = calculateAverages(compilationUnitMetricSet);
-		
-	int numberOfDuplicatedLines = (0 | it + size(dup(([]| it + lstIndexes | list[int] lstIndexes <- dupSet))) |<loc src, set[list[int]] dupSet> <- duplicationRel);
 	
-	printResult(volume, size(methods), percent(numberOfDuplicatedLines, volume), averages, ranks);
+	Average averages = calculateAverages(compilationUnitMetricSet);
+	Percentages percentages = calculatePercentages(volume, duplicationRel, unitTestCoverageMap);
+		
+	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
+	Ranks ranks = determineRanks(metrics);
+	
+	
+	printResult(volume, size(methods), percentages, averages, ranks);
 }
-
+	
 public list[int] mergeList(list[int] xList, list[int] yList){
 	return merge(xList, yList);
 }

@@ -8,6 +8,7 @@ import Map;
 import scoring::Rank;
 import scoring::Ranking;
 import scoring::Average;
+import scoring::Percentage;
 import scoring::Maintainability;
 
 // Constants
@@ -163,7 +164,7 @@ private str renderRanking(Ranks ranks) {
 	");
 }
 
-private str renderStatistics(int volume, int numberOfUnits, int duplication, Average averages) {
+private str renderStatistics(int volume, int numberOfUnits, Percentages percentages, Average averages) {
 	return ("
 		'**************************************************
 		'
@@ -171,16 +172,17 @@ private str renderStatistics(int volume, int numberOfUnits, int duplication, Ave
 		'Nuber of units: <numberOfUnits>
 		'Average unit size: <averages.size>
 		'Average complexity: <averages.complexity>
-		'Duplication: <duplication>%
+		'Duplication: <percentages.duplication>%
+		'Unit test coverage: <percentages.unitTestCoverage>%
 		'
 		'**************************************************
 	");
 }
 
-public void printResult(int volume, int numberOfUnits, int duplication, Average averages, Ranks ranks) {
+public void printResult(int volume, int numberOfUnits, Percentages percentages, Average averages, Ranks ranks) {
 	println("Category Legends:\n<renderCategoryLegendTables()>\n");
 	println("\nStatistics:");
-	println("\n<renderStatistics(volume, numberOfUnits, duplication, averages)>\n");
+	println("\n<renderStatistics(volume, numberOfUnits, percentages, averages)>\n");
 	println("\nMaintainability Reports:");
 	println("\n<renderRanking(ranks)>\n");	
 }
