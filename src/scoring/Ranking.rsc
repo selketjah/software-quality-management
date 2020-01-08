@@ -10,6 +10,7 @@ import util::Math;
 import metrics::UnitMetrics;
 
 import scoring::Rank;
+import scoring::Percentage;
 import scoring::RiskLevel;
 import scoring::Maintainability;
 import scoring::categories::Volume;
@@ -18,7 +19,7 @@ import scoring::categories::CyclomaticComplexity;
 import scoring::categories::Duplication;
 import scoring::categories::UnitTestCoverage;
 
-alias Metrics = tuple[int volume, set[CompilationUnitMetric] compilationUnitMetrics, int duplicationPercentage, int totalAssertStatements];
+alias Metrics = tuple[int volume, set[CompilationUnitMetric] compilationUnitMetrics, Percentages percentages];
 alias Ranks = tuple[Rank overall, map[MaintainabilityCharacteristic, Rank] maintainability, Rank volume, Rank unitSize, Rank complexity, Rank duplication, Rank unitTestCoverage];
 
 private Rank determineOverallRank(Rank volume, Rank unitSize, Rank unitComplexity, Rank duplication, Rank unitTestCoverage) {
@@ -77,17 +78,11 @@ private tuple[Rank unitSize, Rank complexity] determineCompilationUnitRank(int v
 	return <unitSizeRank, complexityRank>;
 }
 
-private Rank determineUnitTestCoveragePercentageRank(int volume, int asserts) {
-	int percentage = percent(asserts, volume);
-	Rank rank = determineUnitTestCoverageRank(percentage);
-	return rank;
-}
-
 public Ranks determineRanks(Metrics metrics) {
 	Rank volumeRank = determineVolumeRank(metrics.volume);	
-	Rank unitTestCoverageRank = determineUnitTestCoveragePercentageRank(metrics.volume, metrics.totalAssertStatements);
+	Rank unitTestCoverageRank = determineUnitTestCoverageRank(metrics.percentages.unitTestCoverage);
 	
-	Rank duplicationRank = determineDuplicationRank(metrics.duplicationPercentage);
+	Rank duplicationRank = determineDuplicationRank(metrics.percentages.duplication);
 	tuple[Rank unitSizeRank, Rank unitComplexityRank] compilationUnitRanks = determineCompilationUnitRank(metrics.volume, metrics.compilationUnitMetrics);
 	
 	Rank overallRank = calculateAverageRank([volumeRank, compilationUnitRanks.unitSizeRank, compilationUnitRanks.unitComplexityRank, duplicationRank, unitTestCoverageRank]);

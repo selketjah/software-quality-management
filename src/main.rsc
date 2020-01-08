@@ -15,6 +15,7 @@ import analysers::LocAnalyser;
 import scoring::Rank;
 import scoring::Ranking;
 import scoring::Average;
+import scoring::Percentage;
 import String;
 
 import analysers::M3Analyser; 
@@ -60,9 +61,13 @@ public void calculateSIG(loc project){
 	UnitTestCoverageMap unitTestCoverageMap = createUnitTestCoverageMap(methodSizeRel,methods, compilationUnitMap, currentProjectModel);
 	
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
-	Metrics metrics = <volume, compilationUnitMetricSet, 15, 0>;
-	Ranks ranks = determineRanks(metrics);
-	Average averages = calculateAverages(compilationUnitMetricSet);
 	
-	printResult(volume, size(methods), 15, averages, ranks);
+	Average averages = calculateAverages(compilationUnitMetricSet);
+	Percentages percentages = calculatePercentages(volume, duplicationRel, unitTestCoverageMap);
+	
+	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
+	Ranks ranks = determineRanks(metrics);
+	
+	
+	printResult(volume, size(methods), percentages, averages, ranks);
 }
