@@ -34,8 +34,8 @@ import collections::Filter;
 
 public void main(){
 	//calculateSIG(|project://JabberPoint|);
-	calculateSIG(|project://smallsql|);
-	//calculateSIG(|project://hsqldb|);
+	//calculateSIG(|project://smallsql|);
+	calculateSIG(|project://hsqldb|);
 }
 
 public void calculateSIG(loc project){
@@ -64,10 +64,14 @@ public void calculateSIG(loc project){
 	
 	Average averages = calculateAverages(compilationUnitMetricSet);
 	Percentages percentages = calculatePercentages(volume, duplicationRel, unitTestCoverageMap);
-	
+		
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	
 	
 	printResult(volume, size(methods), percentages, averages, ranks);
+}
+	
+public list[int] mergeList(list[int] xList, list[int] yList){
+	return merge(xList, yList);
 }
