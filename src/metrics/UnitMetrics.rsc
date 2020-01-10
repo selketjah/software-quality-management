@@ -18,7 +18,7 @@ public CompilationUnitMetric calculateUnitMetrics(loc fileLocation, ComponentLOC
 		case method: \method(_, name, _, _, statement): {
 			int complexity = calculateUnitCyclomaticComplexity(statement);
 			
-			unitMetric = <name, method.src, complexity, compilationUnitMap[method.src]-2>;
+			unitMetric = <name, method.src, complexity, compilationUnitMap[method.src]>;
 			unitMetricCollection += unitMetric;
 		}
 	}
