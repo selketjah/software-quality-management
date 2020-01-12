@@ -27,8 +27,8 @@ public DuplicateCodeRel calculateDuplicates(rel[loc name,loc src] methodHolders,
 			DuplicateCodeRel codeRel = listClonesIn(src, compilationUnitMap[src],src2, compilationUnitMap[src2]);
 			duplicationRel += codeRel;
 		}
-		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));				
-	}
+		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));
+	} 
 	
 	return duplicationRel;
 }
@@ -39,7 +39,6 @@ public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, 
 	DuplicateCodeRel resultMap={};
 	list[str] fileContentsIntersection = secondFileContents & firstFileContents;
 	
-	 
 	if(size(fileContentsIntersection)<treshold){
 		return {};
 	}
@@ -57,10 +56,7 @@ public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, 
 		resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
 		secondFileDuplicateEntrySet = mapDuplicates(secondFileContents, toSet(fileContentsIntersection), isSameFile);
 		resultMap += <secondSrc, { l | list[int] l <- secondFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(secondFileContents)}>;
-	}else{
-		if(size(firstFileDuplicateEntrySet) != 1){
-			firstFileDuplicateEntrySet = { };
-		}
+	}else{ 
 		resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
 	}
 	
@@ -72,25 +68,22 @@ public set[list[int]] mapDuplicates(list[str] subjectList, set[str] needleList, 
 	map[int, list[int]] indListMap=();
 	set[list[int]] result ={};
 	str lineOfCode;
+	int prevIndex = 0;
 	
 	for(int i <- [0..size(subjectList)]){
 		lineOfCode = subjectList[i];
 		
 		if(lineOfCode in needleList){
 			
-				set[int] matchingElementList = duplicateEntryMap[lineOfCode]?{};
-				matchingElementList += i;
-				duplicateEntryMap[lineOfCode] = matchingElementList;
-			
-			
-			if(i-1 in indListMap){
-				list[int] indexList = indListMap[i-1];
-				indexList += i;
-				indListMap = delete(indListMap, i-1);
-				indListMap[i] = indexList;
-			}else{
-				indListMap[i]=[i];
-			}
+			set[int] matchingElementList = duplicateEntryMap[lineOfCode]?{};
+			matchingElementList += i;
+			duplicateEntryMap[lineOfCode] = matchingElementList;
+
+			list[int] indexList = indListMap[prevIndex]?[];
+			indexList += i;
+			indListMap[prevIndex] = indexList;
+		}else{
+			prevIndex = i;
 		}
 	}
 	
@@ -107,16 +100,14 @@ public set[list[int]] mapDuplicates(list[str] subjectList, set[str] needleList, 
 	}
 	
 	return result;
-	
 }
 
 //https://www.geeksforgeeks.org/python-find-groups-of-strictly-increasing-numbers-in-a-list/
 public list[list[int]] groupSequence(list[int] lst){
 	
 	if(size(lst) < 6) return [];
-	lst=sort(lst);
+	lst = sort(lst);
     list[int] start_bound = [i | int i <- [0 .. size(lst)-1], (lst[i] != lst[i-1]+1) && lst[i + 1] == lst[i]+1];
     list[int] end_bound = [i | int i <- [1 .. size(lst)], lst[i] == lst[i-1]+1 && ((i == size(lst)-1)? true:lst[i + 1] != lst[i]+1)];
-    return [lst[start_bound[i]..end_bound[i]+1] | int i <- [0 .. size(start_bound)]];
-    
+    return [lst[start_bound[i]..end_bound[i]+1] | int i <- [0 .. size(start_bound)]];  
 }

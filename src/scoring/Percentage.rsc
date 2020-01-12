@@ -23,8 +23,11 @@ private int determineUnitTestCoveragePercentageRank(int volume, UnitTestCoverage
 }
 
 private int determineDuplicationPercentage(int volume, DuplicateCodeRel duplicationRel) {
-	int duplications = ( 0 | it + size(lstIndexes) | list[int] lstIndexes <- ({} | it + dupSet |<loc src, set[list[int]] dupSet> <- duplicationRel));
+	map[loc, list[int]] dupMaps = (() | it + (src: dup(([]|it+lstIndexes |list[int] lstIndexes <- dupSet))) | <loc src, set[list[int]] dupSet> <- duplicationRel);
+	
+	int duplications = ( 0 | it + size(dupMaps[src]) | loc src <- dupMaps);
 	int percentage = percent(duplications, volume);
+	
 	return percentage;
 }
 
