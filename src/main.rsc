@@ -60,9 +60,10 @@ public void calculateSIG(loc project){
 	//println("calculate clones");
 	DuplicateCodeRel duplicationRel = calculateDuplicates(methodHolders, compilationUnitMap);
 	//println("calculate CC");
-	compilationUnitMetricSet += {calculateUnitMetrics(src, methodSizeRel) | <loc name, loc src> <- methodHolders};
+	compilationUnitMetricSet += { calculateUnitMetrics(src, methodSizeRel) | <loc name, loc src> <- methodHolders };
 	//println("calculate unit test coverage");
-	UnitTestCoverageMap unitTestCoverageMap = createUnitTestCoverageMap(methodSizeRel,methods, compilationUnitMap, currentProjectModel);
+	map[loc, int] methodComplexityMap = createMethodComplexityMap(compilationUnitMetricSet);
+	UnitTestCoverageMap unitTestCoverageMap = createUnitTestCoverageMap(methodSizeRel, methods, compilationUnitMap, methodComplexityMap, currentProjectModel);
 	
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
 	
@@ -73,9 +74,10 @@ public void calculateSIG(loc project){
 	Ranks ranks = determineRanks(metrics);
 	
 	renderDashboard(<project, metrics, size(methods), averages, ranks>);
-	
 }
 	
 public list[int] mergeList(list[int] xList, list[int] yList){
 	return merge(xList, yList);
 }
+
+

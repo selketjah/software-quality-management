@@ -1,6 +1,7 @@
 module metrics::Complexity
 
 import IO;
+import Set;
 import lang::java::jdt::m3::AST;
 import lang::java::jdt::m3::Core;
 
@@ -25,4 +26,21 @@ public int calculateUnitCyclomaticComplexity(Statement statement) {
 	};
 	
 	return total;
+}
+
+public int calculateInvokedComplexity(loc src, map[loc, int] methodComplexityMap, M3 model){
+	int complexity =0;
+	for(loc methodInvocationLocation <- model.methodInvocation[src]){
+		//get method location
+		set[loc] methodLocationSet = model.declarations[methodInvocationLocation];
+		
+		if(!isEmpty(methodLocationSet)){
+			loc methodLocation = min(methodLocationSet);
+			if(methodLocation in methodComplexityMap){
+				complexity += methodComplexityMap[methodLocation];
+			}
+		}
+	}
+	
+	return complexity;
 }

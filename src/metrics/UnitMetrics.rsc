@@ -26,3 +26,12 @@ public CompilationUnitMetric calculateUnitMetrics(loc fileLocation, ComponentLOC
 	return <fileLocation, unitMetricCollection>;
 }
 
+public map[loc, int] createMethodComplexityMap(set[CompilationUnitMetric] compilationUnitMetricSet){
+	map[loc, int] methodComplexityMap = ();
+	
+	for(tuple[loc file, list[UnitMetric] unitMetric] metric <- compilationUnitMetricSet){
+		methodComplexityMap += ( metric.method:metric.complexity | UnitMetric metric <- metric.unitMetric );
+	}
+	
+	return methodComplexityMap;
+}

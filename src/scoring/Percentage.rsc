@@ -14,7 +14,7 @@ private int determineUnitTestCoveragePercentageRank(int volume, UnitTestCoverage
 	int asserts = 0;
 	
 	for(loc src <- assertMaps){
-		tuple[int numberOfAsserts, int locCoverage] info = assertMaps[src];
+		tuple[int numberOfAsserts, int locCoverage, int complexityCoverage] info = assertMaps[src];
 		asserts += info.numberOfAsserts;
 	}
 	

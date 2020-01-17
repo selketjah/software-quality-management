@@ -1,4 +1,4 @@
-dmodule visualization::ProjectGraph
+module visualization::ProjectGraph
 
 import List;
 import Relation;
