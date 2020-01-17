@@ -6,6 +6,7 @@ import List;
 import Map;
 
 import structs::Visualization;
+import visualization::Charts::Treemapping;
 
 import scoring::Rank;
 import scoring::Ranking;
@@ -37,13 +38,13 @@ private Figure titleBox(str title, str subTitle) {
 
 public list[Figure] general(ProjectData projectData) {
 	return [
-		box(titleBox("Volume", toString(projectData.volume)), fillColor("Red")),
+		box(titleBox("Volume", toString(projectData.metrics.volume)), fillColor("Red")),
 		box(titleBox("Files", toString(15)), grow(2.0)),
 		box(titleBox("Functions", toString(projectData.numberOfUnits)))
 	];
 }
 
-public Figure renderContent(Panel active, ProjectData projectData) {
+public Figure renderGeneralPanel(ProjectData projectData) {
 	row1 = general(projectData);
 	
 	row2 = [ box(ellipse(fillColor("Yellow")),fillColor("Green")),
@@ -51,4 +52,14 @@ public Figure renderContent(Panel active, ProjectData projectData) {
 	       ];
 	       
 	return grid([row1, row2]);
+}
+
+public Figure renderContent(Panel active, ProjectData projectData) {
+	Figure content;
+	visit(active) { 
+		case \general(): content = renderGeneralPanel(projectData);
+		case \complexity(): content = drawTreemap(projectData.metrics.compilationUnitMetrics);
+	}
+	       
+	return content;
 }

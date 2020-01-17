@@ -20,15 +20,14 @@ import vis::Figure;
 import vis::Render;
 
     
-public void rerenderDashboard(Panel active) {
-	sidebar = renderSidebar();	
-	content = box(text(sthsth),fillColor("Orange"));
+public void rerenderDashboard(Panel active, ProjectData projectData) {
+	sidebar = renderSidebar(projectData);	
+	content = renderContent(active, projectData);
 	render(hcat([sidebar, content]));
 }
 
-public void renderDashboard(loc project, int volume, int numberOfUnits, Percentages percentages, Average averages, Ranks ranks) {
-	projectData = <project, volume, numberOfUnits, percentages, averages, ranks>;
-	sidebar = renderSidebar();	
+public void renderDashboard(ProjectData projectData) {
+	sidebar = renderSidebar(projectData);	
 	content = renderContent(\general(), projectData);
 	render(hcat([sidebar, content]));
 }

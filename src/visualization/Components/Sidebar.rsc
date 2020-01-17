@@ -7,8 +7,8 @@ import structs::Visualization;
 
 import visualization::Dashboard;
 
-public Figure renderSidebar() {
-	return vcat([ button("General", void(){ rerenderDashboard("general"); }, vshrink(0.125)),
-                  button("Complexity", void(){ rerenderDashboard("complexity"); }, vshrink(0.125))
+public Figure renderSidebar(ProjectData projectData) {
+	return vcat([ button("General", void(){ rerenderDashboard(\general(), projectData); }, vshrink(0.125)),
+                  button("Complexity", void(){ rerenderDashboard(\complexity(), projectData); }, vshrink(0.125))
                 ], vshrink(0.5), hshrink(0.1));
 }

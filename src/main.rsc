@@ -31,6 +31,7 @@ import string::Trim;
 import structs::Duplicates;
 
 import visualization::Dashboard;
+import structs::Visualization;
 
 import collections::Filter;
 
@@ -70,7 +71,7 @@ public void calculateSIG(loc project){
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	
-	renderDashboard(project, volume, size(methods), percentages, averages, ranks);
+	renderDashboard(<project, metrics, size(methods), averages, ranks>);
 }
 	
 public list[int] mergeList(list[int] xList, list[int] yList){
