@@ -5,7 +5,7 @@ import List;
 import Map;
 import util::Math;
 
-import structs::Duplicates;
+import metrics::Duplicates;
 import metrics::UnitTestCoverage;
 
 alias Percentages = tuple[int duplication, int unitTestCoverage];
@@ -14,7 +14,7 @@ private int determineUnitTestCoveragePercentageRank(int volume, UnitTestCoverage
 	int asserts = 0;
 	
 	for(loc src <- assertMaps){
-		tuple[int numberOfAsserts, int locCoverage] info = assertMaps[src];
+		tuple[int numberOfAsserts, int locCoverage, int complexityCoverage] info = assertMaps[src];
 		asserts += info.numberOfAsserts;
 	}
 	

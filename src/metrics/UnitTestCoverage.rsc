@@ -1,26 +1,31 @@
 module metrics::UnitTestCoverage
 
 import Exception;
+import Map;
 import IO;
 import lang::java::m3::Core;
 import lang::std::ASCII;
 import ParseTree;
 import String;
-
+import metrics::UnitMetrics;
 import metrics::Volume;
+import metrics::Complexity;
 
-alias UnitTestCoverageMap = map[loc, tuple[int numberOfAsserts, int locCoverage]];
+alias UnitTestCoverageMap = map[loc, tuple[int numberOfAsserts, int locCoverage, int complexityCoverage]];
 
-public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel, rel[loc name,loc src] methods,map[loc src, list[str] linesOfCode]  compilationUnitMap, M3 model){
+public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel, rel[loc name,loc src] methods,map[loc src, list[str] linesOfCode]  compilationUnitMap, map[loc, int] methodComplexityMap, M3 model){
+	//we should check what complexity is directly affected by a set of assert statements
 	UnitTestCoverageMap testCoverageMap = ();
-	for(<loc name, loc src> <- methods){
-		//println(compilationUnitMap[src].content);
+	
+	int size=0;
+		
+	for(<loc name, loc src> <- methods) {
 		int numberOfAsserts = (0 | it +1 |str locStr <- compilationUnitMap[src], /assert[a-zA-Z]+\s*[\(].*[\)]/ := locStr);
 		 
 		if(numberOfAsserts > 0){
-			int size = calculateInvokedLinesOfCode(name, methodSizeRel, model);
-			
-			testCoverageMap += (src: <numberOfAsserts, size>);
+			int locCoverage = calculateInvokedLinesOfCode(name, methodSizeRel, model);
+			int complexityCoverage = calculateInvokedComplexity(name, methodComplexityMap, model);
+			testCoverageMap += (src: <numberOfAsserts, locCoverage, complexityCoverage>);
 		}
 	}
 	

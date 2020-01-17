@@ -69,12 +69,12 @@ public int calculateInvokedLinesOfCode(loc src, ComponentLOC methodSizeMap, M3 m
 	for(loc methodInvocationLocation <- model.methodInvocation[src]){
 		//get method location
 		set[loc] methodLocationSet = model.declarations[methodInvocationLocation];
+		
 		if(!isEmpty(methodLocationSet)){
 			loc methodLocation = min(methodLocationSet);
 			
 			if(methodLocation in methodSizeMap){
 				size += methodSizeMap[methodLocation];
-				size += calculateInvokedLinesOfCode(methodLocation, methodSizeMap, model);
 			}
 		}
 	}
