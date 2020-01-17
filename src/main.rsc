@@ -72,8 +72,8 @@ public void calculateSIG(loc project){
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	
-	//renderDashboard(<project, metrics, size(methods), averages, ranks>);
-	drawDiagram(project);
+	renderDashboard(<project, metrics, size(methods), averages, ranks>);
+	
 }
 	
 public list[int] mergeList(list[int] xList, list[int] yList){
