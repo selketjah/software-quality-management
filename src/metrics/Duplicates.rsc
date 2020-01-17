@@ -15,52 +15,70 @@ import \lexical::Import;
 import metrics::Cache;
 import metrics::Volume;
 import metrics::UnitMetrics;
-import structs::Duplicates;
 import string::Trim;
+
+alias DuplicateCodeRel = rel[loc, set[list[int]]];
 
 public DuplicateCodeRel calculateDuplicates(rel[loc name,loc src] methodHolders, map[loc src, list[str] linesOfCode] compilationUnitMap){
 	DuplicateCodeRel duplicationRel = {};
 	list[loc] methodHolderDup = toList(range(methodHolders));
-	//O(N log N)
+	
 	for(loc src <- toList(range(methodHolders))){
 		for(loc src2 <- methodHolderDup){
-			DuplicateCodeRel codeRel = listClonesIn(src, compilationUnitMap[src],src2, compilationUnitMap[src2]);
+			DuplicateCodeRel codeRel = listClonesIn(src, compilationUnitMap[src], src2, compilationUnitMap[src2]);
 			duplicationRel += codeRel;
 		}
 		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));
-	} 
+	}
 	
 	return duplicationRel;
 }
 
-// O(n)
+
 public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, loc secondSrc, list[str] secondFileContents, int treshold = 6){
-	bool isSameFile = firstSrc == secondSrc;
 	DuplicateCodeRel resultMap={};
-	list[str] fileContentsIntersection = secondFileContents & firstFileContents;
+	bool isSameFile = firstSrc == secondSrc;	
+
+	list[str] fileContentsIntersection = getIntersectionBetween(firstFileContents, secondFileContents, isSameFile);	
 	
-	if(size(fileContentsIntersection)<treshold){
-		return {};
-	}
-	
-	if(isSameFile){
-		fileContentsIntersection = firstFileContents;
+	if(size(fileContentsIntersection) < treshold){
+		return {}; // return empty list if there aren't enough common LOC present 
 	}
 	
 	set[list[int]] firstFileDuplicateEntrySet = mapDuplicates(firstFileContents, toSet(fileContentsIntersection), isSameFile);
-	set[list[int]] secondFileDuplicateEntrySet;
 	
-	firstFileDuplicateEntrySet = { l | list[int] l <- firstFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(firstFileContents)};
+	firstFileDuplicateEntrySet = filterSequencesByThreshold(firstFileDuplicateEntrySet, firstFileContents, treshold);
 
+	resultMap = createResultMap(firstSrc, firstFileDuplicateEntrySet, secondSrc, secondFileContents, fileContentsIntersection, isSameFile, treshold);
+	
+	return resultMap;
+}
+
+public DuplicateCodeRel createResultMap(loc firstSrc, set[list[int]] firstFileDuplicateEntrySet, loc secondSrc, list[str] secondFileContents, list[str] fileContentsIntersection, bool isSameFile, int treshold){
+	DuplicateCodeRel resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
+	
 	if(!isSameFile){
-		resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
 		secondFileDuplicateEntrySet = mapDuplicates(secondFileContents, toSet(fileContentsIntersection), isSameFile);
-		resultMap += <secondSrc, { l | list[int] l <- secondFileDuplicateEntrySet, size(l) >= treshold && size(l) < size(secondFileContents)}>;
-	}else{ 
-		resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
+		resultMap += <secondSrc, filterSequencesByThreshold(secondFileDuplicateEntrySet,secondFileContents, treshold)>;
 	}
 	
 	return resultMap;
+}
+
+public set[list[int]] filterSequencesByThreshold(set[list[int]] duplicationEntrySet, list[str] fileContents, int treshold){
+	return { l | list[int] l <- duplicationEntrySet, size(l) >= treshold && size(l) < size(fileContents)};
+}
+
+public list[str] getIntersectionBetween(list[str] firstFileContents, list[str] secondFileContents, bool isSameFile){
+	list[str] fileContentsIntersection = [];
+	
+	if(isSameFile){
+		fileContentsIntersection = firstFileContents;
+	}else{
+		fileContentsIntersection =  firstFileContents & secondFileContents;
+	}
+	
+	return fileContentsIntersection;
 }
 
 public set[list[int]] mapDuplicates(list[str] subjectList, set[str] needleList, bool isSameFile, int treshold=6){

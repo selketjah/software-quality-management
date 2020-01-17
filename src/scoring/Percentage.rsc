@@ -5,7 +5,7 @@ import List;
 import Map;
 import util::Math;
 
-import structs::Duplicates;
+import metrics::Duplicates;
 import metrics::UnitTestCoverage;
 
 alias Percentages = tuple[int duplication, int unitTestCoverage];
