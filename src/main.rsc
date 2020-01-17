@@ -36,8 +36,8 @@ import structs::Visualization;
 import collections::Filter;
 
 public void main(){
-	calculateSIG(|project://JabberPoint|);
-	//calculateSIG(|project://smallsql|);
+	//calculateSIG(|project://JabberPoint|);
+	calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
