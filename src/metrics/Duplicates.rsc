@@ -38,34 +38,37 @@ public DuplicateCodeRel calculateDuplicates(rel[loc name,loc src] methodHolders,
 public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, loc secondSrc, list[str] secondFileContents, int treshold = 6){
 	DuplicateCodeRel resultMap={};
 	bool isSameFile = firstSrc == secondSrc;	
-
-	list[str] fileContentsIntersection = getIntersectionBetween(firstFileContents, secondFileContents, isSameFile);	
+	set[str] fileContentsIntersectionSet;
+	list[str] fileContentsIntersectionList = getIntersectionBetween(firstFileContents, secondFileContents, isSameFile);	
 	
-	if(size(fileContentsIntersection) < treshold){
+	if(size(fileContentsIntersectionList) < treshold){
 		return {}; // return empty list if there aren't enough common LOC present 
 	}
 	
-	set[list[int]] firstFileDuplicateEntrySet = mapDuplicates(firstFileContents, toSet(fileContentsIntersection), isSameFile);
+	fileContentsIntersectionSet = toSet(fileContentsIntersectionList);
+	
+	
+	set[list[int]] firstFileDuplicateEntrySet = mapDuplicates(firstFileContents, fileContentsIntersectionSet, isSameFile);
 	
 	firstFileDuplicateEntrySet = filterSequencesByThreshold(firstFileDuplicateEntrySet, firstFileContents, treshold);
 
-	resultMap = createResultMap(firstSrc, firstFileDuplicateEntrySet, secondSrc, secondFileContents, fileContentsIntersection, isSameFile, treshold);
+	resultMap = createResultMap(firstSrc, firstFileDuplicateEntrySet, secondSrc, secondFileContents, fileContentsIntersectionSet, isSameFile, treshold);
 	
 	return resultMap;
 }
 
-public DuplicateCodeRel createResultMap(loc firstSrc, set[list[int]] firstFileDuplicateEntrySet, loc secondSrc, list[str] secondFileContents, list[str] fileContentsIntersection, bool isSameFile, int treshold){
+public DuplicateCodeRel createResultMap(loc firstSrc, set[list[int]] firstFileDuplicateEntrySet, loc secondSrc, list[str] secondFileContents, set[str] fileContentsIntersection, bool isSameFile, int treshold){
 	DuplicateCodeRel resultMap = { <firstSrc, firstFileDuplicateEntrySet> };
 	
 	if(!isSameFile){
-		secondFileDuplicateEntrySet = mapDuplicates(secondFileContents, toSet(fileContentsIntersection), isSameFile);
+		secondFileDuplicateEntrySet = mapDuplicates(secondFileContents, fileContentsIntersection, isSameFile);
 		resultMap += <secondSrc, filterSequencesByThreshold(secondFileDuplicateEntrySet,secondFileContents, treshold)>;
 	}
 	
 	return resultMap;
 }
 
-public set[list[int]] filterSequencesByThreshold(set[list[int]] duplicationEntrySet, list[str] fileContents, int treshold){
+public set[list[int]] filterSequencesByThreshold(set[list[int]] duplicationEntrySet, list[str] fileContents, int treshold){ 
 	return { l | list[int] l <- duplicationEntrySet, size(l) >= treshold && size(l) < size(fileContents)};
 }
 
@@ -106,13 +109,11 @@ public set[list[int]] mapDuplicates(list[str] subjectList, set[str] needleList, 
 	}
 	
 	if(isSameFile){
-		list[int] refIndexList = toList(range(indListMap))[0];
+		//filter out the indexes that occured once (if the file is the same all lines will occur at least once)		
+		list[int] sliceIndexes  = sort(({} | it + subSet | set[int] subSet <- { indexes | set[int] indexes <- range(duplicateEntryMap), size(indexes)>1 }));
+		// gropu remaining indexes by sequence nr
+		result += {slicedList | list[int] slicedList <- groupSequence(sliceIndexes), size(slicedList)>=treshold};
 		
-		if(size(refIndexList) == size(subjectList)){
-			list[int] sliceIndexes  = sort(({} | it + subSet | set[int] subSet <- { indexes | set[int] indexes <- range(duplicateEntryMap), size(indexes)>1 }));
-			
-			result += {slicedList | list[int] slicedList <- groupSequence(sliceIndexes), size(slicedList)>=treshold};
-		}
 	}else{
 		result = range(indListMap);
 	}
