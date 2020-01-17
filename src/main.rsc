@@ -30,11 +30,13 @@ import string::Print;
 import string::Trim;
 import structs::Duplicates;
 
+import visualization::Dashboard;
+
 import collections::Filter;
 
 public void main(){
-	//calculateSIG(|project://JabberPoint|);
-	calculateSIG(|project://smallsql|);
+	calculateSIG(|project://JabberPoint|);
+	//calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
@@ -68,7 +70,7 @@ public void calculateSIG(loc project){
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	
-	printResult(volume, size(methods), percentages, averages, ranks);
+	renderDashboard(project, volume, size(methods), percentages, averages, ranks);
 }
 	
 public list[int] mergeList(list[int] xList, list[int] yList){

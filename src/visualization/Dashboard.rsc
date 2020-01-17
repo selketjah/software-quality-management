@@ -1,30 +1,41 @@
 module visualization::Dashboard
 
+import IO;
+import String;
+import List;
+import Map;
+
+import structs::Visualization;
+
+import scoring::Rank;
+import scoring::Ranking;
+import scoring::Average;
+import scoring::Percentage;
+import scoring::Maintainability;
+
+import visualization::Components::Sidebar;
+import visualization::Components::ContentPanel;
+
 import vis::Figure;
 import vis::Render;
 
-public Figure inc(){
-	int n = 0;
-	return vcat([ button("Increment", void(){n += 1;}),
-                  text(str(){return "<n>";})
-                ]);
+    
+public void rerenderDashboard(Panel active) {
+	sidebar = renderSidebar();	
+	content = box(text(sthsth),fillColor("Orange"));
+	render(hcat([sidebar, content]));
 }
 
-public Figure choiceTest(){
-  str state = "A";
-  return vcat([ choice(["A","B","C","D"], void(str s){ state = s;}),
-                text(str(){return "Current state: " + state ;}, left())
-              ]);
+public void renderDashboard(loc project, int volume, int numberOfUnits, Percentages percentages, Average averages, Ranks ranks) {
+	projectData = <project, volume, numberOfUnits, percentages, averages, ranks>;
+	sidebar = renderSidebar();	
+	content = renderContent(\general(), projectData);
+	render(hcat([sidebar, content]));
 }
 
-public void renderDashboard() {
-	row1 = [ box(text("bla\njada"),fillColor("Red")),
-	         ellipse(fillColor("Blue")),
-	         box(fillColor("Yellow"))
-	       ];
-	row2 = [ box(ellipse(fillColor("Yellow")),fillColor("Green")),
-	         box(fillColor("Purple")),
-	         box(text("blablabalbalba"),fillColor("Orange"))
-	       ];
-	render(grid([row1, row2],hgrow(1.1),vgrow(1.3)));
+public void sthsth() {
+	i = hcat([box(fillColor("red"),project(text(s),"hscreen")) | s <- ["a","b"]],top());
+	sc = hscreen(i,id("hscreen"));
+	render(sc);
+
 }
