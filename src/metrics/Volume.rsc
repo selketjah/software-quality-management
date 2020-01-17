@@ -74,7 +74,6 @@ public int calculateInvokedLinesOfCode(loc src, ComponentLOC methodSizeMap, M3 m
 			
 			if(methodLocation in methodSizeMap){
 				size += methodSizeMap[methodLocation];
-				size += calculateInvokedLinesOfCode(methodLocation, methodSizeMap, model);
 			}
 		}
 	}

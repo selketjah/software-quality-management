@@ -28,7 +28,6 @@ import metrics::UnitMetrics;
 import resource::IO;
 import string::Print;
 import string::Trim;
-import structs::Duplicates;
 
 import visualization::Dashboard;
 import visualization::ProjectGraph;
