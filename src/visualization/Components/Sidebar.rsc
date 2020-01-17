@@ -18,7 +18,7 @@ private Figure renderButton(ProjectData projectData, Panel active, Panel panel, 
 		color = activeTabColor;
 	}
 	
-	return button(text, void(){ render(panel, projectData); }, resizable(false), size(150, 50), color, textColor);
+	return button(text, void(){ renderVisualization(panel, projectData); }, resizable(false), size(150, 50), color, textColor);
 }
 
 public Figure renderSidebar(ProjectData projectData, Panel active) {

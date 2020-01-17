@@ -8,7 +8,7 @@ import Map;
 import structs::Visualization;
 import visualization::Charts::Treemapping;
 import visualization::ProjectGraph;
-import visualization::Charts::Bar;
+import visualization::Components::Dashboard;
 
 import scoring::Rank;
 import scoring::Ranking;
@@ -21,45 +21,10 @@ import util::Math;
 import vis::Figure;
 import vis::Render;
 
-FProperty titleColor = fontColor(rgb(0,0,0));
-FProperty titleSize = fontSize(20);
-
-FProperty subTitleColor = fontColor(rgb(0,0,0));
-FProperty subTitleSize = fontSize(15);
-
-public list[Figure] title(loc project) {
-	return [];
-}
-
-
-private Figure titleBox(str title, str subTitle) {
-	sthsth = text(title, titleSize, titleColor);
-	sthsth2 = text(subTitle, subTitleSize, subTitleColor);
-	return vcat([ sthsth, sthsth2 ]);
-}
-
-public list[Figure] general(ProjectData projectData) {
-	return [
-		box(titleBox("Volume", toString(projectData.metrics.volume)), fillColor("Red")),
-		box(titleBox("Files", toString(15)), resizable(false), size(150, 50)),
-		box(titleBox("Functions", toString(projectData.numberOfUnits)))
-	];
-}
-
-public Figure renderGeneralPanel(ProjectData projectData) {
-	row1 = general(projectData);
-	
-	row2 = [ renderPercentageBar(projectData.metrics.percentages.duplication),
-	         renderPercentageBar(projectData.metrics.percentages.unitTestCoverage)
-	       ];
-	       
-	return grid([row1, row2]);
-}
-
 public Figure renderContent(Panel active, ProjectData projectData) {
 	Figure content;
 	visit(active) { 
-		case \general(): content = renderGeneralPanel(projectData);
+		case \general(): content = renderDashboard(projectData);
 		case \complexity(): content = drawTreemap(\complexity(), projectData.metrics.compilationUnitMetrics);
 		case \unitsize(): content = drawTreemap(\unitsize(), projectData.metrics.compilationUnitMetrics);
 		case \dependencies(): content = renderDependencyGraph(projectData.project);

@@ -21,13 +21,13 @@ import vis::Render;
 
 FProperty textColor = fontColor(rgb(3,54,73));
 
-public void render(Panel active, ProjectData projectData) {
+public void renderVisualization(Panel active, ProjectData projectData) {
 	sidebar = renderSidebar(projectData, active);
-	title = text("SIG report - smallsql", font("SILOM"), fontSize(50), textColor);
+	//title = text("SIG report - smallsql", font("SILOM"), fontSize(40), textColor);
 	content = renderContent(active, projectData);
-	render(vcat([sidebar, title, content]));
+	render(vcat([sidebar, content]));
 }
 
 public void initialize(ProjectData projectData) {
-	render(\general(), projectData);
+	renderVisualization(\general(), projectData);
 }
