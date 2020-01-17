@@ -1,4 +1,4 @@
-module visualization::Dashboard
+module visualization::Visualization
 
 import IO;
 import String;
@@ -21,13 +21,13 @@ import vis::Render;
 
 FProperty textColor = fontColor(rgb(3,54,73));
 
-public void rerenderDashboard(Panel active, ProjectData projectData) {
+public void render(Panel active, ProjectData projectData) {
 	sidebar = renderSidebar(projectData, active);
 	title = text("SIG report - smallsql", font("SILOM"), fontSize(50), textColor);
 	content = renderContent(active, projectData);
 	render(vcat([sidebar, title, content]));
 }
 
-public void renderDashboard(ProjectData projectData) {
-	rerenderDashboard(\general(), projectData);
+public void initialize(ProjectData projectData) {
+	render(\general(), projectData);
 }

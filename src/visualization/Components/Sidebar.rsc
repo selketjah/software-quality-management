@@ -5,7 +5,7 @@ import vis::Render;
 
 import structs::Visualization;
 
-import visualization::Dashboard;
+import visualization::Visualization;
 
 FProperty textColor = fontColor(rgb(3,54,73));
 FProperty tabColor = fillColor(rgb(244,234,213));
@@ -18,7 +18,7 @@ private Figure renderButton(ProjectData projectData, Panel active, Panel panel, 
 		color = activeTabColor;
 	}
 	
-	return button(text, void(){ rerenderDashboard(panel, projectData); }, resizable(false), size(150, 50), color, textColor);
+	return button(text, void(){ render(panel, projectData); }, resizable(false), size(150, 50), color, textColor);
 }
 
 public Figure renderSidebar(ProjectData projectData, Panel active) {

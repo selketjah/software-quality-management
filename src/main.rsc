@@ -29,8 +29,7 @@ import resource::IO;
 import string::Print;
 import string::Trim;
 
-import visualization::Dashboard;
-import visualization::ProjectGraph;
+import visualization::Visualization;
 import structs::Visualization;
 
 import collections::Filter;
@@ -73,7 +72,7 @@ public void calculateSIG(loc project){
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	
-	renderDashboard(<project, metrics, size(methods), averages, ranks>);
+	initialize(<project, metrics, size(methods), averages, ranks>);
 }
 	
 public list[int] mergeList(list[int] xList, list[int] yList){
