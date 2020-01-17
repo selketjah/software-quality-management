@@ -58,7 +58,8 @@ public Figure renderContent(Panel active, ProjectData projectData) {
 	Figure content;
 	visit(active) { 
 		case \general(): content = renderGeneralPanel(projectData);
-		case \complexity(): content = drawTreemap(projectData.metrics.compilationUnitMetrics);
+		case \complexity(): content = drawTreemap(\complexity(), projectData.metrics.compilationUnitMetrics);
+		case \unitsize(): content = drawTreemap(\unitsize(), projectData.metrics.compilationUnitMetrics);
 	}
 	       
 	return content;

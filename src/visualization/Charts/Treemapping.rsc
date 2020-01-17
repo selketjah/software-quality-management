@@ -3,24 +3,27 @@ module visualization::Charts::Treemapping
 import metrics::UnitMetrics;
 
 import scoring::categories::CyclomaticComplexity;
+import scoring::categories::UnitSize;
 import scoring::RiskLevel;
+
+import structs::Visualization;
 
 import vis::Figure;
 import vis::Render;
 
-FProperty classColor = fontColor(rgb(197,247,240));
+FProperty classColor = fillColor(rgb(197,247,240));
 
-FProperty simpleBoundColor = fontColor(rgb(169,194,201));
-FProperty moderateBoundColor = fontColor(rgb(142,140,163));
-FProperty highBoundColor = fontColor(rgb(114,87,124));
-FProperty veryHighBoundColor = fontColor(rgb(86,33,85));
+FProperty simpleBoundColor = fillColor(rgb(169,194,201));
+FProperty moderateBoundColor = fillColor(rgb(142,140,163));
+FProperty highBoundColor = fillColor(rgb(114,87,124));
+FProperty veryHighBoundColor = fillColor(rgb(86,33,85));
 
 FProperty classArea = area(40);
 
-FProperty simpleBoundArea = area(5);
-FProperty moderateBoundArea = area(10);
-FProperty highBoundArea = area(15);
-FProperty veryHighBoundArea = area(20);
+FProperty simpleBoundArea = area(3);
+FProperty moderateBoundArea = area(7);
+FProperty highBoundArea = area(11);
+FProperty veryHighBoundArea = area(15);
 
 public FProperty getColor(RiskLevel riskLevel) {
 	FProperty color;
@@ -55,22 +58,35 @@ public Figure createComplexityBox(int complexity) {
 	return box(area, color);
 }
 
-public Figure createCompilationBox(list[UnitMetric] compilationUnitMetrics) {
+public Figure createUnitSizeBox(int unitSize) {
+	RiskLevel riskLevel = determineRiskLevelForUnitSize(unitSize);
+	
+	FProperty color = getColor(riskLevel);
+	FProperty area = getArea(riskLevel);
+	
+	return box(area, color);
+}
+
+public Figure createCompilationBox(Panel active, list[UnitMetric] compilationUnitMetrics) {
 	Figures figures = [];
 	
 	for(<str name, loc method, int complexity, int size> <- compilationUnitMetrics) {
-			complexityBox = createComplexityBox(complexity);
-			figures += complexityBox;
+		Figure figure;
+		visit(active) {
+			case \complexity(): figure = createComplexityBox(complexity);
+			default: figure = createUnitSizeBox(size);		
+		}
+		figures += figure;
 	}
 	
 	return box(treemap(figures) ,shrink(0.9), classArea, classColor);
 }
 
-public Figure drawTreemap(set[CompilationUnitMetric] compilationUnitMetricsSet) {	
+public Figure drawTreemap(Panel active, set[CompilationUnitMetric] compilationUnitMetricsSet) {	
 	Figures figures = [];
 	
 	for(<loc source, list[UnitMetric] compilationUnitMetrics> <- compilationUnitMetricsSet) {
-		fileBox = createCompilationBox(compilationUnitMetrics);
+		fileBox = createCompilationBox(active, compilationUnitMetrics);
 		figures += fileBox;
 	}
 
