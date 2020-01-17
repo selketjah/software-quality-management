@@ -1,4 +1,4 @@
-dmodule visualization::ProjectGraph
+module visualization::ProjectGraph
 
 import List;
 import Relation;
@@ -11,11 +11,11 @@ import IO;
 import vis::Figure; 
 import vis::Render;
 
-public void drawDiagram(loc p) {
+public Figure renderDependencyGraph(loc p) {
 	M3 m = createM3FromEclipseProject(p);
 
-  	classFigures = [box(text("<cl.path[1..]>"), id("<cl>")) | cl <- classes(m)]; 
+  	classFigures = [box(text("<cl.path[1..]>"), id("<cl>"), fillColor(arbColor())) | cl <- classes(m)]; 
   	
   	edges = [edge("<to>", "<from>") | <from,to> <- m.extends, size(m.declarations[to])>0];  
-  	render(graph(classFigures, edges, hint("layered"), std(gap(10)), std(font("Bitstream Vera Sans")), std(fontSize(20))));
+  	return graph(classFigures, edges, hint("layered"), std(gap(40)), size(500), std(fontSize(10)));
 }

@@ -7,6 +7,8 @@ import Map;
 
 import structs::Visualization;
 import visualization::Charts::Treemapping;
+import visualization::ProjectGraph;
+import visualization::Charts::Bar;
 
 import scoring::Rank;
 import scoring::Ranking;
@@ -39,7 +41,7 @@ private Figure titleBox(str title, str subTitle) {
 public list[Figure] general(ProjectData projectData) {
 	return [
 		box(titleBox("Volume", toString(projectData.metrics.volume)), fillColor("Red")),
-		box(titleBox("Files", toString(15)), grow(2.0)),
+		box(titleBox("Files", toString(15)), resizable(false), size(150, 50)),
 		box(titleBox("Functions", toString(projectData.numberOfUnits)))
 	];
 }
@@ -47,8 +49,8 @@ public list[Figure] general(ProjectData projectData) {
 public Figure renderGeneralPanel(ProjectData projectData) {
 	row1 = general(projectData);
 	
-	row2 = [ box(ellipse(fillColor("Yellow")),fillColor("Green")),
-	         box(text("blablabalbalba"),fillColor("Orange"))
+	row2 = [ renderPercentageBar(projectData.metrics.percentages.duplication),
+	         renderPercentageBar(projectData.metrics.percentages.unitTestCoverage)
 	       ];
 	       
 	return grid([row1, row2]);
@@ -60,6 +62,7 @@ public Figure renderContent(Panel active, ProjectData projectData) {
 		case \general(): content = renderGeneralPanel(projectData);
 		case \complexity(): content = drawTreemap(\complexity(), projectData.metrics.compilationUnitMetrics);
 		case \unitsize(): content = drawTreemap(\unitsize(), projectData.metrics.compilationUnitMetrics);
+		case \dependencies(): content = renderDependencyGraph(projectData.project);
 	}
 	       
 	return content;

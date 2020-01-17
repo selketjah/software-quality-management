@@ -13,4 +13,5 @@ data Panel
     | \complexity()
     | \unitsize()
     | \dependencies()
+    | \duplication()
     ;

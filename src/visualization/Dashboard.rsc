@@ -19,22 +19,15 @@ import visualization::Components::ContentPanel;
 import vis::Figure;
 import vis::Render;
 
-    
+FProperty textColor = fontColor(rgb(3,54,73));
+
 public void rerenderDashboard(Panel active, ProjectData projectData) {
-	sidebar = renderSidebar(projectData);	
+	sidebar = renderSidebar(projectData, active);
+	title = text("SIG report - smallsql", font("SILOM"), fontSize(50), textColor);
 	content = renderContent(active, projectData);
-	render(hcat([sidebar, content]));
+	render(vcat([sidebar, title, content]));
 }
 
 public void renderDashboard(ProjectData projectData) {
-	sidebar = renderSidebar(projectData);	
-	content = renderContent(\general(), projectData);
-	render(hcat([sidebar, content]));
-}
-
-public void sthsth() {
-	i = hcat([box(fillColor("red"),project(text(s),"hscreen")) | s <- ["a","b"]],top());
-	sc = hscreen(i,id("hscreen"));
-	render(sc);
-
+	rerenderDashboard(\general(), projectData);
 }
