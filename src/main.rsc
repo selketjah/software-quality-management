@@ -40,14 +40,8 @@ import visualization::Visualization;
 import structs::Ranking;
 
 public void main(){
-<<<<<<< HEAD
-	//calculateSIG(|project://TestProjectSqm|);
 	calculateSIG(|project://JabberPoint|);
 	//calculateSIG(|project://smallsql|);
-=======
-	//calculateSIG(|project://JabberPoint|);
-	calculateSIG(|project://smallsql|);
->>>>>>> d71f837b935caeb82d3dbd8068ca7efe19425ca1
 	//calculateSIG(|project://hsqldb|);
 }
 
@@ -82,16 +76,6 @@ public void calculateSIG(loc project){
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	
-<<<<<<< HEAD
-	initialize(<project, metrics, size(methods), averages, ranks>);
-}
-=======
 	initializeVisualization(<project, metrics, size(methods), averages, ranks>);
 }
 	
-public list[int] mergeList(list[int] xList, list[int] yList){
-	return merge(xList, yList);
-}
-
-
->>>>>>> d71f837b935caeb82d3dbd8068ca7efe19425ca1
