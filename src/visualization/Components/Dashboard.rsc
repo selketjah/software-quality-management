@@ -57,21 +57,21 @@ public Figure ranking(ProjectData projectData) {
 	return hcat([volume, averageUnitSize, averageComplexity, duplicationPercentage, unitTestCoveragePercentage], gap(1));
 }
 
-public Figure maintainabilityBox(str bottomText, Rank rank) {
-	rankingText = text(convertRankToLiteral(rank), fontSize(20), subTitleColor);	
-	b1 = box(rankingText, resizable(false), size(300, 75), fillColor(leftSideColor));
+public Figure maintainabilityBox(str bottomText, Rank rank, Color light, Color dark) {
+	rankingText = text(convertRankToLiteral(rank), fontSize(20), fontColor(dark));	
+	b1 = box(rankingText, resizable(false), size(300, 75), fillColor(light), lineColor(light));
 	
 	bottomTextTitle = text(bottomText, resizable(false), size(300, 25), subTitleColor);
-	b2 = box(bottomTextTitle, fillColor(rightSideColor), resizable(false), size(300, 25));
+	b2 = box(bottomTextTitle, fillColor(dark), lineColor(dark), resizable(false), size(300, 25));
 	return vcat([b1, b2], resizable(false), size(300, 25));
 }
 
 public Figure maintainabilityBoxes(map[MaintainabilityCharacteristic, Rank] maintainability) {
-	row1 = [ maintainabilityBox("TESTABILITY", \plusplus()),
-			 maintainabilityBox("TESTABILITY", \plusplus()) ];
+	row1 = [ maintainabilityBox("ANALYSABILITY", maintainability[\analysability()], rgb(255,245,0), rgb(211, 204, 6)),
+			 maintainabilityBox("CHANGEABILITY", maintainability[\changeability()], rgb(255,119,0), rgb(211,103, 4)) ];
 			 
-	row2 = [ maintainabilityBox("TESTABILITY", \plusplus()),
-			 maintainabilityBox("TESTABILITY", \plusplus()) ];
+	row2 = [ maintainabilityBox("STABILITY", maintainability[\stability()], rgb(249, 2, 10), rgb(204, 2, 8)),
+			 maintainabilityBox("TESTABILITY", maintainability[\testability()], rgb(2, 245, 249), rgb(3, 185, 188)) ];
 	
 	return grid([ row1, row2 ]);
 }
