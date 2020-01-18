@@ -11,15 +11,16 @@ import structs::Percentage;
 import structs::Duplication;
 import structs::UnitTestCoverage;
 
-private int determineUnitTestCoveragePercentageRank(int volume, UnitTestCoverageMap assertMaps) {
+private int determineUnitTestCoveragePercentageRank(int totalComplexity, UnitTestCoverageMap assertMaps) {
 	int asserts = 0;
 	
 	for(loc src <- assertMaps){
 		tuple[int numberOfAsserts, int locCoverage, int complexityCoverage] info = assertMaps[src];
 		asserts += info.numberOfAsserts;
 	}
-	
-	int percentage = percent(asserts, volume);
+	println(asserts);
+	println(totalComplexity);
+	int percentage = percent(asserts, totalComplexity);
 	return percentage;
 }
 
@@ -32,9 +33,9 @@ private int determineDuplicationPercentage(int volume, DuplicateCodeRel duplicat
 	return percentage;
 }
 
-public Percentages calculatePercentages(int volume, DuplicateCodeRel duplicationRel, UnitTestCoverageMap assertMaps) {	
+public Percentages calculatePercentages(int volume, DuplicateCodeRel duplicationRel, int totalComplexity, UnitTestCoverageMap assertMaps) {	
 	int duplicationPercentage = determineDuplicationPercentage(volume, duplicationRel);
-	int unitTestCoveragePercentage = determineUnitTestCoveragePercentageRank(volume, assertMaps);
+	int unitTestCoveragePercentage = determineUnitTestCoveragePercentageRank(totalComplexity, assertMaps);
 
 	return <duplicationPercentage, unitTestCoveragePercentage>;
 }

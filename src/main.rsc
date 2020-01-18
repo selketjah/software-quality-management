@@ -39,10 +39,9 @@ import structs::UnitTestCoverage;
 import visualization::Visualization;
 import structs::Ranking;
 
-
 public void main(){
-	//calculateSIG(|project://JabberPoint|);
-	calculateSIG(|project://smallsql|);
+	calculateSIG(|project://JabberPoint|);
+	//calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
@@ -61,8 +60,10 @@ public void calculateSIG(loc project){
 	ComponentLOC methodHolderSizeRel = calculateLinesOfCode(methodHolders, compilationUnitMap);
 	ComponentLOC methodSizeRel = calculateLinesOfCode(methods, compilationUnitMap);
 	
-	DuplicateCodeRel duplicationRel = calculateDuplicates(methodHolders, compilationUnitMap);
+	tuple[DuplicateCodeRel duplicationRel, rel[loc, loc] duplicationLocationRel] duplication = calculateDuplicates(methodHolders, compilationUnitMap);
+	
 	compilationUnitMetricSet += { calculateUnitMetrics(src, methodSizeRel) | <loc name, loc src> <- methodHolders };
+	
 	map[loc, int] methodComplexityMap = createMethodComplexityMap(compilationUnitMetricSet);
 	
 	UnitTestCoverageMap unitTestCoverageMap = createUnitTestCoverageMap(methodSizeRel, methods, compilationUnitMap, methodComplexityMap, currentProjectModel);
@@ -70,7 +71,7 @@ public void calculateSIG(loc project){
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
 	
 	Average averages = calculateAverages(compilationUnitMetricSet);
-	Percentages percentages = calculatePercentages(volume, duplicationRel, unitTestCoverageMap);
+	Percentages percentages = calculatePercentages(volume, duplication.duplicationRel, sum(range(methodComplexityMap)), unitTestCoverageMap);
 	
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
@@ -78,8 +79,3 @@ public void calculateSIG(loc project){
 	initializeVisualization(<project, metrics, size(methods), averages, ranks>);
 }
 	
-public list[int] mergeList(list[int] xList, list[int] yList){
-	return merge(xList, yList);
-}
-
-
