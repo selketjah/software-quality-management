@@ -1,12 +1,14 @@
 module visualization::Components::Dashboard
 
 import IO;
-import String;
 import List;
+import Message;
+import Set;
 import Map;
+import Relation;
+import String;
 
 import structs::Visualization;
-import visualization::Charts::Bar;
 
 import scoring::Rank;
 import scoring::Ranking;
@@ -19,37 +21,45 @@ import util::Math;
 import vis::Figure;
 import vis::Render;
 
-FProperty titleColor = fontColor(rgb(0,0,0));
-FProperty titleSize = fontSize(20);
+FProperty titleColor = fontColor(rgb(143,190,0));
+FProperty subTitleColor = fontColor(rgb(108,120,142));
 
-FProperty subTitleColor = fontColor(rgb(0,0,0));
-FProperty subTitleSize = fontSize(15);
+Color rightSideColor = rgb(143,190,0);
+Color leftSideColor = rgb(241,235,235);
 
-public list[Figure] title(loc project) {
-	return [];
+public Figure header(loc project, Rank projectRank) {
+	projectTitle = text("SMALLSQL", fontSize(20), titleColor);
+	rankTitle = text(convertRankToLiteral(projectRank), fontSize(20), titleColor);
+	return hcat([projectTitle, rankTitle], size(250, 75));
 }
 
-
-private Figure titleBox(str title, str subTitle) {
-	sthsth = text(title, titleSize, titleColor);
-	sthsth2 = text(subTitle, subTitleSize, subTitleColor);
-	return vcat([ sthsth, sthsth2 ]);
+public Figure rankBox(str amount, str measurementSign, str bottomText, Rank rank) {
+	amountTitle = text(amount, fontSize(20), titleColor);
+	measurement = text(measurementSign, fontSize(10), titleColor);
+	information = hcat([amountTitle, measurement], left(), resizable(false), size(100, 25));
+	
+	subtitle = text(bottomText, resizable(false), size(100, 25), subTitleColor);
+	together = vcat([information, subtitle], gap(5), center());
+	b1 = box(together, resizable(false), size(200, 75), fillColor(leftSideColor), lineColor(leftSideColor));
+	
+	rankingText = text(convertRankToLiteral(rank), fontSize(20), subTitleColor);
+	b2 = box(rankingText, fillColor(rightSideColor), lineColor(rightSideColor), resizable(false), size(75, 75));
+	return hcat([b1, b2], resizable(false), size(275, 75));
 }
 
-public list[Figure] general(ProjectData projectData) {
-	return [
-		box(titleBox("Volume", toString(projectData.metrics.volume)), fillColor("Red")),
-		box(titleBox("Files", toString(15)), resizable(false), size(150, 50)),
-		box(titleBox("Functions", toString(projectData.numberOfUnits)))
-	];
+public Figure ranking(ProjectData projectData) {
+	volume = rankBox(toString(projectData.metrics.volume), "LOC", "VOLUME", projectData.ranks.volume);
+	averageUnitSize = rankBox(toString(projectData.averages.size), "", "AVERAGE UNIT SIZE", projectData.ranks.unitSize);
+	averageComplexity = rankBox(toString(projectData.averages.complexity), "", "AVERAGE COMPLEXITY", projectData.ranks.complexity);
+	duplicationPercentage = rankBox(toString(projectData.metrics.percentages.duplication), "%", "DUPLICATION", projectData.ranks.duplication);
+	unitTestCoveragePercentage = rankBox(toString(projectData.metrics.percentages.unitTestCoverage), "%", "UNIT TEST COVERAGE", projectData.ranks.unitTestCoverage);
+	
+	return hcat([volume, averageUnitSize, averageComplexity, duplicationPercentage, unitTestCoveragePercentage], gap(1));
 }
 
 public Figure renderDashboard(ProjectData projectData) {
-	row1 = general(projectData);
-	
-	row2 = [ renderPercentageBar(projectData.metrics.percentages.duplication),
-	         renderPercentageBar(projectData.metrics.percentages.unitTestCoverage)
-	       ];
-	       
-	return grid([row1, row2]);
+	row0 = header(projectData.project, projectData.ranks.overall);
+	row1 = ranking(projectData);
+     
+	return vcat( [ row0, row1 ]);
 }
