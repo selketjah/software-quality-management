@@ -31,7 +31,7 @@ FProperty popup(str methodName, int complexity, int unitSize) {
 	unitSize = text("Unit size: " + toString(unitSize));
 	message = vcat([ methodName, complexity, unitSize ]);
 	
-	return mouseOver(box(message, resizable(false)));
+	return mouseOver(box(message, resizable(false), size(100, 100)));
 }
 
 public FProperty getComplexityColor(RiskLevel riskLevel) {
