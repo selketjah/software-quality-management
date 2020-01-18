@@ -22,7 +22,7 @@ private Figure renderButton(ProjectData projectData, Panel active, Panel panel, 
 }
 
 public Figure renderSidebar(ProjectData projectData, Panel active) {
-	return hcat([ renderButton(projectData, active, \general(), "General"),
+	return hcat([ renderButton(projectData, active, \general(), "Dashboard"),
 				  renderButton(projectData, active, \dependencies(), "Dependency graph"),
 				  renderButton(projectData, active, \complexity(), "Cyclomatic complexity"),
 				  renderButton(projectData, active, \unitsize(), "Unit size"),

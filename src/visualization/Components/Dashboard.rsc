@@ -28,9 +28,9 @@ Color rightSideColor = rgb(143,190,0);
 Color leftSideColor = rgb(241,235,235);
 
 public Figure header(loc project, Rank projectRank) {
-	projectTitle = text("SMALLSQL", fontSize(20), titleColor);
+	projectTitle = text("OVERALL SCORE SMALLSQL", fontSize(20), titleColor);
 	rankTitle = text(convertRankToLiteral(projectRank), fontSize(20), titleColor);
-	return hcat([projectTitle, rankTitle], size(250, 75));
+	return hcat([projectTitle, rankTitle], resizable(false), size(250, 75));
 }
 
 public Figure rankBox(str amount, str measurementSign, str bottomText, Rank rank) {
@@ -49,17 +49,27 @@ public Figure rankBox(str amount, str measurementSign, str bottomText, Rank rank
 
 public Figure ranking(ProjectData projectData) {
 	volume = rankBox(toString(projectData.metrics.volume), "LOC", "VOLUME", projectData.ranks.volume);
-	averageUnitSize = rankBox(toString(projectData.averages.size), "", "AVERAGE UNIT SIZE", projectData.ranks.unitSize);
-	averageComplexity = rankBox(toString(projectData.averages.complexity), "", "AVERAGE COMPLEXITY", projectData.ranks.complexity);
+	averageUnitSize = rankBox(toString(projectData.averages.size), "AVERAGE", "UNIT SIZE", projectData.ranks.unitSize);
+	averageComplexity = rankBox(toString(projectData.averages.complexity), "AVERAGE", "COMPLEXITY", projectData.ranks.complexity);
 	duplicationPercentage = rankBox(toString(projectData.metrics.percentages.duplication), "%", "DUPLICATION", projectData.ranks.duplication);
 	unitTestCoveragePercentage = rankBox(toString(projectData.metrics.percentages.unitTestCoverage), "%", "UNIT TEST COVERAGE", projectData.ranks.unitTestCoverage);
 	
 	return hcat([volume, averageUnitSize, averageComplexity, duplicationPercentage, unitTestCoveragePercentage], gap(1));
 }
 
+public Figure maintainabilityScores(ProjectData projectData) {
+	mainTitle = text("MAINTAINABILITY SCORES", fontSize(12), titleColor);
+	b1 = box(mainTitle, resizable(false), size(600, 35), fillColor(leftSideColor), lineColor(rightSideColor));
+	
+	b2 = box(resizable(false), size(600, 500), fillColor(leftSideColor), lineColor(rightSideColor));
+	
+	return vcat([ b1, b2 ], resizable(false));
+}
+
 public Figure renderDashboard(ProjectData projectData) {
 	row0 = header(projectData.project, projectData.ranks.overall);
 	row1 = ranking(projectData);
+	row2 = maintainabilityScores(projectData);
      
-	return vcat( [ row0, row1 ]);
+	return vcat( [ row0, row1, row2 ]);
 }
