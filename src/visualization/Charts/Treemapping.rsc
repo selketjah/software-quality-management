@@ -5,6 +5,7 @@ import metrics::UnitMetrics;
 import scoring::categories::CyclomaticComplexity;
 import scoring::categories::UnitSize;
 import structs::RiskLevel;
+import structs::UnitMetrics;
 
 import structs::Visualization;
 
