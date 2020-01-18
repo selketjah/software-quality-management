@@ -21,12 +21,11 @@ import util::Math;
 import vis::Figure;
 import vis::Render;
 
-public Figure renderContent(Panel active, ProjectData projectData) {
+public Figure renderContent(Panel active, ProjectData projectData, map[str, Figure] state) {
 	Figure content;
 	visit(active) { 
 		case \general(): content = renderDashboard(projectData);
-		case \complexity(): content = drawTreemap(\complexity(), projectData.metrics.compilationUnitMetrics);
-		case \unitsize(): content = drawTreemap(\unitsize(), projectData.metrics.compilationUnitMetrics);
+		case \heatmap(): content = drawTreemap(state, projectData);
 		case \dependencies(): content = renderDependencyGraph(projectData.project);
 	}
 	       
