@@ -23,11 +23,11 @@ import vis::Render;
 
 public Figure renderContent(Panel active, ProjectData projectData, map[str, Figure] state) {
 	Figure content;
-	visit(active) { 
+	visit(active) {
 		case \general(): content = renderDashboard(projectData);
 		case \heatmap(): content = drawTreemap(state, projectData);
 		case \dependencies(): content = renderDependencyGraph(projectData.project);
 	}
-	       
+
 	return content;
 }

@@ -105,7 +105,7 @@ public Figure createCompilationBox(str state, list[UnitMetric] compilationUnitMe
 	return box(treemap(figures) ,shrink(0.9), classArea, classColor);
 }
 
-private Figure createTreemap(str state, set[CompilationUnitMetric] compilationUnitMetricsSet) {
+private Figure createTreemap(str state, int n, set[CompilationUnitMetric] compilationUnitMetricsSet) {
 	Figures figures = [];
 	
 	for(<loc source, list[UnitMetric] compilationUnitMetrics> <- compilationUnitMetricsSet) {
@@ -113,17 +113,41 @@ private Figure createTreemap(str state, set[CompilationUnitMetric] compilationUn
 		figures += fileBox;
 	}
 
-	t = treemap(figures);
+	t = treemap(figures, width(n), height(n), resizable(false));
 	     
 	return t;
 }
 
 public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
-	Figure treemap = state["heatmap"] ? createTreemap("Complexity", projectData.metrics.compilationUnitMetrics);
 	
-  	return vcat([ combo(["Complexity","Unit size"], void(str s) { state["heatmap"] = createTreemap(s, projectData.metrics.compilationUnitMetrics);
-  																  renderVisualization(\heatmap(), projectData, state); }, resizable(false)),
-  			      treemap               
-              ]);
+	Figure scaledTreeMap(set[CompilationUnitMetric] compilationUnitMetrics){
+		int n = 300;
+		
+		list[str] treeTypes = ["Complexity","Unit size"];
+		str treeType = state["treeType"] ? treeTypes[0];
+	
+  		return vcat([ 
+	  		combo(treeTypes, void(str s) {
+	  							map[str, Figure] state = (); 
+	  							state["treeType"]= s;
+ 
+							  	}, resizable(false)),
+					hcat([scaleSlider(int() { return 200; },     
+	                    	int () { return 1000; },  
+	                    	int () { return n; },    
+	                    	void (int s) { n = s; }, 
+	                    	width(800)),
+	                    	text(str () { return "n: <n>";})],
+	                    	left(),top(),resizable(false)),
+	  			      	computeFigure(Figure (){ 
+	  			      		
+	  			      		return createTreemap(treeType, n, compilationUnitMetrics); 
+  			      		})
+	  			      	
+              ]); 
+      };
+      
+      return scaledTreeMap(projectData.metrics.compilationUnitMetrics);
+      
 }
 

@@ -61,10 +61,10 @@ public Figure ranking(ProjectData projectData) {
 
 public Figure maintainabilityBox(str bottomText, Rank rank, Color light, Color dark) {
 	rankingText = text(convertRankToLiteral(rank), fontSize(20), fontColor(dark));	
-	b1 = box(rankingText, resizable(false), size(300, 75), fillColor(light), lineColor(light));
+	b1 = box(rankingText, resizable(false), size(300, 75), fillColor(light), lineColor(light), shadow(true));
 	
 	bottomTextTitle = text(bottomText, resizable(false), size(300, 25), subTitleColor);
-	b2 = box(bottomTextTitle, fillColor(dark), lineColor(dark), resizable(false), size(300, 25));
+	b2 = box(bottomTextTitle, fillColor(dark), lineColor(dark), resizable(false), size(300, 25), shadow(true));
 	return vcat([b1, b2], resizable(false), size(300, 25));
 }
 
