@@ -18,19 +18,27 @@ import metrics::UnitMetrics;
 import string::Trim;
 import structs::Duplication;
 
-public DuplicateCodeRel calculateDuplicates(rel[loc name,loc src] methodHolders, map[loc src, list[str] linesOfCode] compilationUnitMap){
+public tuple[DuplicateCodeRel, rel[loc, loc]] calculateDuplicates(rel[loc name,loc src] methodHolders, map[loc src, list[str] linesOfCode] compilationUnitMap){
 	DuplicateCodeRel duplicationRel = {};
 	list[loc] methodHolderDup = toList(range(methodHolders));
+	rel[loc, loc] duplicateionMapRel = {};
 	
 	for(loc src <- toList(range(methodHolders))){
 		for(loc src2 <- methodHolderDup){
 			DuplicateCodeRel codeRel = listClonesIn(src, compilationUnitMap[src], src2, compilationUnitMap[src2]);
+			
+			if(size(union(range(codeRel)))>0){
+				duplicateionMapRel += <src,src2>;
+				//println("<src> has lines in common with <src2>");
+				//println("<codeRel>");
+			}
+			
 			duplicationRel += codeRel;
 		}
 		methodHolderDup = delete(methodHolderDup,indexOf(methodHolderDup, src));
 	}
 	
-	return duplicationRel;
+	return <duplicationRel, duplicateionMapRel>;
 }
 
 
@@ -45,7 +53,6 @@ public DuplicateCodeRel listClonesIn(loc firstSrc, list[str] firstFileContents, 
 	}
 	
 	fileContentsIntersectionSet = toSet(fileContentsIntersectionList);
-	
 	
 	set[list[int]] firstFileDuplicateEntrySet = mapDuplicates(firstFileContents, fileContentsIntersectionSet, isSameFile);
 	
@@ -94,16 +101,15 @@ public set[list[int]] mapDuplicates(list[str] subjectList, set[str] needleList, 
 		lineOfCode = subjectList[i];
 		
 		if(lineOfCode in needleList){
-			
 			set[int] matchingElementList = duplicateEntryMap[lineOfCode]?{};
-			matchingElementList += i;
+			matchingElementList += i+1;
 			duplicateEntryMap[lineOfCode] = matchingElementList;
 
 			list[int] indexList = indListMap[prevIndex]?[];
-			indexList += i;
+			indexList += i+1;
 			indListMap[prevIndex] = indexList;
 		}else{
-			prevIndex = i;
+			prevIndex = i + 1;
 		}
 	}
 	
