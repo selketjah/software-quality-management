@@ -23,7 +23,8 @@ FProperty textColor = fontColor(rgb(3,54,73));
 
 public void renderVisualization(Panel active, ProjectData projectData, map[str, Figure] state) {
 	sidebar = renderSidebar(projectData, active, state);
-	sigTitle = text("SIG report - smallsql", font("SILOM"), fontSize(40), textColor);
+	str sig = "SIG report - " + projectData.project.authority;
+	sigTitle = text(sig, font("SILOM"), fontSize(40), textColor);
 	content = renderContent(active, projectData, state);
 	render(vcat([sidebar, sigTitle, content]));
 }
