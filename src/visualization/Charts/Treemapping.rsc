@@ -110,7 +110,7 @@ public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
 	Figure treemap = state["heatmap"] ? createTreemap("Complexity", projectData.metrics.compilationUnitMetrics);
 	
   	return vcat([ combo(["Complexity","Unit size"], void(str s) { state["heatmap"] = createTreemap(s, projectData.metrics.compilationUnitMetrics);
-  																  renderVisualization(\heatmap(), projectData, state); }),
+  																  renderVisualization(\heatmap(), projectData, state); }, resizable(false)),
   			      treemap               
               ]);
 }

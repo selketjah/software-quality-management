@@ -30,7 +30,7 @@ Color rightSideColor = rgb(143,190,0);
 Color leftSideColor = rgb(241,235,235);
 
 public Figure header(loc project, Rank projectRank) {
-	projectTitle = text("OVERALL SCORE SMALLSQL", fontSize(20), titleColor);
+	projectTitle = text("OVERALL SCORE:", fontSize(20), titleColor);
 	rankTitle = text(convertRankToLiteral(projectRank), fontSize(20), titleColor);
 	return hcat([projectTitle, rankTitle], resizable(false), size(250, 75));
 }
