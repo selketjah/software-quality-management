@@ -7,9 +7,9 @@ import structs::Visualization;
 
 import visualization::Visualization;
 
-FProperty textColor = fontColor(rgb(3,54,73));
-FProperty tabColor = fillColor(rgb(244,234,213));
-FProperty activeTabColor = fillColor(rgb(205,179,128));
+FProperty textColor = fontColor(rgb(252,253,255));
+FProperty tabColor = fillColor(rgb(108,120,142));
+FProperty activeTabColor = fillColor(rgb(199,8,8));
 
 private Figure renderButton(ProjectData projectData, Panel active, Panel panel, str text) {
 	FProperty color = tabColor;
