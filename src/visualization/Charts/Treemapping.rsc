@@ -1,6 +1,7 @@
 module visualization::Charts::Treemapping
 
 import IO;
+import util::Math;
 
 import metrics::UnitMetrics;
 
@@ -11,6 +12,7 @@ import structs::UnitMetrics;
 
 import structs::Visualization;
 import visualization::Visualization;
+import visualization::Utils;
 
 import vis::Figure;
 import vis::Render;
@@ -22,6 +24,15 @@ FProperty simpleBoundArea = area(3);
 FProperty moderateBoundArea = area(7);
 FProperty highBoundArea = area(11);
 FProperty veryHighBoundArea = area(15);
+
+FProperty popup(str methodName, int complexity, int unitSize) {
+	methodName = text(methodName);
+	complexity = text("Complexity: " + toString(complexity));
+	unitSize = text("Unit size: " + toString(unitSize));
+	message = vcat([ methodName, complexity, unitSize ]);
+	
+	return mouseOver(box(message, resizable(false)));
+}
 
 public FProperty getComplexityColor(RiskLevel riskLevel) {
 	FProperty color;
@@ -59,33 +70,34 @@ public FProperty getArea(RiskLevel riskLevel){
 	return area;
 }
 
-public Figure createComplexityBox(int complexity) {
+public Figure createComplexityBox(FProperty popup, int complexity) {
 	RiskLevel riskLevel = determineRiskLevelForUnitComplexity(complexity);
 	
 	FProperty color = getComplexityColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color);
+	return box(area, color, popup);
 }
 
-public Figure createUnitSizeBox(int unitSize) {
+public Figure createUnitSizeBox(FProperty popup, int unitSize) {
 	RiskLevel riskLevel = determineRiskLevelForUnitSize(unitSize);
 	
 	FProperty color = getSizeColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color);
+	return box(area, color, popup);
 }
 
 public Figure createCompilationBox(str state, list[UnitMetric] compilationUnitMetrics) {
 	Figures figures = [];
 	
-	for(<str name, loc method, int complexity, int size> <- compilationUnitMetrics) {
-		Figure figure = createComplexityBox(complexity);
+	for(<str name, loc method, int complexity, int size> <- compilationUnitMetrics) {	
+		Figure figure;
+		FProperty message = popup(name, complexity, size);
 		if(state == "Complexity") {
-			figure = createComplexityBox(complexity);	
+			figure = createComplexityBox(message, complexity);	
 		} else {
-			figure = createUnitSizeBox(size);	
+			figure = createUnitSizeBox(message, size);	
 		}
 		figures += figure;
 	}
