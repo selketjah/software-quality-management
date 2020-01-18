@@ -28,6 +28,6 @@ public void renderVisualization(Panel active, ProjectData projectData) {
 	render(vcat([sidebar, content]));
 }
 
-public void initialize(ProjectData projectData) {
+public void initializeVisualization(ProjectData projectData) {
 	renderVisualization(\general(), projectData);
 }
