@@ -15,6 +15,8 @@ import scoring::Ranking;
 import scoring::Average;
 import scoring::Percentage;
 import scoring::Maintainability;
+import structs::Rank;
+import structs::Maintainability;
 
 import util::Math;
 

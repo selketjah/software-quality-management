@@ -11,14 +11,11 @@ import Relation;
 import util::Benchmark;
 import util::Math;
 import util::Resources;
-import analysers::LocAnalyser;
-import scoring::Rank;
-import scoring::Ranking;
-import scoring::Average;
-import scoring::Percentage;
 import String;
 
+import analysers::LocAnalyser;
 import analysers::M3Analyser; 
+import collections::Filter;
 import metrics::Cache;
 import metrics::Complexity;
 import metrics::Duplicates;
@@ -26,17 +23,25 @@ import metrics::UnitTestCoverage;
 import metrics::Volume;
 import metrics::UnitMetrics;
 import resource::IO;
+import scoring::Average;
+import scoring::Percentage;
+import scoring::Rank;
+import scoring::Ranking;
 import string::Print;
 import string::Trim;
-
-import visualization::Visualization;
+import structs::Duplication;
+import structs::UnitMetrics;
 import structs::Visualization;
+import structs::Volume;
+import structs::Average;
+import structs::Percentage;
+import structs::UnitTestCoverage;
+import visualization::Visualization;
+import structs::Ranking;
 
-import collections::Filter;
 
 public void main(){
 	calculateSIG(|project://JabberPoint|);
-	//calculateSIG(|project://Jabberpoint-le3|);
 	//calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
@@ -56,12 +61,10 @@ public void calculateSIG(loc project){
 	ComponentLOC methodHolderSizeRel = calculateLinesOfCode(methodHolders, compilationUnitMap);
 	ComponentLOC methodSizeRel = calculateLinesOfCode(methods, compilationUnitMap);
 	
-	//println("calculate clones");
 	DuplicateCodeRel duplicationRel = calculateDuplicates(methodHolders, compilationUnitMap);
-	//println("calculate CC");
 	compilationUnitMetricSet += { calculateUnitMetrics(src, methodSizeRel) | <loc name, loc src> <- methodHolders };
-	//println("calculate unit test coverage");
 	map[loc, int] methodComplexityMap = createMethodComplexityMap(compilationUnitMetricSet);
+	
 	UnitTestCoverageMap unitTestCoverageMap = createUnitTestCoverageMap(methodSizeRel, methods, compilationUnitMap, methodComplexityMap, currentProjectModel);
 	
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));

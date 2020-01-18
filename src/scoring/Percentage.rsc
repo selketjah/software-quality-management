@@ -7,8 +7,9 @@ import util::Math;
 
 import metrics::Duplicates;
 import metrics::UnitTestCoverage;
-
-alias Percentages = tuple[int duplication, int unitTestCoverage];
+import structs::Percentage;
+import structs::Duplication;
+import structs::UnitTestCoverage;
 
 private int determineUnitTestCoveragePercentageRank(int volume, UnitTestCoverageMap assertMaps) {
 	int asserts = 0;

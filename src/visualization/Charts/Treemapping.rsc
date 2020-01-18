@@ -4,7 +4,7 @@ import metrics::UnitMetrics;
 
 import scoring::categories::CyclomaticComplexity;
 import scoring::categories::UnitSize;
-import scoring::RiskLevel;
+import structs::RiskLevel;
 
 import structs::Visualization;
 

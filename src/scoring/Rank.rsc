@@ -6,15 +6,7 @@ import Set;
 import List;
 import Map;
 import util::Math;
-
-
-data Rank
-    = \plusplus()
-    | \plus()
-    | \neutral()
-    | \minus()
-    | \minusminus()
-    ;
+import structs::Rank;
 
 Rank calculateAverageRank(list[Rank] ranks) {
 	list[int] rankValues = [];

@@ -5,9 +5,8 @@ import lang::java::jdt::m3::AST;
 import Set;
 import metrics::Volume;
 import metrics::Complexity;
-
-alias UnitMetric = tuple[str name, loc method, int complexity, int size];
-alias CompilationUnitMetric =  tuple[loc file, list[UnitMetric] unitMetric];
+import structs::UnitMetrics;
+import structs::Volume;
 
 public CompilationUnitMetric calculateUnitMetrics(loc fileLocation, ComponentLOC compilationUnitMap) {
 	Declaration declaration = createAstFromEclipseFile(fileLocation, false);

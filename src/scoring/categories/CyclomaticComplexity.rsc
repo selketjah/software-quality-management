@@ -7,7 +7,8 @@ import Map;
 import util::Math;
 
 import scoring::Rank;
-import scoring::RiskLevel;
+import structs::RiskLevel;
+import structs::Rank;
 
 // These risk bounds and ranking are taken from page 6 of the 'A Practical Model for Measuring Maintainability'
 

@@ -7,6 +7,7 @@ import Map;
 import util::Math;
 
 import scoring::Rank;
+import structs::Rank;
 
 // These ranking bounds are taken from page 7 of the 'A Practical Model for Measuring Maintainability'
 tuple[int lower, int upper] PLUSPLUS_BOUNDS = <95, 100>;

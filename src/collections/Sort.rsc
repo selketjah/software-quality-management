@@ -1,6 +1,6 @@
 module collections::Sort
 
-alias CommentLocation = tuple[int offset, int length];
+import structs::Comments;
 
 bool locationSortFunction(CommentLocation locA, CommentLocation locB){
 	return locA.offset < locB.offset;

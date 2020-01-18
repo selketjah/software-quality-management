@@ -8,19 +8,19 @@ import Map;
 import util::Math;
 
 import metrics::UnitMetrics;
-
 import scoring::Rank;
 import scoring::Percentage;
-import scoring::RiskLevel;
+import structs::RiskLevel;
 import scoring::Maintainability;
 import scoring::categories::Volume;
 import scoring::categories::UnitSize;
 import scoring::categories::CyclomaticComplexity;
 import scoring::categories::Duplication;
 import scoring::categories::UnitTestCoverage;
-
-alias Metrics = tuple[int volume, set[CompilationUnitMetric] compilationUnitMetrics, Percentages percentages];
-alias Ranks = tuple[Rank overall, map[MaintainabilityCharacteristic, Rank] maintainability, Rank volume, Rank unitSize, Rank complexity, Rank duplication, Rank unitTestCoverage];
+import structs::Rank;
+import structs::Ranking;
+import structs::Maintainability;
+import structs::UnitMetrics;
 
 private Rank determineOverallRank(Rank volume, Rank unitSize, Rank unitComplexity, Rank duplication, Rank unitTestCoverage) {
 	list[Rank] overall = [];

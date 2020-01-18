@@ -7,7 +7,8 @@ import Map;
 import util::Math;
 
 import scoring::Rank;
-import scoring::RiskLevel;
+import structs::RiskLevel;
+import structs::Rank;
 
 // These bounds are taken from page 11 of the 'Deriving metric thresholds from benchmark data' paper
 tuple[int lower, int upper] SIMPLE_BOUNDS 	= <0, 30>;

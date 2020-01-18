@@ -1,11 +1,6 @@
 module scoring::Maintainability
 
-data MaintainabilityCharacteristic
-    = \analysability()
-    | \changeability()
-    | \stability()
-    | \testability()
-    ;
+import structs::Maintainability;
     
 public str convertMaintainabilityCharacteristicToLiteral(MaintainabilityCharacteristic maintainabilityCharacteristic) {
 	switch(maintainabilityCharacteristic) {

@@ -1,4 +1,4 @@
-module scoring::RiskLevel
+module structs::RiskLevel
 
 data RiskLevel
     = \simple()

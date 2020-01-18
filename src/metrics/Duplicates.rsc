@@ -16,8 +16,7 @@ import metrics::Cache;
 import metrics::Volume;
 import metrics::UnitMetrics;
 import string::Trim;
-
-alias DuplicateCodeRel = rel[loc, set[list[int]]];
+import structs::Duplication;
 
 public DuplicateCodeRel calculateDuplicates(rel[loc name,loc src] methodHolders, map[loc src, list[str] linesOfCode] compilationUnitMap){
 	DuplicateCodeRel duplicationRel = {};

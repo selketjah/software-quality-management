@@ -7,9 +7,8 @@ import Map;
 import util::Math;
 
 import metrics::UnitMetrics;
-
-alias Average = tuple[real size, real complexity];
-alias Totals = tuple[int numberOfUnits, int totalSize, int totalComplexity];
+import structs::Average;
+import structs::UnitMetrics;
 
 private Totals calculateTotals(list[UnitMetric] compilationUnitMetrics) {
 	int numberOfUnits = size(compilationUnitMetrics);

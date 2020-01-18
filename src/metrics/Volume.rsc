@@ -12,8 +12,8 @@ import analysers::LocAnalyser;
 import collections::Sort;
 import resource::IO;
 import string::Trim;
-
-alias ComponentLOC = map[loc src, int size];
+import structs::Volume;
+import structs::Comments;
 
 public map[loc src, list[str] linesOfCode]  getLinesOfCode2(rel[loc name,loc src] compilationUnits, rel[loc name,loc src] methodHolders, rel[loc name,loc src] methods){
 	return (src:srcToLoc(src) | <loc name, loc src> <- compilationUnits)
