@@ -41,8 +41,8 @@ import structs::Ranking;
 
 public void main(){
 	//calculateSIG(|project://TestProjectSqm|);
-	//calculateSIG(|project://JabberPoint|);
-	calculateSIG(|project://smallsql|);
+	calculateSIG(|project://JabberPoint|);
+	//calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
