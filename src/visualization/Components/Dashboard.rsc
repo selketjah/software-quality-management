@@ -36,7 +36,7 @@ public Figure header(loc project, Rank projectRank) {
 public Figure rankBox(str amount, str measurementSign, str bottomText, Rank rank) {
 	amountTitle = text(amount, fontSize(20), titleColor);
 	measurement = text(measurementSign, fontSize(10), titleColor);
-	information = hcat([amountTitle, measurement], left(), resizable(false), size(100, 25));
+	information = hcat([amountTitle, measurement], resizable(false), size(120, 25));
 	
 	subtitle = text(bottomText, resizable(false), size(100, 25), subTitleColor);
 	together = vcat([information, subtitle], gap(5), center());
@@ -57,11 +57,31 @@ public Figure ranking(ProjectData projectData) {
 	return hcat([volume, averageUnitSize, averageComplexity, duplicationPercentage, unitTestCoveragePercentage], gap(1));
 }
 
+public Figure maintainabilityBox(str bottomText, Rank rank) {
+	rankingText = text(convertRankToLiteral(rank), fontSize(20), subTitleColor);	
+	b1 = box(rankingText, resizable(false), size(300, 75), fillColor(leftSideColor));
+	
+	bottomTextTitle = text(bottomText, resizable(false), size(300, 25), subTitleColor);
+	b2 = box(bottomTextTitle, fillColor(rightSideColor), resizable(false), size(300, 25));
+	return vcat([b1, b2], resizable(false), size(300, 25));
+}
+
+public Figure maintainabilityBoxes(map[MaintainabilityCharacteristic, Rank] maintainability) {
+	row1 = [ maintainabilityBox("TESTABILITY", \plusplus()),
+			 maintainabilityBox("TESTABILITY", \plusplus()) ];
+			 
+	row2 = [ maintainabilityBox("TESTABILITY", \plusplus()),
+			 maintainabilityBox("TESTABILITY", \plusplus()) ];
+	
+	return grid([ row1, row2 ]);
+}
+
 public Figure maintainabilityScores(ProjectData projectData) {
 	mainTitle = text("MAINTAINABILITY SCORES", fontSize(12), titleColor);
-	b1 = box(mainTitle, resizable(false), size(600, 35), fillColor(leftSideColor), lineColor(rightSideColor));
+	b1 = box(mainTitle, resizable(false), size(650, 35), fillColor(leftSideColor), lineColor(rightSideColor));
 	
-	b2 = box(resizable(false), size(600, 500), fillColor(leftSideColor), lineColor(rightSideColor));
+	boxes = maintainabilityBoxes(projectData.ranks.maintainability);
+	b2 = box(boxes, resizable(false), size(650, 500), fillColor(leftSideColor), lineColor(rightSideColor));
 	
 	return vcat([ b1, b2 ], resizable(false));
 }
