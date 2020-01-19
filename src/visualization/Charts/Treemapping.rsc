@@ -152,7 +152,7 @@ public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
 												width(600)),
 												text(str () { return "n: <n>";}
 											)],
-										left(),top()),
+										center(),top(), gap(10),vgap(40), resizable(false)),
 											computeFigure(bool(){
 												return (previouslySelectedTreeType != selectedTreeType) || previousN != n;
 											},Figure(){
