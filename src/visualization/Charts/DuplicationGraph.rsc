@@ -15,7 +15,7 @@ import visualization::Utils;
 import vis::Render;
 
 public Figure renderDuplicationGraph(rel[loc, loc] duplicationRelationships) {
-	nodes = [box(text("<cl.path[1..]>"), id("<cl>"), fillColor(arbColor())) | cl <- carrier(duplicationRelationships)]; 
+	nodes = [ellipse(text("<cl.path[1..]>"), id("<cl>"), fillColor(arbColor())) | cl <- carrier(duplicationRelationships)]; 
   	
   	edges = [ edge("<to>", "<from>") | <from,to> <- duplicationRelationships ];
 	
