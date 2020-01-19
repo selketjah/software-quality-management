@@ -35,7 +35,7 @@ public Figure renderDependencyGraph(loc p) {
 									previousN = n;
 									return graph(classFigures, edges, hint("layered"), std(gap(n*4)), size(n*5), std(fontSize(n)));
 								})
-							]);
+							], resizable(false));
 	return graphView;
 }
 

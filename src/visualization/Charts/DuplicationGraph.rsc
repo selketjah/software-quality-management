@@ -15,15 +15,15 @@ import visualization::Utils;
 import vis::Render;
 
 public Figure renderDuplicationGraph(rel[loc, loc] duplicationRelationships) {
-	nodes = [box(text("<cl.path[1..]>"), id("<cl>"), fillColor(arbColor())) | cl <- carrier(duplicationRelationships)]; 
+	nodes = [box(text("<cl.path[3..]>"), id("<cl>"), fillColor(arbColor())) | cl <- carrier(duplicationRelationships)]; 
   	
   	edges = [ edge("<to>", "<from>") | <from,to> <- duplicationRelationships ];
 	
-	int n = 10;
+	int n = 5;
 	int previousN = 0;
 	Figure graphView = vcat([
 							scaleSlider(
-									int() { return 5; }, 
+									int() { return 0; }, 
 									int() { return 20; }, 
 									int() { return n; },
 									void (int s) { n = s; },
@@ -32,8 +32,8 @@ public Figure renderDuplicationGraph(rel[loc, loc] duplicationRelationships) {
 									return previousN != n;
 								},Figure(){
 									previousN = n;
-									return graph(nodes, edges, hint("layered"), std(gap(n*4)), size(n*5), std(fontSize(n)));
+									return graph(nodes, edges, hint("layered"), std(gap(5)), size(n), hgap(5), std(fontSize(n*3)));
 								})
-							]);
+							], resizable(false));
 	return graphView;
 }
