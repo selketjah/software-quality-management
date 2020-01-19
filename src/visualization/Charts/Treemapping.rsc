@@ -79,7 +79,7 @@ public Figure createComplexityBox(FProperty popup, int complexity, loc src) {
 	FProperty color = getComplexityColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color, popup, onMouseDown(treemapBoxClickHandler(src)));
+	return box(area, color, popup);//, onMouseDown(treemapBoxClickHandler(src))
 }
 
 public Figure createUnitSizeBox(FProperty popup, int unitSize, loc src) {
@@ -88,7 +88,7 @@ public Figure createUnitSizeBox(FProperty popup, int unitSize, loc src) {
 	FProperty color = getSizeColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color, popup, onMouseDown(treemapBoxClickHandler(src)));
+	return box(area, color, popup);//, onMouseDown(treemapBoxClickHandler(src))
 }
 
 public Figure createCompilationBox(str state, list[UnitMetric] compilationUnitMetrics) {
@@ -116,18 +116,16 @@ private Figure createTreemap(str state, int n, set[CompilationUnitMetric] compil
 		figures += fileBox;
 	}
 
-	t = treemap(figures);//, width(n), height(n), resizable(false));
+	t = treemap(figures, width(n), height(n), resizable(false));
 	     
 	return t;
 }
 
 private bool(int, map[KeyModifier, bool]) treemapBoxClickHandler(loc src) = bool(int btn, map[KeyModifier, bool] mdf) {
 	if(btn == 1){ 
-		// && mdf[\modCtrl()] == true){
 		edit(src);
 		return true;
 	}
-	
 	return false;
 };
 public Figure drawTreemap(str treeType, int n, set[CompilationUnitMetric] compilationUnitMetrics){
@@ -135,32 +133,35 @@ public Figure drawTreemap(str treeType, int n, set[CompilationUnitMetric] compil
 }
 
 public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
+	// draw treemap panel
+	list[str] treeTypes = ["Complexity","Unit size"];
 	
-	//Figure scaledTreeMap(set[CompilationUnitMetric] compilationUnitMetrics){
-		
-		int n = 300;
-		list[str] treeTypes = ["Complexity","Unit size"];
-		Figure treeMap = state["heatmap"] ? drawTreemap(treeTypes[0], n, projectData.metrics.compilationUnitMetrics);
-	
-  		return vcat([ 
-	  		combo(treeTypes, void(str s) {
-	  							
-	  							map[str, Figure] state = (); 
-	  							state["heatmap"] = drawTreemap(s, n, projectData.metrics.compilationUnitMetrics);
- 								renderVisualization(\heatmap(), projectData, state);
-							  	}, resizable(false)),
-					//hcat([scaleSlider(int() { return 200; },     
-	    //                	int () { return 1000; },  
-	    //                	int () { return n; },
-	    //                	void (int s) { n = s; }, 
-	    //                	width(800)),
-	    //                	text(str () { return "n: <n>";})],
-	    //                	left(),top(),resizable(false)),
-	  		//	      	computeFigure(Figure (){
-	  			      		 treeMap
-  			      		//})
-	  			      	
-              ]); 
-      //}
-      
+	str selectedTreeType = treeTypes[0]; // initial tree type 
+	int n = 300;
+	Figure treeMapView = vcat([
+							combo(treeTypes, 
+									void(str s) {
+										// if we change state here, we should be able to access it in computeFigure...
+										selectedTreeType = s;
+									}, 
+									center(), 
+									resizable(false)),
+							vcat([
+									hcat([
+										scaleSlider(
+												int() { return 200; }, 
+												int() { return 1000; }, 
+												int() { return n; },
+												void (int s) { n = s; },
+												width(600)),
+												text(str () { return "n: <n>";}
+											)],
+										left(),top(),resizable(false)),
+											computeFigure(Figure(){
+												// redraw complete view with scaleslider each time a user interacts
+												return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
+											})
+										], resizable(false))
+								]);
+	return treeMapView;
 }
