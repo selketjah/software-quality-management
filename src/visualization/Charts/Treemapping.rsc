@@ -143,25 +143,22 @@ public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
 									center(), 
 									resizable(false)),
 							vcat([
-									hcat([
-										scaleSlider(
-												int() { return 200; }, 
-												int() { return 1000; }, 
-												int() { return n; },
-												void (int s) { n = s; },
-												width(600)),
-												text(str () { return "n: <n>";}
-											)],
-										center(),top(), gap(10),vgap(40), resizable(false)),
-											computeFigure(bool(){
-												return (previouslySelectedTreeType != selectedTreeType) || previousN != n;
-											},Figure(){
-												// redraw complete view with scaleslider each time a user interacts
-												previouslySelectedTreeType = selectedTreeType;
-												previousN = n;
-												return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
-											})
-										], resizable(false))
+									scaleSlider(
+											int() { return 200; }, 
+											int() { return 1000; }, 
+											int() { return n; },
+											void (int s) { n = s; },
+											width(600), center(), top(), gap(10), vgap(40), resizable(false)),
+											
+										computeFigure(bool(){
+											return (previouslySelectedTreeType != selectedTreeType) || previousN != n;
+										},Figure(){
+											// redraw complete view with scaleslider each time a user interacts
+											previouslySelectedTreeType = selectedTreeType;
+											previousN = n;
+											return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
+										})
+									])
 								], center(),top());
 	return treeMapView;
 }

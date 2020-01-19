@@ -20,6 +20,22 @@ public Figure renderDependencyGraph(loc p) {
   	
   	edges = [edge("<to>", "<from>") | <from,to> <- m.extends, size(m.declarations[to])>0];
   	
-  	return graph(classFigures, edges, hint("layered"), std(gap(40)), size(500), std(fontSize(10)));
+  	int n = 10;
+	int previousN = 0;
+	Figure graphView = vcat([
+							scaleSlider(
+									int() { return 5; }, 
+									int() { return 20; }, 
+									int() { return n; },
+									void (int s) { n = s; },
+									width(500), resizable(false), left()),
+								computeFigure(bool(){
+									return previousN != n;
+								},Figure(){
+									previousN = n;
+									return graph(classFigures, edges, hint("layered"), std(gap(n*4)), size(n*5), std(fontSize(n)));
+								})
+							]);
+	return graphView;
 }
 
