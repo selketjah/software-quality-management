@@ -9,6 +9,7 @@ import Relation;
 import String;
 
 import structs::Visualization;
+import visualization::Components::Legend;
 
 import scoring::Rank;
 import scoring::Ranking;
@@ -91,7 +92,10 @@ public Figure maintainabilityScores(ProjectData projectData) {
 public Figure renderDashboard(ProjectData projectData) {
 	row0 = header(projectData.project, projectData.ranks.overall);
 	row1 = ranking(projectData);
-	row2 = maintainabilityScores(projectData);
+	
+	leftRow2 = maintainabilityScores(projectData);
+	rightRow2 = renderLegend(rgb(255,245,0), rgb(255,119,0), rgb(249, 2, 10), rgb(2, 245, 249));
+	row2 = hcat([ leftRow2, rightRow2 ]);
      
 	return vcat( [ row0, row1, row2 ]);
 }
