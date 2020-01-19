@@ -76,6 +76,6 @@ public void calculateSIG(loc project){
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	
-	initializeVisualization(<project, metrics, size(methods), averages, ranks>);
+	initializeVisualization(<project, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
 }
 	

@@ -8,6 +8,8 @@ import Map;
 import structs::Visualization;
 import visualization::Charts::Treemapping;
 import visualization::Charts::ProjectGraph;
+import visualization::Charts::InterdependenceGraph;
+import visualization::Charts::DuplicationGraph;
 import visualization::Components::Dashboard;
 
 import scoring::Rank;
@@ -28,8 +30,8 @@ public Figure renderContent(Panel active, ProjectData projectData) {
 		case \general(): content = renderDashboard(projectData);
 		case \heatmap(): content = drawTreemap(projectData);
 		case \architecture(): content = renderDependencyGraph(projectData.project);
-		case \interdependency(): content = renderDependencyGraph(projectData.project);
-		case \duplication(): content = renderDependencyGraph(projectData.project);
+		case \interdependency(): content = renderInterdependenceGraph(projectData.project);
+		case \duplication(): content = renderDuplicationGraph(projectData.duplicationRelationships);
 	}
 
 	return content;

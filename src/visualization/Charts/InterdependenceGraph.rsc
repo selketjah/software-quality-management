@@ -15,10 +15,6 @@ import vis::Render;
 
 public Figure renderInterdependenceGraph(loc p) {
 	M3 m = createM3FromEclipseProject(p);
-
-  	classFigures = [box(text("<cl.path[1..]>"), id("<cl>"), fillColor(arbColor()), onMouseDown(openOnClick(min(m.declarations[cl])))) | cl <- classes(m)]; 
   	
-  	edges = [edge("<to>", "<from>") | <from,to> <- m.extends, size(m.declarations[to])>0];
-  	
-  	return graph(classFigures, edges, hint("layered"), std(gap(40)), size(500), std(fontSize(10)));
+  	return box();
 }
