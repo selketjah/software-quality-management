@@ -38,10 +38,11 @@ import structs::Percentage;
 import structs::UnitTestCoverage;
 import visualization::Visualization;
 import structs::Ranking;
+import string::Print;
 
 public void main(){
-	calculateSIG(|project://JabberPoint|);
-	//calculateSIG(|project://smallsql|);
+	//calculateSIG(|project://JabberPoint|);
+	calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
@@ -76,6 +77,7 @@ public void calculateSIG(loc project){
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	
+	//printResult(volume, size(methods), percentages, averages, ranks);
 	initializeVisualization(<project, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
 }
 	

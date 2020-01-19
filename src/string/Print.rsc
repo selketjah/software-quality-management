@@ -11,6 +11,14 @@ import scoring::Average;
 import scoring::Percentage;
 import scoring::Maintainability;
 
+import structs::Volume;
+import structs::Average;
+import structs::Percentage;
+import structs::UnitTestCoverage;
+import structs::Ranking;
+import structs::Maintainability;
+import structs::Rank;
+
 // Constants
 int SCORE_FILL_UP_AMOUNT = 15;
 int RANK_FILL_UP_AMOUNT = 5;
