@@ -1,6 +1,7 @@
 module visualization::Utils
 
 import lang::java::m3::Registry;
+import util::Editors;
 import vis::Figure;
 import vis::Render;
 import vis::KeySym;
@@ -18,10 +19,13 @@ FProperty openMethodOnClick(loc methodLoc) {
 	);
 }
 
-private bool(int, map[KeyModifier, bool]) openOnClick(loc src) = bool(int btn, map[KeyModifier, bool] mdf) {
-	if(btn == 1){ 
-		edit(src);
-		return true;
-	}
-	return false;
-};
+FProperty openDocumentOnClick(loc src) {
+	return onMouseDown(
+		bool (int btn, map[KeyModifier,bool] modifiers) {
+		if(btn == 1){ 
+			edit(src);
+			return true;
+		}
+		return false;
+	});
+}

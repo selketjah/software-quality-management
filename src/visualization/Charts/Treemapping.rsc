@@ -80,7 +80,7 @@ public Figure createComplexityBox(FProperty popup, int complexity, loc src) {
 	FProperty color = getComplexityColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color, popup);//, onMouseDown(openOnClick(src)), resizable(false));
+	return box(area, color, popup);//, openDocumentOnClick(src), resizable(false));
 }
 
 public Figure createUnitSizeBox(FProperty popup, int unitSize, loc src) {
@@ -89,7 +89,7 @@ public Figure createUnitSizeBox(FProperty popup, int unitSize, loc src) {
 	FProperty color = getSizeColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color, popup);//, onMouseDown(openOnClick(src)), resizable(false));
+	return box(area, color, popup);//, openDocumentOnClick(src), resizable(false));
 }
 
 public Figure createCompilationBox(str state, list[UnitMetric] compilationUnitMetrics) {
@@ -117,7 +117,7 @@ private Figure createTreemap(str state, int n, set[CompilationUnitMetric] compil
 		figures += fileBox;
 	}
 
-	t = treemap(figures, width(n), height(n), resizable(false));
+	t = treemap(figures, width(n*2), height(n), resizable(false));
 	     
 	return t;
 }
@@ -150,12 +150,12 @@ public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
 												width(600)),
 												text(str () { return "n: <n>";}
 											)],
-										left(),top(),resizable(false)),
+										left(),top()),
 											computeFigure(Figure(){
 												// redraw complete view with scaleslider each time a user interacts
 												return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
 											})
 										], resizable(false))
-								]);
+								], center(),top());
 	return treeMapView;
 }
