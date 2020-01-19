@@ -7,7 +7,7 @@ import Map;
 
 import structs::Visualization;
 import visualization::Charts::Treemapping;
-import visualization::ProjectGraph;
+import visualization::Charts::ProjectGraph;
 import visualization::Components::Dashboard;
 
 import scoring::Rank;
@@ -15,6 +15,7 @@ import scoring::Ranking;
 import scoring::Average;
 import scoring::Percentage;
 import scoring::Maintainability;
+
 
 import util::Math;
 
