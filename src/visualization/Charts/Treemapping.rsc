@@ -80,7 +80,7 @@ public Figure createComplexityBox(FProperty popup, int complexity, loc src) {
 	FProperty color = getComplexityColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color, popup);//, openDocumentOnClick(src), resizable(false));
+	return box(area, color, popup, openDocumentOnClick(src));
 }
 
 public Figure createUnitSizeBox(FProperty popup, int unitSize, loc src) {
@@ -89,7 +89,7 @@ public Figure createUnitSizeBox(FProperty popup, int unitSize, loc src) {
 	FProperty color = getSizeColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color, popup);//, openDocumentOnClick(src), resizable(false));
+	return box(area, color, popup, openDocumentOnClick(src));
 }
 
 public Figure createCompilationBox(str state, list[UnitMetric] compilationUnitMetrics) {
@@ -130,7 +130,8 @@ public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
 	// draw treemap panel
 	list[str] treeTypes = ["Complexity","Unit size"];
 	
-	str selectedTreeType = treeTypes[0]; // initial tree type 
+	str selectedTreeType = treeTypes[0]; // initial tree type
+	str previouslySelectedTreeType; 
 	int n = 300;
 	Figure treeMapView = vcat([
 							combo(treeTypes, 
@@ -151,8 +152,11 @@ public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
 												text(str () { return "n: <n>";}
 											)],
 										left(),top()),
-											computeFigure(Figure(){
+											computeFigure(bool(){
+												return (previouslySelectedTreeType != selectedTreeType);
+											},Figure(){
 												// redraw complete view with scaleslider each time a user interacts
+												previouslySelectedTreeType = selectedTreeType;
 												return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
 											})
 										], resizable(false))
