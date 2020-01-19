@@ -14,6 +14,7 @@ alias ProjectData = tuple[loc project, Metrics metrics, int numberOfUnits, Avera
 data Panel
     = \general()
     | \heatmap()
-    | \dependencies()
+    | \architecture()
+    | \interdependency()
     | \duplication()
     ;

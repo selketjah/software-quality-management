@@ -26,7 +26,9 @@ public Figure renderContent(Panel active, ProjectData projectData, map[str, Figu
 	visit(active) {
 		case \general(): content = renderDashboard(projectData);
 		case \heatmap(): content = drawTreemap(state, projectData);
-		case \dependencies(): content = renderDependencyGraph(projectData.project);
+		case \architecture(): content = renderDependencyGraph(projectData.project);
+		case \interdependency(): content = renderDependencyGraph(projectData.project);
+		case \duplication(): content = renderDependencyGraph(projectData.project);
 	}
 
 	return content;

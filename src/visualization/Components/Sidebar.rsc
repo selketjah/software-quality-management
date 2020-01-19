@@ -23,7 +23,8 @@ private Figure renderButton(ProjectData projectData, Panel active, map[str, Figu
 
 public Figure renderSidebar(ProjectData projectData, Panel active, map[str, Figure] state) {
 	return hcat([ renderButton(projectData, active, state, \general(), "Dashboard"),
-				  renderButton(projectData, active, state, \dependencies(), "Dependency graph"),
+				  renderButton(projectData, active, state, \architecture(), "Architectural tree"),
+				  renderButton(projectData, active, state, \interdependency(), "Interdependency graph"),
 				  renderButton(projectData, active, state, \heatmap(), "Heat map cc and size"),
 				  renderButton(projectData, active, state, \duplication(), "Duplication")
                 ], resizable(false), align(0,0));
