@@ -133,6 +133,7 @@ public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
 	str selectedTreeType = treeTypes[0]; // initial tree type
 	str previouslySelectedTreeType; 
 	int n = 300;
+	int previousN = 0;
 	Figure treeMapView = vcat([
 							combo(treeTypes, 
 									void(str s) {
@@ -153,10 +154,11 @@ public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
 											)],
 										left(),top()),
 											computeFigure(bool(){
-												return (previouslySelectedTreeType != selectedTreeType);
+												return (previouslySelectedTreeType != selectedTreeType) || previousN != n;
 											},Figure(){
 												// redraw complete view with scaleslider each time a user interacts
 												previouslySelectedTreeType = selectedTreeType;
+												previousN = n;
 												return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
 											})
 										], resizable(false))
