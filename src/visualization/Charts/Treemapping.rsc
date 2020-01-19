@@ -126,7 +126,7 @@ public Figure drawTreemap(str treeType, int n, set[CompilationUnitMetric] compil
 	return createTreemap(treeType, n, compilationUnitMetrics);	
 }
 
-public Figure drawTreemap(map[str, Figure] state, ProjectData projectData) {
+public Figure drawTreemap(ProjectData projectData) {
 	// draw treemap panel
 	list[str] treeTypes = ["Complexity","Unit size"];
 	
