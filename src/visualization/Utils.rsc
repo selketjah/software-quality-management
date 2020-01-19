@@ -17,3 +17,11 @@ FProperty openMethodOnClick(loc methodLoc) {
 		}
 	);
 }
+
+private bool(int, map[KeyModifier, bool]) openOnClick(loc src) = bool(int btn, map[KeyModifier, bool] mdf) {
+	if(btn == 1){ 
+		edit(src);
+		return true;
+	}
+	return false;
+};

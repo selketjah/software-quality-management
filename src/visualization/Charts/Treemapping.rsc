@@ -6,6 +6,7 @@ import util::Editors;
 
 import metrics::UnitMetrics;
 import vis::KeySym;
+import visualization::Utils;
 
 import scoring::categories::CyclomaticComplexity;
 import scoring::categories::UnitSize;
@@ -79,7 +80,7 @@ public Figure createComplexityBox(FProperty popup, int complexity, loc src) {
 	FProperty color = getComplexityColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color, popup);//, onMouseDown(treemapBoxClickHandler(src))
+	return box(area, color, popup);//, onMouseDown(openOnClick(src)), resizable(false));
 }
 
 public Figure createUnitSizeBox(FProperty popup, int unitSize, loc src) {
@@ -88,7 +89,7 @@ public Figure createUnitSizeBox(FProperty popup, int unitSize, loc src) {
 	FProperty color = getSizeColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
-	return box(area, color, popup);//, onMouseDown(treemapBoxClickHandler(src))
+	return box(area, color, popup);//, onMouseDown(openOnClick(src)), resizable(false));
 }
 
 public Figure createCompilationBox(str state, list[UnitMetric] compilationUnitMetrics) {
@@ -121,13 +122,6 @@ private Figure createTreemap(str state, int n, set[CompilationUnitMetric] compil
 	return t;
 }
 
-private bool(int, map[KeyModifier, bool]) treemapBoxClickHandler(loc src) = bool(int btn, map[KeyModifier, bool] mdf) {
-	if(btn == 1){ 
-		edit(src);
-		return true;
-	}
-	return false;
-};
 public Figure drawTreemap(str treeType, int n, set[CompilationUnitMetric] compilationUnitMetrics){
 	return createTreemap(treeType, n, compilationUnitMetrics);	
 }
