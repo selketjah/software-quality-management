@@ -78,6 +78,6 @@ public void calculateSIG(loc project){
 	Ranks ranks = determineRanks(metrics);
 	
 	//printResult(volume, size(methods), percentages, averages, ranks);
-	initializeVisualization(<project, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
+	initializeVisualization(<project, currentProjectModel, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
 }
 	

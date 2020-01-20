@@ -145,7 +145,7 @@ public Figure drawTreemap(ProjectData projectData) {
 							vcat([
 									scaleSlider(
 											int() { return 200; }, 
-											int() { return 1000; }, 
+											int() { return 3000; }, 
 											int() { return n; },
 											void (int s) { n = s; },
 											width(600), center(), top(), gap(10), vgap(40), resizable(false)),

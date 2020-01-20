@@ -5,7 +5,7 @@ import util::Editors;
 import vis::Figure;
 import vis::Render;
 import vis::KeySym;
-
+import IO;
 FProperty popup(str message) {
 	return mouseOver(box(text(message), resizable(false)));
 }

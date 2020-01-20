@@ -16,7 +16,7 @@ import vis::Render;
 
 public Figure renderDuplicationGraph(rel[loc, loc] duplicationRelationships) {
 
-	nodes = [ellipse(text("<cl.path[1..]>"), id("<cl>"), fillColor(arbColor())) | cl <- carrier(duplicationRelationships)]; 
+	nodes = [ellipse(text("<cl.file>"), id("<cl>"), fillColor(arbColor()), openDocumentOnClick(cl)) | cl <- carrier(duplicationRelationships)]; 
   	
   	edges = [ edge("<to>", "<from>") | <from,to> <- duplicationRelationships ];
 	
@@ -33,8 +33,8 @@ public Figure renderDuplicationGraph(rel[loc, loc] duplicationRelationships) {
 									return previousN != n;
 								},Figure(){
 									previousN = n;
-									return graph(nodes, edges, hint("layered"), std(gap(5)), size(n), hgap(5), std(fontSize(n*3)));
+									return graph(nodes, edges, hint("layered"), std(gap(5)), size(n), hgap(5), std(fontSize(n*3)), resizable(false));
 								})
-							], resizable(false));
+							]);
 	return graphView;
 }

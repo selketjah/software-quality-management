@@ -13,8 +13,7 @@ import vis::Figure;
 import visualization::Utils;
 import vis::Render;
 
-public Figure renderInterdependenceGraph(loc p) {
-	M3 m = createM3FromEclipseProject(p);
+public Figure renderInterdependenceGraph(M3 model) {
   	
   	return box();
 }

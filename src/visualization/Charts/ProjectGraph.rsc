@@ -13,12 +13,11 @@ import vis::Figure;
 import visualization::Utils;
 import vis::Render;
 
-public Figure renderDependencyGraph(loc p) {
-	M3 m = createM3FromEclipseProject(p);
+public Figure renderDependencyGraph(M3 model) {
 
-  	classFigures = [box(text("<cl.path[1..]>"), id("<cl>"), fillColor(arbColor()), openDocumentOnClick(min(m.declarations[cl]))) | cl <- classes(m)]; 
+  	classFigures = [box(text("<cl.path[1..]>"), id("<cl>"), fillColor(arbColor()), openDocumentOnClick(min(model.declarations[cl]))) | cl <- classes(model)]; 
   	
-  	edges = [edge("<to>", "<from>") | <from,to> <- m.extends, size(m.declarations[to])>0];
+  	edges = [edge("<to>", "<from>") | <from,to> <- model.extends, size(model.declarations[to])>0];
   	
   	int n = 10;
 	int previousN = 0;

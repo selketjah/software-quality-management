@@ -26,11 +26,12 @@ import vis::Render;
 
 public Figure renderContent(Panel active, ProjectData projectData) {
 	Figure content;
+	
 	visit(active) {
 		case \general(): content = renderDashboard(projectData);
 		case \heatmap(): content = drawTreemap(projectData);
-		case \architecture(): content = renderDependencyGraph(projectData.project);
-		case \interdependency(): content = renderInterdependenceGraph(projectData.project);
+		case \architecture(): content = renderDependencyGraph(projectData.model);
+		case \interdependency(): content = renderInterdependenceGraph(projectData.model);
 		case \duplication(): content = renderDuplicationGraph(projectData.duplicationRelationships);
 	}
 
