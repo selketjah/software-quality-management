@@ -28,13 +28,13 @@ public Figure renderDuplicationGraph(rel[loc, loc] duplicationRelationships) {
 									int() { return 20; }, 
 									int() { return n; },
 									void (int s) { n = s; },
-									width(500), resizable(false), left()),
+									size(500, 50), resizable(false), left(), top()),
 								computeFigure(bool(){
 									return previousN != n;
 								},Figure(){
 									previousN = n;
-									return graph(nodes, edges, hint("layered"), std(gap(5)), size(n), hgap(5), std(fontSize(n*3)), resizable(false));
+									return graph(nodes, edges, hint("layered"), std(gap(5)), size(n), hgap(5), std(fontSize(n*3)));
 								})
-							]);
+							], size(1000, 600), resizable(false));
 	return graphView;
 }
