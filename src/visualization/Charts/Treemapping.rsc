@@ -159,6 +159,6 @@ public Figure drawTreemap(ProjectData projectData) {
 											return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
 										})
 									])
-								], center(),top(), resizable(false));
+								], center(),top());
 	return treeMapView;
 }
