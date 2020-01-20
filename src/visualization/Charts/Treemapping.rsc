@@ -135,30 +135,29 @@ public Figure drawTreemap(ProjectData projectData) {
 	int n = 300;
 	int previousN = 0;
 	Figure treeMapView = vcat([
-							combo(treeTypes, 
-									void(str s) {
-										// if we change state here, we should be able to access it in computeFigure...
-										selectedTreeType = s;
-									}, 
-									center(), 
-									resizable(false)),
-							vcat([
-									scaleSlider(
-											int() { return 100; }, 
-											int() { return 3000; }, 
-											int() { return n; },
-											void (int s) { n = s; },
-											width(600), center(), top(), gap(10), vgap(40), resizable(false)),
-											
-										computeFigure(bool(){
-											return (previouslySelectedTreeType != selectedTreeType) || previousN != n;
-										},Figure(){
-											// redraw complete view with scaleslider each time a user interacts
-											previouslySelectedTreeType = selectedTreeType;
-											previousN = n;
-											return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
-										})
-									])
-								], center(),top());
+						    combo(treeTypes, 
+								void(str s) {
+									// if we change state here, we should be able to access it in computeFigure...
+									selectedTreeType = s;
+								}, 
+								left(),
+								top(),
+								size(100, 30), 
+								resizable(false)),
+							scaleSlider(
+									int() { return 400; }, 
+									int() { return 3000; }, 
+									int() { return n; },
+									void (int s) { n = s; },
+									size(500, 50), left(), top(), resizable(false)),
+						
+							computeFigure(bool(){
+								return (previouslySelectedTreeType != selectedTreeType) || previousN != n;
+							},Figure(){
+								// redraw complete view with scaleslider each time a user interacts
+								previouslySelectedTreeType = selectedTreeType;
+								previousN = n;
+								return drawTreemap(selectedTreeType, n, projectData.metrics.compilationUnitMetrics);
+							})], size(1000, 300), left(),top());
 	return treeMapView;
 }

@@ -24,7 +24,7 @@ public Figure renderDuplicationGraph(rel[loc, loc] duplicationRelationships) {
 	int previousN = 0;
 	Figure graphView = vcat([
 							scaleSlider(
-									int() { return 0; }, 
+									int() { return 5; }, 
 									int() { return 20; }, 
 									int() { return n; },
 									void (int s) { n = s; },
