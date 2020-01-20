@@ -76,8 +76,19 @@ public void calculateSIG(loc project){
 	
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
-	
+	println(size(methods));
 	//printResult(volume, size(methods), percentages, averages, ranks);
 	initializeVisualization(<project, currentProjectModel, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
 }
+
+public void tests(){
+	loc project  =|project://JabberPoint|;
+
+	M3 currentProjectModel = createM3FromEclipseProject(project);
 	
+	list[loc] allFromCanContainMethods = [src| loc src <- domain(currentProjectModel.typeDependency), canContainMethods(src) 
+															&& (!isEmpty(currentProjectModel.declarations[src]))];
+
+	println(allFromCanContainMethods);
+	
+}

@@ -19,15 +19,15 @@ public Figure renderDependencyGraph(M3 model) {
   	
   	edges = [edge("<to>", "<from>") | <from,to> <- model.extends, size(model.declarations[to])>0];
   	
-  	int n = 10;
+  	int n = 3;
 	int previousN = 0;
 	Figure graphView = vcat([
 							scaleSlider(
-									int() { return 5; }, 
+									int() { return 1; }, 
 									int() { return 20; }, 
 									int() { return n; },
 									void (int s) { n = s; },
-									size(500, 50), resizable(false), left(), top()),
+									width(500), resizable(false), vgap(60), left()),
 								computeFigure(bool(){
 									return previousN != n;
 								},Figure(){
