@@ -2,6 +2,7 @@ module metrics::Complexity
 
 import IO;
 import Set;
+import Map;
 import lang::java::jdt::m3::AST;
 import lang::java::jdt::m3::Core;
 
@@ -26,6 +27,10 @@ public int calculateUnitCyclomaticComplexity(Statement statement) {
 	};
 	
 	return total;
+}
+
+public int calculateTotalComplexity(map[loc, int] methodComplexityMap){
+	return sum(range(methodComplexityMap)) + 1; // +1 == program execution
 }
 
 public int calculateInvokedComplexity(loc src, map[loc, int] methodComplexityMap, M3 model){

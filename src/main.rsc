@@ -41,8 +41,8 @@ import structs::Ranking;
 import string::Print;
 
 public void main(){
-	calculateSIG(|project://JabberPoint|);
-	//calculateSIG(|project://smallsql|);
+	//calculateSIG(|project://JabberPoint|);
+	calculateSIG(|project://smallsql|);
 	//calculateSIG(|project://hsqldb|);
 }
 
@@ -72,11 +72,11 @@ public void calculateSIG(loc project){
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
 	
 	Average averages = calculateAverages(compilationUnitMetricSet);
-	Percentages percentages = calculatePercentages(volume, duplication.duplicationRel, sum(range(methodComplexityMap)), unitTestCoverageMap);
+	Percentages percentages = calculatePercentages(volume, duplication.duplicationRel, methodComplexityMap, unitTestCoverageMap);
 	
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
-	println(size(methods));
+	
 	//printResult(volume, size(methods), percentages, averages, ranks);
 	initializeVisualization(<project, currentProjectModel, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
 }
@@ -86,9 +86,21 @@ public void tests(){
 
 	M3 currentProjectModel = createM3FromEclipseProject(project);
 	
-	list[loc] allFromCanContainMethods = [src| loc src <- domain(currentProjectModel.typeDependency), canContainMethods(src) 
-															&& (!isEmpty(currentProjectModel.declarations[src]))];
+	
+	
+	
+	
+	//for(<loc name,loc src> <- methods){
+	//	for(loc to <-model.methodInvocation[name]){
+	//		set[loc] methodLocationSet = model.declarations[to];
+	//		
+	//		if(!isEmpty(methodLocationSet)){	
+	//			edges += edge("<name.path>", "<to.path>");
+	//		}
+	//	}
+	//}
 
-	println(allFromCanContainMethods);
+	
 	
 }
+

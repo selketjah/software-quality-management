@@ -7,20 +7,24 @@ import util::Math;
 
 import metrics::Duplicates;
 import metrics::UnitTestCoverage;
+import metrics::Complexity;
 import structs::Percentage;
 import structs::Duplication;
 import structs::UnitTestCoverage;
 
-private int determineUnitTestCoveragePercentageRank(int totalComplexity, UnitTestCoverageMap assertMaps) {
+private int determineUnitTestCoveragePercentageRank(map[loc, int] methodComplexityMap, UnitTestCoverageMap assertMaps) {
 	int asserts = 0;
+	int unitTestComplexity = 0;
 	
 	for(loc src <- assertMaps){
 		tuple[int numberOfAsserts, int locCoverage, int complexityCoverage] info = assertMaps[src];
 		asserts += info.numberOfAsserts;
+		unitTestComplexity += methodComplexityMap[src];
+		
 	}
-	println(asserts);
-	println(totalComplexity);
-	int percentage = percent(asserts, totalComplexity);
+	//uitgaand van 1 testcase test 1 CC pad
+	int totalComplexity = calculateTotalComplexity(methodComplexityMap);
+	int percentage = percent(size(assertMaps), totalComplexity - unitTestComplexity);
 	return percentage;
 }
 
@@ -33,9 +37,9 @@ private int determineDuplicationPercentage(int volume, DuplicateCodeRel duplicat
 	return percentage;
 }
 
-public Percentages calculatePercentages(int volume, DuplicateCodeRel duplicationRel, int totalComplexity, UnitTestCoverageMap assertMaps) {	
+public Percentages calculatePercentages(int volume, DuplicateCodeRel duplicationRel, map[loc, int] methodComplexityMap, UnitTestCoverageMap assertMaps) {	
 	int duplicationPercentage = determineDuplicationPercentage(volume, duplicationRel);
-	int unitTestCoveragePercentage = determineUnitTestCoveragePercentageRank(totalComplexity, assertMaps);
+	int unitTestCoveragePercentage = determineUnitTestCoveragePercentageRank(methodComplexityMap, assertMaps);
 
 	return <duplicationPercentage, unitTestCoveragePercentage>;
 }
