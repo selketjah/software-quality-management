@@ -24,6 +24,8 @@ import util::Math;
 import vis::Figure;
 import vis::Render;
 
+FProperty textColor = fontColor(rgb(3,54,73));
+
 FProperty titleColor = fontColor(rgb(143,190,0));
 FProperty subTitleColor = fontColor(rgb(108,120,142));
 
@@ -90,6 +92,9 @@ public Figure maintainabilityScores(ProjectData projectData) {
 }
 
 public Figure renderDashboard(ProjectData projectData) {
+	str sig = "SIG report - " + projectData.project.authority;
+	sigTitle = text(sig, fontSize(40), textColor);
+	
 	row0 = header(projectData.project, projectData.ranks.overall);
 	row1 = ranking(projectData);
 	
@@ -97,5 +102,5 @@ public Figure renderDashboard(ProjectData projectData) {
 	rightRow2 = renderLegend(rgb(255,245,0), rgb(255,119,0), rgb(249, 2, 10), rgb(2, 245, 249));
 	row2 = hcat([ leftRow2, rightRow2 ]);
      
-	return vcat( [ row0, row1, row2 ]);
+	return vcat( [ sigTitle, row0, row1, row2 ]);
 }
