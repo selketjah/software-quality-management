@@ -132,7 +132,7 @@ public Figure drawTreemap(ProjectData projectData) {
 	
 	str selectedTreeType = treeTypes[0]; // initial tree type
 	str previouslySelectedTreeType; 
-	int n = 300;
+	int n = 400;
 	int previousN = 0;
 	Figure treeMapView = vcat([
 						    combo(treeTypes, 
@@ -146,7 +146,7 @@ public Figure drawTreemap(ProjectData projectData) {
 								resizable(false)),
 							scaleSlider(
 									int() { return 400; }, 
-									int() { return 3000; }, 
+									int() { return 900; }, 
 									int() { return n; },
 									void (int s) { n = s; },
 									size(500, 50), left(), top(), resizable(false)),
