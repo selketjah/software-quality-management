@@ -27,14 +27,14 @@ public Figure renderDependencyGraph(M3 model) {
 									int() { return 20; }, 
 									int() { return n; },
 									void (int s) { n = s; },
-									width(500), resizable(false), left()),
+									size(500, 50), resizable(false), left(), top()),
 								computeFigure(bool(){
 									return previousN != n;
 								},Figure(){
 									previousN = n;
 									return graph(classFigures, edges, hint("layered"), std(gap(n*4)), size(n*5), std(fontSize(n)));
 								})
-							], resizable(false));
+							], size(1000, 600), resizable(false));
 	return graphView;
 }
 
