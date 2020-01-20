@@ -23,10 +23,10 @@ import vis::Render;
 FProperty classColor = fillColor(rgb(197,247,240));
 FProperty classArea = area(40);
 
-FProperty simpleBoundArea = area(3);
-FProperty moderateBoundArea = area(7);
-FProperty highBoundArea = area(11);
-FProperty veryHighBoundArea = area(15);
+FProperty simpleBoundArea = area(5);
+FProperty moderateBoundArea = area(10);
+FProperty highBoundArea = area(15);
+FProperty veryHighBoundArea = area(20);
 
 FProperty popup(str methodName, int complexity, int unitSize) {
 	methodName = text(methodName);
