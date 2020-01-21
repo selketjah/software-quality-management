@@ -77,7 +77,7 @@ public Figure createDependencyGraph(int scale, ProjectData projectData, bool has
 			growFactory = grow((0.00 + currentUnitLoc)/maxLoc);
 		}
 	
-		classFigures += box(text("<cl.path[1..]>"), growFactory, id("<cl>"), boxSize, shadow(showShadow), shadowPos(scale*1,scale*1), fillColor(arbColor()), openDocumentOnClick(min(projectData.model.declarations[cl])));
+		classFigures += box(text("<cl.file>"), growFactory, id("<cl>"), boxSize, shadow(showShadow), shadowPos(scale*1,scale*1), fillColor(arbColor()), openDocumentOnClick(min(projectData.model.declarations[cl])));
 		
 		showShadow = false;
 		growFactory = grow(1);
