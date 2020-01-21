@@ -74,10 +74,10 @@ public void calculateSIG(loc project){
 	Average averages = calculateAverages(methodComplexityMap , compilationUnitMetricSet);
 	Percentages percentages = calculatePercentages(volume, duplication.duplicationRel, methodComplexityMap, unitTestCoverageMap);
 	
-	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
+	Metrics metrics = <volume, compilationUnitMetricSet, <compilationUnitSizeRel, methodHolderSizeRel, methodSizeRel>, percentages>;
 	Ranks ranks = determineRanks(metrics);
 	 
 	printResult(volume, size(methods), percentages, averages, ranks);
 	
-	//initializeVisualization(<project, currentProjectModel, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
+	initializeVisualization(<project, currentProjectModel, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
 }

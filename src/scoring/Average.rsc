@@ -37,6 +37,7 @@ public Average calculateAverages(map[loc, int] methodComplexityMap, set[Compilat
 	}
 	
 	real sizeAverage = toReal(totalSize) / toReal(totalNumberOfUnits);
+	
 	real complexityAverage =  toReal(calculateTotalComplexity(methodComplexityMap))/totalNumberOfUnits;
 	
 	return <sizeAverage, complexityAverage>;

@@ -32,7 +32,7 @@ public int calculateUnitCyclomaticComplexity(Statement statement) {
 public int calculateTotalComplexity(map[loc, int] methodComplexityMap){
 	int currentComplexity = 0;
 	for(loc src <- methodComplexityMap){
-		currentComplexity += methodComplexityMap[src] +1;
+		currentComplexity += methodComplexityMap[src]; // do we need +1 here since base is always 1 in calculateUnitCyclomaticComplexity?
 	}
 	
 	return currentComplexity - (size(methodComplexityMap)-1); // +1 == program execution
