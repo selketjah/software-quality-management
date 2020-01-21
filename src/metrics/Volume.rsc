@@ -15,7 +15,7 @@ import string::Trim;
 import structs::Volume;
 import structs::Comments;
 
-public map[loc src, list[str] linesOfCode]  getLinesOfCode2(rel[loc name,loc src] compilationUnits, rel[loc name,loc src] methodHolders, rel[loc name,loc src] methods){
+public map[loc src, list[str] linesOfCode]  getLinesOfCodeByType(rel[loc name,loc src] compilationUnits, rel[loc name,loc src] methodHolders, rel[loc name,loc src] methods){
 	return (src:srcToLoc(src) | <loc name, loc src> <- compilationUnits)
 	 		+ (src:srcToLoc(src) | <loc name, loc src> <- methodHolders)
 	 		+ (src:srcToLoc(src) | <loc name, loc src> <- methods);

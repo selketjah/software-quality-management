@@ -55,7 +55,7 @@ public void calculateSIG(loc project){
 	rel[loc name,loc src] methodHolders = getMethodHoldingDeclerationsFromM3(currentProjectModel);
 	rel[loc name,loc src] methods = getMethodsFromM3(currentProjectModel);
 	
-	map[loc src, list[str] linesOfCode]  compilationUnitMap = getLinesOfCode2(compilationUnits, methodHolders, methods); 
+	map[loc src, list[str] linesOfCode] compilationUnitMap = getLinesOfCodeByType(compilationUnits, methodHolders, methods); 
 	
 	ComponentLOC compilationUnitSizeRel = calculateLinesOfCode(compilationUnits, compilationUnitMap);
 	ComponentLOC methodHolderSizeRel = calculateLinesOfCode(methodHolders, compilationUnitMap);
@@ -66,41 +66,18 @@ public void calculateSIG(loc project){
 	compilationUnitMetricSet += { calculateUnitMetrics(src, methodSizeRel) | <loc name, loc src> <- methodHolders };
 	
 	map[loc, int] methodComplexityMap = createMethodComplexityMap(compilationUnitMetricSet);
-	
+
 	UnitTestCoverageMap unitTestCoverageMap = createUnitTestCoverageMap(methodSizeRel, methods, compilationUnitMap, methodComplexityMap, currentProjectModel);
 	
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
 	
-	Average averages = calculateAverages(compilationUnitMetricSet);
+	Average averages = calculateAverages(methodComplexityMap , compilationUnitMetricSet);
 	Percentages percentages = calculatePercentages(volume, duplication.duplicationRel, methodComplexityMap, unitTestCoverageMap);
 	
 	Metrics metrics = <volume, compilationUnitMetricSet, percentages>;
 	Ranks ranks = determineRanks(metrics);
+	 
+	printResult(volume, size(methods), percentages, averages, ranks);
 	
-	//printResult(volume, size(methods), percentages, averages, ranks);
-	initializeVisualization(<project, currentProjectModel, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
+	//initializeVisualization(<project, currentProjectModel, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
 }
-
-public void tests(){
-	loc project  =|project://JabberPoint|;
-
-	M3 currentProjectModel = createM3FromEclipseProject(project);
-	
-	
-	
-	
-	
-	//for(<loc name,loc src> <- methods){
-	//	for(loc to <-model.methodInvocation[name]){
-	//		set[loc] methodLocationSet = model.declarations[to];
-	//		
-	//		if(!isEmpty(methodLocationSet)){	
-	//			edges += edge("<name.path>", "<to.path>");
-	//		}
-	//	}
-	//}
-
-	
-	
-}
-
