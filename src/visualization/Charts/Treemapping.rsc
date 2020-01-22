@@ -77,7 +77,7 @@ public FProperty getArea(RiskLevel riskLevel){
 public Figure createComplexityBox(FProperty popup, int complexity, loc src) {
 	RiskLevel riskLevel = determineRiskLevelForUnitComplexity(complexity);
 	
-	FProperty color = public(riskLevel);
+	FProperty color = getComplexityColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
 	return box(area, color, popup, openDocumentOnClick(src));
