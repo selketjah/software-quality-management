@@ -71,7 +71,7 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 											previouslySelectedTreeType = selectedTreeType;
 											previousN = n;
 											
-											return createTreemap(selectedTreeType, n, projectData.analysis.unitTestCoverageMap, projectData.analysis.methods, projectData.analysis.metrics.locByType.methodSizeRel);
+											return createTreemap(selectedTreeType, n, projectData.analysis.unitTestCoverageMap, projectData.analysis.methods, projectData.analysis.metrics.locByType.methodSizeRel, projectData.model);
 										})
 									])
 								], center(),top());
@@ -79,7 +79,7 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 }
 
 
-private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCoverageMap, rel[loc name,loc src] methods, ComponentLOC methodSizeRel) {
+private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCoverageMap, rel[loc name,loc src] methods, ComponentLOC methodSizeRel, M3 model) {
     Figures figures = [];
 	int i = 0;
 	
@@ -90,24 +90,14 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 
 		coverageSum += methodSizeRel[src];
 		RiskLevel currentUnitTestRiskLevel = determineRiskLevelForUnitSize(methodSizeRel[src]);
-		println(src.file);
 		figures+=box(
 					box(
 						vcat([						
-							//treemap([box(area(5),fillColor("purple")),box(area(10),fillColor("orange"))])
 							createTreemap(src, coverageMap.methodCalls, methodSizeRel)
 						]), shrink(0.8)
 					),
 					getArea(currentUnitTestRiskLevel), 
 					getSizeColor(currentUnitTestRiskLevel));
-		
-				
-		//figures += box(//, getArea(determineRiskLevelForUnitSize(methodSizeRel[src])), fillColor("gray"));
-		//				vcat([ 
-		//						text("<coverageMap.name.path[1..]>"),
-		//						treemap([ box(text("<mth>"), fillColor("lightblue"), getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), openDocumentOnClick(mth)) | loc mth <- unitTestCoverageMap[src].methodCalls])
-		//				], shrink(0.9)
-		//	), getArea(determineRiskLevelForUnitSize(methodSizeRel[src])), fillColor("gray"));
 	}     
 	t = treemap(figures, width(n), height(n),resizable(false));
 	     
