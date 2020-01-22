@@ -46,12 +46,12 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 	
 	str selectedTreeType = treeTypes[0]; // initial tree type
 	str previouslySelectedTreeType; 
-	int n = 50;
+	int n = 350;
 	int previousN = 0;
 	Figure treeMapView = vcat([
 							vcat([
 									scaleSlider(
-											int() { return 5; }, 
+											int() { return 60; }, 
 											int() { return 3000; }, 
 											int() { return n; },
 											void (int s) { n = s; },
