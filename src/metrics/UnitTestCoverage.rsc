@@ -21,7 +21,7 @@ public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel,
 	int size=0;
 		
 	for(<loc name, loc src> <- methods) {
-		int numberOfAsserts = calculateNumberOfAssertsStatements(src, compilationUnitMap);
+		int numberOfAsserts = calculateNumberOfAssertStatements(src, compilationUnitMap);
 		 
 		if(numberOfAsserts > 0){
 			int locCoverage = calculateInvokedLinesOfCode(name, methodSizeRel, model);
