@@ -32,11 +32,25 @@ import structs::RiskLevel;
 import structs::UnitMetrics;
 
 import structs::Visualization;
+import structs::UnitTestCoverage;
 import visualization::Visualization;
 import visualization::Utils;
 
 import vis::Figure;
 import vis::Render;
+
+
+public map[loc, int] calculateNumberOfOccurrences(UnitTestCoverageMap unitTestCoverageMap){
+	map[loc, int] occurrenceMap = ();
+	
+	for(loc src <- unitTestCoverageMap){
+		UnitTestCoverage uTestCoverage = unitTestCoverageMap[src]; 
+		for(loc methodCall <- uTestCoverage.methodCalls){
+			occurrenceMap[methodCall] = occurrenceMap[methodCall]?1 + 1;
+		}
+	}
+	return occurrenceMap;
+}
 
 public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 		
@@ -49,7 +63,7 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 	int n = 350;
 	int previousN = 0;
 	
-	map[loc,int] methodComplexityMap = createMethodComplexityMap(projectData.analysis.metrics.compilationUnitMetrics);
+	map[loc, int] numberOfOccurrenceByLoc = calculateNumberOfOccurrences(projectData.analysis.unitTestCoverageMap);
 	
 	Figure treeMapView = vcat([
 							vcat([
@@ -67,7 +81,7 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 											previouslySelectedTreeType = selectedTreeType;
 											previousN = n;
 											
-											return createTreemap(selectedTreeType, n, projectData.analysis.unitTestCoverageMap, methodComplexityMap, projectData.analysis.metrics.locByType.methodSizeRel, projectData.model);
+											return createTreemap(selectedTreeType, n, numberOfOccurrenceByLoc, projectData.analysis.unitTestCoverageMap, projectData.analysis.metrics.locByType.methodSizeRel, projectData.model);
 										})
 									])
 								], center(),top());
@@ -75,7 +89,7 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 }
 
 
-private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCoverageMap, map[loc,int] methodComplexityMap, ComponentLOC methodSizeRel, M3 model) {
+private Figure createTreemap(str state, int n, map[loc, int] numberOfOccurrenceByLoc, UnitTestCoverageMap unitTestCoverageMap, ComponentLOC methodSizeRel, M3 model) {
     Figures figures = [];
 	int i = 0;
 	
@@ -89,11 +103,11 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 		figures+=box(
 					box(
 						vcat([						
-							createTreemap(src, coverageMap.methodCalls, methodComplexityMap, methodSizeRel, model)
+							createTreemap(src, numberOfOccurrenceByLoc, coverageMap.methodCalls, methodSizeRel, model)
 						]), shrink(0.8)
 					),
 					getArea(currentUnitTestRiskLevel), 
-					getSizeColor(currentUnitTestRiskLevel), popup(src.path[1..]),openDocumentOnClick(src));
+					getComplexityColor(currentUnitTestRiskLevel), popup(src.path[1..]),openDocumentOnClick(src));
 	}
 	
 	t = treemap(figures, width(n), height(n),resizable(false));
@@ -101,28 +115,16 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 	return t;
 }
 
-private Figure createTreemap(loc parentRef, list[loc] methodCalls, map[loc,int] methodComplexityMap, ComponentLOC methodSizeRel, M3 model){
+private Figure createTreemap(loc parentRef, map[loc, int] numberOfOccurrenceByLoc, list[loc] methodCalls, ComponentLOC methodSizeRel, M3 model){
 	rel[loc src, loc name] invertedDeclarations = invert(model.declarations);
 	if(size(methodCalls)>0){
-		return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitComplexity(methodComplexityMap[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
+		return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
 	}else{
 		return ellipse(fillColor("red"),popup(min(invertedDeclarations[parentRef]).path[1..]), openDocumentOnClick(parentRef));
 	}
 }
 
-public FProperty getInnerSizeColor(RiskLevel riskLevel) {
-	FProperty color;
-	visit(riskLevel) {
-		case \simple(): color = fillColor(rgb(194,201, 169));
-    	case \moderate(): color = fillColor(rgb(140,163,142));
-    	case \high(): color = fillColor(rgb(87,124,114));
-    	case \veryhigh(): color = fillColor(rgb(33,85,86));
-    	case \tbd(): color = fillColor(rgb(33,85,86));
-	}
-	return color;
-}
-
-public FProperty getSizeColor(RiskLevel riskLevel) {
+public FProperty getComplexityColor(RiskLevel riskLevel) {
 	FProperty color;
 	visit(riskLevel) {
 		case \simple(): color = fillColor(rgb(169,194,201));
