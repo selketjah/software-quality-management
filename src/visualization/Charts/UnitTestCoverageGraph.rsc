@@ -49,13 +49,6 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 	int n = 400;
 	int previousN = 0;
 	Figure treeMapView = vcat([
-							//combo(treeTypes, 
-							//		void(str s) {
-							//			// if we change state here, we should be able to access it in computeFigure...
-							//			selectedTreeType = s;
-							//		}, 
-							//		center(), 
-							//		resizable(false)),
 							vcat([
 									scaleSlider(
 											int() { return 50; }, 
@@ -110,7 +103,7 @@ private Figure createTreemap(loc parentRef, list[loc] methodCalls, rel[loc name,
 	if(size(methodCalls)>0){
 		return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
 	}else{
-		return ellipse(fillColor("red"));
+		return ellipse(fillColor("red"),popup(min(invertedDeclarations[parentRef]).path[1..]), openDocumentOnClick(parentRef));
 	}
 }
 
