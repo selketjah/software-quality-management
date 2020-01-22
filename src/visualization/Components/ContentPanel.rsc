@@ -24,7 +24,7 @@ import util::Math;
 import vis::Figure;
 import vis::Render;
 
-public Figure renderContent(Panel active, ProjectData projectData) {
+public Figure renderContent(Panel active, ProjectVisData projectData) {
 	Figure content;
 	
 	visit(active) {
@@ -32,7 +32,7 @@ public Figure renderContent(Panel active, ProjectData projectData) {
 		case \heatmap(): content = drawTreemap(projectData);
 		case \architecture(): content = renderDependencyGraph(projectData);
 		case \interdependency(): content = renderInterdependenceGraph(projectData.model);
-		case \duplication(): content = renderDuplicationGraph(projectData.duplicationRelationships);
+		case \duplication(): content = renderDuplicationGraph(projectData.analysis.duplicationRelationships);
 	}
 
 	return content;

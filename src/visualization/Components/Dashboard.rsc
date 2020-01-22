@@ -52,12 +52,12 @@ public Figure rankBox(str amount, str measurementSign, str bottomText, Rank rank
 	return hcat([b1, b2], resizable(false), size(275, 75));
 }
 
-public Figure ranking(ProjectData projectData) {
-	volume = rankBox(toString(projectData.metrics.volume), "LOC", "VOLUME", projectData.ranks.volume);
-	averageUnitSize = rankBox(toString(projectData.averages.size), "AVERAGE", "UNIT SIZE", projectData.ranks.unitSize);
-	averageComplexity = rankBox(toString(projectData.averages.complexity), "AVERAGE", "COMPLEXITY", projectData.ranks.complexity);
-	duplicationPercentage = rankBox(toString(projectData.metrics.percentages.duplication), "%", "DUPLICATION", projectData.ranks.duplication);
-	unitTestCoveragePercentage = rankBox(toString(projectData.metrics.percentages.unitTestCoverage), "%", "UNIT TEST COVERAGE", projectData.ranks.unitTestCoverage);
+public Figure ranking(ProjectVisData projectData) {
+	volume = rankBox(toString(projectData.analysis.metrics.volume), "LOC", "VOLUME", projectData.analysis.ranks.volume);
+	averageUnitSize = rankBox(toString(projectData.analysis.averages.size), "AVERAGE", "UNIT SIZE", projectData.analysis.ranks.unitSize);
+	averageComplexity = rankBox(toString(projectData.analysis.averages.complexity), "AVERAGE", "COMPLEXITY", projectData.analysis.ranks.complexity);
+	duplicationPercentage = rankBox(toString(projectData.analysis.metrics.percentages.duplication), "%", "DUPLICATION", projectData.analysis.ranks.duplication);
+	unitTestCoveragePercentage = rankBox(toString(projectData.analysis.metrics.percentages.unitTestCoverage), "%", "UNIT TEST COVERAGE", projectData.analysis.ranks.unitTestCoverage);
 	
 	return hcat([volume, averageUnitSize, averageComplexity, duplicationPercentage, unitTestCoveragePercentage], gap(1));
 }
@@ -81,21 +81,21 @@ public Figure maintainabilityBoxes(map[MaintainabilityCharacteristic, Rank] main
 	return grid([ row1, row2 ]);
 }
 
-public Figure maintainabilityScores(ProjectData projectData) {
+public Figure maintainabilityScores(ProjectVisData projectData) {
 	mainTitle = text("MAINTAINABILITY SCORES", fontSize(12), titleColor);
 	b1 = box(mainTitle, resizable(false), size(650, 35), fillColor(leftSideColor), lineColor(rightSideColor));
 	
-	boxes = maintainabilityBoxes(projectData.ranks.maintainability);
+	boxes = maintainabilityBoxes(projectData.analysis.ranks.maintainability);
 	b2 = box(boxes, resizable(false), size(650, 500), fillColor(leftSideColor), lineColor(rightSideColor));
 	
 	return vcat([ b1, b2 ], resizable(false));
 }
 
-public Figure renderDashboard(ProjectData projectData) {
+public Figure renderDashboard(ProjectVisData projectData) {
 	str sig = "SIG report - " + projectData.project.authority;
 	sigTitle = text(sig, fontSize(40), textColor);
 	
-	row0 = header(projectData.project, projectData.ranks.overall);
+	row0 = header(projectData.project, projectData.analysis.ranks.overall);
 	row1 = ranking(projectData);
 	
 	leftRow2 = maintainabilityScores(projectData);

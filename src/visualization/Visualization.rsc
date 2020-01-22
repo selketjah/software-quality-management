@@ -19,12 +19,12 @@ import visualization::Components::ContentPanel;
 import vis::Figure;
 import vis::Render;
 
-public void renderVisualization(Panel active, ProjectData projectData) {
+public void renderVisualization(Panel active, ProjectVisData projectData) {
 	sidebar = renderSidebar(projectData, active);
 	content = renderContent(active, projectData);
 	render(vcat([sidebar, content]));
 }
 
-public void initializeVisualization(ProjectData projectData) {
+public void initializeVisualization(ProjectVisData projectData) {
 	renderVisualization(\general(), projectData);
 }

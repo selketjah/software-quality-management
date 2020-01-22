@@ -36,19 +36,47 @@ import structs::Volume;
 import structs::Average;
 import structs::Percentage;
 import structs::UnitTestCoverage;
-import visualization::Visualization;
 import structs::Ranking;
 import string::Print;
+import visualization::Visualization;
+
+import Cache::ProjectCache;
+import structs::Analysis;
+
 
 public void main(){
-	//calculateSIG(|project://JabberPoint|);
-	calculateSIG(|project://smallsql|);
-	//calculateSIG(|project://hsqldb|);
+	ProjectVisData projectData;
+	
+	projectData = retrieveProjectData(|project://JabberPoint|);
+	//projectData = retrieveProjectData(|project://smallsql|);
+	projectData = retrieveProjectData(|project://hsqldb|);
+	
+	initializeVisualization(projectData);
 }
 
-public void calculateSIG(loc project){
+public ProjectVisData retrieveProjectData(loc project){
+	ProjectData projectData;
+	tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Average averages, Percentages percentages] metricData;
+	
 	M3 currentProjectModel = createM3FromEclipseProject(project);
 	
+	if(wasAlreadyCalculated(project)){
+		metricData = loadProjectData(project);
+	}else{
+		metricData = calculateMetrics(currentProjectModel);
+		saveProjectData(project, metricData);
+	}
+	
+	Ranks ranks = determineRanks(metricData.metrics);
+	projectData = <metricData.metrics, metricData.duplicationRelationships, metricData.methods, metricData.averages, ranks>;
+	
+	printResult(metricData.volume, size(metricData.methods), metricData.percentages, metricData.averages, ranks);
+	
+	return <project, currentProjectModel, projectData>;
+}
+
+public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Average averages, Percentages percentages] calculateMetrics(M3 currentProjectModel){
+
 	set[CompilationUnitMetric] compilationUnitMetricSet = {};
 	
 	rel[loc name,loc src] compilationUnits = getCompilationUnitsFromM3(currentProjectModel);  
@@ -73,11 +101,7 @@ public void calculateSIG(loc project){
 	
 	Average averages = calculateAverages(methodComplexityMap , compilationUnitMetricSet);
 	Percentages percentages = calculatePercentages(volume, duplication.duplicationRel, methodComplexityMap, unitTestCoverageMap);
-	
 	Metrics metrics = <volume, compilationUnitMetricSet, <compilationUnitSizeRel, methodHolderSizeRel, methodSizeRel>, percentages>;
-	Ranks ranks = determineRanks(metrics);
-	 
-	printResult(volume, size(methods), percentages, averages, ranks);
 	
-	initializeVisualization(<project, currentProjectModel, metrics, duplication.duplicationLocationRel, size(methods), averages, ranks>);
+	return <metrics, duplication.duplicationLocationRel, methods, volume, averages, percentages>;
 }
