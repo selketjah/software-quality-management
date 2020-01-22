@@ -2,6 +2,7 @@ module metrics::UnitTestCoverage
 
 import Exception;
 import Map;
+import Set;
 import IO;
 import lang::java::m3::Core;
 import lang::std::ASCII;
