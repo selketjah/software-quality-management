@@ -77,7 +77,7 @@ public FProperty getArea(RiskLevel riskLevel){
 public Figure createComplexityBox(FProperty popup, int complexity, loc src) {
 	RiskLevel riskLevel = determineRiskLevelForUnitComplexity(complexity);
 	
-	FProperty color = public(riskLevel);
+	FProperty color = getComplexityColor(riskLevel);
 	FProperty area = getArea(riskLevel);
 	
 	return box(area, color, popup, openDocumentOnClick(src));
@@ -122,10 +122,6 @@ private Figure createTreemap(str state, int n, set[CompilationUnitMetric] compil
 	return t;
 }
 
-public Figure drawTreemap(str treeType, int n, set[CompilationUnitMetric] compilationUnitMetrics){
-	return createTreemap(treeType, n, compilationUnitMetrics);	
-}
-
 public Figure drawTreemap(ProjectVisData projectData) {
 	// draw treemap panel
 	list[str] treeTypes = ["Complexity","Unit size"];
@@ -156,7 +152,7 @@ public Figure drawTreemap(ProjectVisData projectData) {
 											// redraw complete view with scaleslider each time a user interacts
 											previouslySelectedTreeType = selectedTreeType;
 											previousN = n;
-											return drawTreemap(selectedTreeType, n, projectData.analysis.metrics.compilationUnitMetrics);
+											return createTreemap(selectedTreeType, n, projectData.analysis.metrics.compilationUnitMetrics);
 										})
 									])
 								], center(),top());

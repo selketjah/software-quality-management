@@ -1,3 +1,4 @@
 module structs::UnitTestCoverage
 
-alias UnitTestCoverageMap = map[loc, tuple[int numberOfAsserts, int locCoverage, int complexityCoverage]];
+alias UnitTestCoverage = tuple[loc name, int numberOfAsserts, list[loc] methodCalls, int locCoverage, int complexityCoverage];
+alias UnitTestCoverageMap = map[loc, UnitTestCoverage];

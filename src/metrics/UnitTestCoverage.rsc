@@ -24,8 +24,8 @@ public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel,
 		 
 		if(numberOfAsserts > 0){
 			int locCoverage = calculateInvokedLinesOfCode(name, methodSizeRel, model);
-			int complexityCoverage = calculateInvokedComplexity(name, methodComplexityMap, model);
-			testCoverageMap += (src: <numberOfAsserts, locCoverage, complexityCoverage>);
+			tuple[list[loc] methodCalls, int totalComplexity] complexityCoverage = calculateInvokedComplexity(name, methodComplexityMap, model);
+			testCoverageMap += (src: <name, numberOfAsserts, complexityCoverage.methodCalls, locCoverage, complexityCoverage.totalComplexity>);
 		}
 	}
 	

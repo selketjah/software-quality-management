@@ -10,6 +10,7 @@ import visualization::Charts::Treemapping;
 import visualization::Charts::ProjectGraph;
 import visualization::Charts::InterdependenceGraph;
 import visualization::Charts::DuplicationGraph;
+import visualization::Charts::UnitTestCoverageGraph;
 import visualization::Components::Dashboard;
 
 import scoring::Rank;
@@ -33,6 +34,7 @@ public Figure renderContent(Panel active, ProjectVisData projectData) {
 		case \architecture(): content = renderDependencyGraph(projectData);
 		case \interdependency(): content = renderInterdependenceGraph(projectData.model);
 		case \duplication(): content = renderDuplicationGraph(projectData.analysis.duplicationRelationships);
+		case \unitTestCoverage(): content = renderUnitTestCoverageGraph(projectData);
 	}
 
 	return content;

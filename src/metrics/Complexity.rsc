@@ -2,6 +2,7 @@ module metrics::Complexity
 
 import IO;
 import Set;
+import List;
 import Map;
 import lang::java::jdt::m3::AST;
 import lang::java::jdt::m3::Core;
@@ -38,8 +39,9 @@ public int calculateTotalComplexity(map[loc, int] methodComplexityMap){
 	return currentComplexity - (size(methodComplexityMap)-1); // +1 == program execution
 }
 
-public int calculateInvokedComplexity(loc src, map[loc, int] methodComplexityMap, M3 model){
+public tuple[list[loc] methodCalls, int totalComplexity] calculateInvokedComplexity(loc src, map[loc, int] methodComplexityMap, M3 model){
 	int complexity =0;
+	list[loc] methodCalls=[];
 	for(loc methodInvocationLocation <- model.methodInvocation[src]){
 		//get method location
 		set[loc] methodLocationSet = model.declarations[methodInvocationLocation];
@@ -48,9 +50,11 @@ public int calculateInvokedComplexity(loc src, map[loc, int] methodComplexityMap
 			loc methodLocation = min(methodLocationSet);
 			if(methodLocation in methodComplexityMap){
 				complexity += methodComplexityMap[methodLocation];
+				methodCalls += methodLocation;
+				println(methodCalls);
 			}
 		}
 	}
 	
-	return complexity;
+	return <methodCalls, complexity - (size(methodCalls) - 1)>;
 }

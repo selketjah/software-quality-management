@@ -26,6 +26,7 @@ public Figure renderSidebar(ProjectVisData projectData, Panel active) {
 				  renderButton(projectData, active, \architecture(), "Architectural tree"),
 				  renderButton(projectData, active, \interdependency(), "Interdependency graph"),
 				  renderButton(projectData, active, \heatmap(), "Heat map cc and size"),
-				  renderButton(projectData, active, \duplication(), "Duplication")
+				  renderButton(projectData, active, \duplication(), "Duplication"),
+				  renderButton(projectData, active, \unitTestCoverage(), "Test coverage")
                 ], resizable(false), align(0,0));
 }

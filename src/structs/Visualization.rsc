@@ -16,4 +16,5 @@ data Panel
     | \architecture()
     | \interdependency()
     | \duplication()
+    | \unitTestCoverage()
     ;
