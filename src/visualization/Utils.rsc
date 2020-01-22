@@ -7,7 +7,7 @@ import vis::Render;
 import vis::KeySym;
 import IO;
 FProperty popup(str message) {
-	return mouseOver(box(text(message), resizable(false)));
+	return mouseOver(box(text(message), fontSize(40), gap(10), resizable(false)));
 }
 
 FProperty openMethodOnClick(loc methodLoc) {

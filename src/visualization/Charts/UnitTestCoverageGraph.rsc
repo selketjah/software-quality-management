@@ -49,13 +49,13 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 	int n = 400;
 	int previousN = 0;
 	Figure treeMapView = vcat([
-							combo(treeTypes, 
-									void(str s) {
-										// if we change state here, we should be able to access it in computeFigure...
-										selectedTreeType = s;
-									}, 
-									center(), 
-									resizable(false)),
+							//combo(treeTypes, 
+							//		void(str s) {
+							//			// if we change state here, we should be able to access it in computeFigure...
+							//			selectedTreeType = s;
+							//		}, 
+							//		center(), 
+							//		resizable(false)),
 							vcat([
 									scaleSlider(
 											int() { return 50; }, 
@@ -107,7 +107,11 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 
 private Figure createTreemap(loc parentRef, list[loc] methodCalls, rel[loc name, loc src] methodLocRels, ComponentLOC methodSizeRel, M3 model){
 	rel[loc src, loc name] invertedDeclarations = invert(model.declarations);
-	return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
+	if(size(methodCalls)>0){
+		return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
+	}else{
+		return ellipse(fillColor("red"));
+	}
 }
 
 public FProperty getInnerSizeColor(RiskLevel riskLevel) {
