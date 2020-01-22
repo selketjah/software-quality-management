@@ -21,7 +21,7 @@ public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel,
 	int size=0;
 		
 	for(<loc name, loc src> <- methods) {
-		int numberOfAsserts = calculateNumberOfAssertsStatements(src);
+		int numberOfAsserts = calculateNumberOfAssertsStatements(src, compilationUnitMap);
 		 
 		if(numberOfAsserts > 0){
 			int locCoverage = calculateInvokedLinesOfCode(name, methodSizeRel, model);
@@ -34,7 +34,7 @@ public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel,
 }
 
 
-public int calculateNumberOfAssertStatements(map[loc src, list[str] linesOfCode]  compilationUnitMap){
+public int calculateNumberOfAssertStatements(loc src, map[loc src, list[str] linesOfCode]  compilationUnitMap){
 	return (0 | it +1 |str locStr <- compilationUnitMap[src], isAssertStatement(locStr));
 }
 
@@ -47,9 +47,17 @@ public tuple[list[loc] methodCalls, int totalComplexity] calculateInvokedComplex
 		
 		if(!isEmpty(methodLocationSet)){
 			loc methodLocation = min(methodLocationSet);
-			if(methodLocation in methodComplexityMap && calculateNumberOfAssertStatements(compilationUnitMap) == 0){
-				complexity += methodComplexityMap[methodLocation];
-				methodCalls += methodLocation;
+			if(methodLocation in methodComplexityMap){
+				if(calculateNumberOfAssertStatements(compilationUnitMap) == 0){
+					complexity += methodComplexityMap[methodLocation];
+				}else{
+					tuple[list[loc] methodCalls, int totalComplexity] invokedCompl = calculateInvokedComplexity(methodLocation, methodComplexityMap, compilationUnitMap, model);
+					complexity += invokedCompl.totalComplexity;
+					methodCalls += invokedCompl.methodCalls;
+					
+					println(methodCalls);
+				}
+				
 			}
 		}
 	}

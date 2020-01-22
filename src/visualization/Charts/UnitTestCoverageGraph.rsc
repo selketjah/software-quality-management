@@ -4,6 +4,7 @@ import ListRelation;
 import List;
 import Relation;
 import Set;
+import Map;
 import  scoring::categories::UnitSize;
 import vis::KeySym;
 import lang::java::m3::Core;
@@ -118,10 +119,19 @@ private Figure createTreemap(str state, int n, map[loc, int] numberOfOccurrenceB
 private Figure createTreemap(loc parentRef, map[loc, int] numberOfOccurrenceByLoc, list[loc] methodCalls, ComponentLOC methodSizeRel, M3 model){
 	rel[loc src, loc name] invertedDeclarations = invert(model.declarations);
 	if(size(methodCalls)>0){
-		return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
+		return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getColorByOccurence(numberOfOccurrenceByLoc, mth),popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
 	}else{
 		return ellipse(fillColor("red"),popup(min(invertedDeclarations[parentRef]).path[1..]), openDocumentOnClick(parentRef));
 	}
+}
+
+public FProperty getColorByOccurence(map[loc, int] numberOfOccurrenceByLoc, loc src){
+	FProperty color = fillColor(rgb(169,194,201)); 
+	int numberOfOccMax = max(range(numberOfOccurrenceByLoc));
+	println("<numberOfOccurrenceByLoc[src]> <numberOfOccMax>");
+	println(src);
+	
+	return color;
 }
 
 public FProperty getComplexityColor(RiskLevel riskLevel) {
