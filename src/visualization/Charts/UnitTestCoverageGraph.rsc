@@ -89,21 +89,33 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 		UnitTestCoverage coverageMap = unitTestCoverageMap[src];
 
 		coverageSum += methodSizeRel[src];
-		figures += box(//, getArea(determineRiskLevelForUnitSize(methodSizeRel[src])), fillColor("gray"));
-						vcat([ 
-								text("<coverageMap.name.path[1..]>"),
-								treemap([ box(text("<mth>"), fillColor("lightblue"), getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), openDocumentOnClick(mth)) | loc mth <- unitTestCoverageMap[src].methodCalls])
-						], shrink(0.9)
-			), getArea(determineRiskLevelForUnitSize(methodSizeRel[src])), fillColor("gray"));
-			//, fillColor("gray"));
-		i+=1;
-
+		RiskLevel currentUnitTestRiskLevel = determineRiskLevelForUnitSize(methodSizeRel[src]);
+		figures+=box(area(methodSizeRel[src]), getArea(currentUnitTestRiskLevel), getComplexityColor(currentUnitTestRiskLevel));
+		
+		
+		//figures += box(//, getArea(determineRiskLevelForUnitSize(methodSizeRel[src])), fillColor("gray"));
+		//				vcat([ 
+		//						text("<coverageMap.name.path[1..]>"),
+		//						treemap([ box(text("<mth>"), fillColor("lightblue"), getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), openDocumentOnClick(mth)) | loc mth <- unitTestCoverageMap[src].methodCalls])
+		//				], shrink(0.9)
+		//	), getArea(determineRiskLevelForUnitSize(methodSizeRel[src])), fillColor("gray"));
 	}     
-	t = treemap(figures);
+	t = treemap(figures, width(n), height(n),resizable(false));
 	     
 	return t;
 }
 
+public FProperty getComplexityColor(RiskLevel riskLevel) {
+	FProperty color;
+	visit(riskLevel) {
+		case \simple(): color = fillColor(rgb(169,194,201));
+    	case \moderate(): color = fillColor(rgb(142,140,163));
+    	case \high(): color = fillColor(rgb(114,87,124));
+    	case \veryhigh(): color = fillColor(rgb(86,33,85));
+    	case \tbd(): color = fillColor(rgb(86,33,85));
+	}
+	return color;
+}
 
 FProperty simpleBoundArea = area(5);
 FProperty moderateBoundArea = area(10);
