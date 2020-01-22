@@ -47,7 +47,7 @@ public map[loc, int] calculateNumberOfOccurrences(UnitTestCoverageMap unitTestCo
 	for(loc src <- unitTestCoverageMap){
 		UnitTestCoverage uTestCoverage = unitTestCoverageMap[src]; 
 		for(loc methodCall <- uTestCoverage.methodCalls){
-			occurrenceMap[methodCall] = occurrenceMap[methodCall]?1 + 1;
+			occurrenceMap[methodCall] = (occurrenceMap[methodCall]?1) + 1;
 		}
 	}
 	return occurrenceMap;
@@ -89,7 +89,6 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 	return treeMapView;
 }
 
-
 private Figure createTreemap(str state, int n, map[loc, int] numberOfOccurrenceByLoc, UnitTestCoverageMap unitTestCoverageMap, ComponentLOC methodSizeRel, M3 model) {
     Figures figures = [];
 	int i = 0;
@@ -128,8 +127,11 @@ private Figure createTreemap(loc parentRef, map[loc, int] numberOfOccurrenceByLo
 public FProperty getColorByOccurence(map[loc, int] numberOfOccurrenceByLoc, loc src){
 	FProperty color = fillColor(rgb(169,194,201)); 
 	int numberOfOccMax = max(range(numberOfOccurrenceByLoc));
-	println("<numberOfOccurrenceByLoc[src]> <numberOfOccMax>");
-	println(src);
+	real factor = numberOfOccurrenceByLoc[src]*1.00 / numberOfOccMax;
+	
+	if(numberOfOccurrenceByLoc[src]>1){
+		color=fillColor(rgb(toInt(255/factor),toInt(105/factor),toInt(120/factor)));
+	}
 	
 	return color;
 }

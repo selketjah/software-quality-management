@@ -15,7 +15,6 @@ import scoring::Maintainability;
 
 import visualization::Components::Sidebar;
 import visualization::Components::ContentPanel;
-
 import vis::Figure;
 import vis::Render;
 
