@@ -95,11 +95,11 @@ private Figure createTreemap(str state, int n, map[loc, int] numberOfOccurrenceB
 	int i = 0;
 	
 	int totalUnitTestCoverageLoc = (0 | it + unitTestCoverageMap[src].locCoverage | loc src <-unitTestCoverageMap);
-	int coverageSum=0;
+	
 	for(loc src <- unitTestCoverageMap) {
 		UnitTestCoverage coverageMap = unitTestCoverageMap[src];
 
-		coverageSum += methodSizeRel[src];
+		println(coverageMap.methodCalls);	
 		RiskLevel currentUnitTestRiskLevel = determineRiskLevelForUnitComplexity(coverageMap.complexityCoverage);
 		figures+=box(
 					box(
