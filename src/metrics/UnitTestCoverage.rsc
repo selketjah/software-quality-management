@@ -49,7 +49,7 @@ public tuple[list[loc] methodCalls, int totalComplexity] calculateInvokedComplex
 		if(!isEmpty(methodLocationSet)){
 			loc methodLocation = min(methodLocationSet);
 			if(methodLocation in methodComplexityMap){
-				if(calculateNumberOfAssertStatements(compilationUnitMap) == 0){
+				if(calculateNumberOfAssertStatements(methodLocation, compilationUnitMap) == 0){
 					complexity += methodComplexityMap[methodLocation];
 				}else{
 					tuple[list[loc] methodCalls, int totalComplexity] invokedCompl = calculateInvokedComplexity(methodLocation, methodComplexityMap, compilationUnitMap, model);
