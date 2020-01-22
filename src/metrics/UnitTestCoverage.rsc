@@ -11,6 +11,8 @@ import metrics::UnitMetrics;
 import metrics::Volume;
 import structs::UnitTestCoverage;
 import structs::Volume;
+import util::Editors;
+
 
 public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel, rel[loc name,loc src] methods,map[loc src, list[str] linesOfCode]  compilationUnitMap, map[loc, int] methodComplexityMap, M3 model){
 	//we should check what complexity is directly affected by a set of assert statements

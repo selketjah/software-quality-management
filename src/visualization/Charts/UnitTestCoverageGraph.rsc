@@ -79,7 +79,7 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 }
 
 
-private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCoverageMap, rel[loc name,loc src] methods, ComponentLOC methodSizeRel, M3 model) {
+private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCoverageMap, rel[loc name,loc src] methodLocRels, ComponentLOC methodSizeRel, M3 model) {
     Figures figures = [];
 	int i = 0;
 	
@@ -93,20 +93,21 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 		figures+=box(
 					box(
 						vcat([						
-							createTreemap(src, coverageMap.methodCalls, methodSizeRel)
+							createTreemap(src, coverageMap.methodCalls, methodLocRels, methodSizeRel, model)
 						]), shrink(0.8)
 					),
 					getArea(currentUnitTestRiskLevel), 
 					getSizeColor(currentUnitTestRiskLevel));
-	}     
+	}
+	
 	t = treemap(figures, width(n), height(n),resizable(false));
 	     
 	return t;
 }
 
-private Figure createTreemap(loc parentRef, list[loc] methods, ComponentLOC methodSizeRel){
-	return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(mth.path[1..]), openDocumentOnClick(mth)) | loc mth <- methods]);
-	
+private Figure createTreemap(loc parentRef, list[loc] methodCalls, rel[loc name, loc src] methodLocRels, ComponentLOC methodSizeRel, M3 model){
+	rel[loc src, loc name] invertedDeclarations = invert(model.declarations);
+	return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
 }
 
 public FProperty getInnerSizeColor(RiskLevel riskLevel) {
