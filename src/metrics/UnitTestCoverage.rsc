@@ -48,16 +48,8 @@ public tuple[list[loc] methodCalls, int totalComplexity] calculateInvokedComplex
 		
 		if(!isEmpty(methodLocationSet)){
 			loc methodLocation = min(methodLocationSet);
-			if(methodLocation in methodComplexityMap){
-				if(calculateNumberOfAssertStatements(methodLocation, compilationUnitMap) == 0){
+			if(methodLocation in methodComplexityMap && calculateNumberOfAssertStatements(methodLocation, compilationUnitMap) == 0){
 					complexity += methodComplexityMap[methodLocation];
-				}else{
-					tuple[list[loc] methodCalls, int totalComplexity] invokedCompl = calculateInvokedComplexity(methodLocation, methodComplexityMap, compilationUnitMap, model);
-					complexity += invokedCompl.totalComplexity;
-					methodCalls += invokedCompl.methodCalls;
-					
-					println(methodCalls);
-				}
 				
 			}
 		}

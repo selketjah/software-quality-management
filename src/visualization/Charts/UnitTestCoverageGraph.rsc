@@ -111,7 +111,7 @@ private Figure createTreemap(str state, int n, map[loc, int] numberOfOccurrenceB
 					getComplexityColor(currentUnitTestRiskLevel), popup(src.path[1..]),openDocumentOnClick(src));
 	}
 	
-	t = treemap(figures, width(n), height(n),resizable(false));
+	t = treemap(figures, width(n*2), height(n),resizable(false));
 	     
 	return t;
 }
