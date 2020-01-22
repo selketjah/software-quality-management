@@ -9,7 +9,6 @@ import ParseTree;
 import String;
 import metrics::UnitMetrics;
 import metrics::Volume;
-import metrics::Complexity;
 import structs::UnitTestCoverage;
 import structs::Volume;
 
@@ -20,14 +19,42 @@ public UnitTestCoverageMap createUnitTestCoverageMap(ComponentLOC methodSizeRel,
 	int size=0;
 		
 	for(<loc name, loc src> <- methods) {
-		int numberOfAsserts = (0 | it +1 |str locStr <- compilationUnitMap[src], /assert[a-zA-Z]+\s*[\(].*[\)]/ := locStr);
+		int numberOfAsserts = calculateNumberOfAssertsStatements(src);
 		 
 		if(numberOfAsserts > 0){
 			int locCoverage = calculateInvokedLinesOfCode(name, methodSizeRel, model);
-			tuple[list[loc] methodCalls, int totalComplexity] complexityCoverage = calculateInvokedComplexity(name, methodComplexityMap, model);
+			tuple[list[loc] methodCalls, int totalComplexity] complexityCoverage = calculateInvokedComplexity(name, methodComplexityMap, compilationUnitMap, model);
 			testCoverageMap += (src: <name, numberOfAsserts, complexityCoverage.methodCalls, locCoverage, complexityCoverage.totalComplexity>);
 		}
 	}
 	
 	return testCoverageMap;
+}
+
+
+public int calculateNumberOfAssertStatements(map[loc src, list[str] linesOfCode]  compilationUnitMap){
+	return (0 | it +1 |str locStr <- compilationUnitMap[src], isAssertStatement(locStr));
+}
+
+public tuple[list[loc] methodCalls, int totalComplexity] calculateInvokedComplexity(loc src, map[loc, int] methodComplexityMap, map[loc src, list[str] linesOfCode]  compilationUnitMap, M3 model){
+	int complexity =0;
+	list[loc] methodCalls=[];
+	for(loc methodInvocationLocation <- model.methodInvocation[src]){
+		//get method location
+		set[loc] methodLocationSet = model.declarations[methodInvocationLocation];
+		
+		if(!isEmpty(methodLocationSet)){
+			loc methodLocation = min(methodLocationSet);
+			if(methodLocation in methodComplexityMap && calculateNumberOfAssertStatements(compilationUnitMap) == 0){
+				complexity += methodComplexityMap[methodLocation];
+				methodCalls += methodLocation;
+			}
+		}
+	}
+	
+	return <methodCalls, complexity - (size(methodCalls) - 1)>;
+}
+
+private bool isAssertStatement(str subject){
+	return /assert[a-zA-Z]+\s*[\(].*[\)]/ := subject;
 }

@@ -90,9 +90,18 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 
 		coverageSum += methodSizeRel[src];
 		RiskLevel currentUnitTestRiskLevel = determineRiskLevelForUnitSize(methodSizeRel[src]);
-		figures+=box(area(methodSizeRel[src]), getArea(currentUnitTestRiskLevel), getComplexityColor(currentUnitTestRiskLevel));
+		println(src.file);
+		figures+=box(
+					box(
+						vcat([						
+							//treemap([box(area(5),fillColor("purple")),box(area(10),fillColor("orange"))])
+							createTreemap(src, coverageMap.methodCalls, methodSizeRel)
+						]), shrink(0.8)
+					),
+					getArea(currentUnitTestRiskLevel), 
+					getSizeColor(currentUnitTestRiskLevel));
 		
-		
+				
 		//figures += box(//, getArea(determineRiskLevelForUnitSize(methodSizeRel[src])), fillColor("gray"));
 		//				vcat([ 
 		//						text("<coverageMap.name.path[1..]>"),
@@ -105,7 +114,24 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 	return t;
 }
 
-public FProperty getComplexityColor(RiskLevel riskLevel) {
+private Figure createTreemap(loc parentRef, list[loc] methods, ComponentLOC methodSizeRel){
+	return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(mth.path[1..]), openDocumentOnClick(mth)) | loc mth <- methods]);
+	
+}
+
+public FProperty getInnerSizeColor(RiskLevel riskLevel) {
+	FProperty color;
+	visit(riskLevel) {
+		case \simple(): color = fillColor(rgb(194,201, 169));
+    	case \moderate(): color = fillColor(rgb(140,163,142));
+    	case \high(): color = fillColor(rgb(87,124,114));
+    	case \veryhigh(): color = fillColor(rgb(33,85,86));
+    	case \tbd(): color = fillColor(rgb(33,85,86));
+	}
+	return color;
+}
+
+public FProperty getSizeColor(RiskLevel riskLevel) {
 	FProperty color;
 	visit(riskLevel) {
 		case \simple(): color = fillColor(rgb(169,194,201));
