@@ -30,7 +30,12 @@ public int calculateUnitCyclomaticComplexity(Statement statement) {
 }
 
 public int calculateTotalComplexity(map[loc, int] methodComplexityMap){
-	return sum(range(methodComplexityMap)) + 1; // +1 == program execution
+	int currentComplexity = 0;
+	for(loc src <- methodComplexityMap){
+		currentComplexity += methodComplexityMap[src]; // do we need +1 here since base is always 1 in calculateUnitCyclomaticComplexity?
+	}
+	
+	return currentComplexity - (size(methodComplexityMap)-1); // +1 == program execution
 }
 
 public int calculateInvokedComplexity(loc src, map[loc, int] methodComplexityMap, M3 model){

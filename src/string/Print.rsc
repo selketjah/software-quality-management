@@ -187,10 +187,17 @@ private str renderStatistics(int volume, int numberOfUnits, Percentages percenta
 	");
 }
 
+public str createResult(int volume, int numberOfUnits, Percentages percentages, Average averages, Ranks ranks){
+	str result = "Category Legends:\n<renderCategoryLegendTables()>\n\n";
+	result += "\nStatistics:\n";
+	result +="\n<renderStatistics(volume, numberOfUnits, percentages, averages)>\n\n";
+	result +="\nMaintainability Reports:\n";
+	result +="\n<renderRanking(ranks)>\n\n";
+	
+	return result;
+}
+
+
 public void printResult(int volume, int numberOfUnits, Percentages percentages, Average averages, Ranks ranks) {
-	println("Category Legends:\n<renderCategoryLegendTables()>\n");
-	println("\nStatistics:");
-	println("\n<renderStatistics(volume, numberOfUnits, percentages, averages)>\n");
-	println("\nMaintainability Reports:");
-	println("\n<renderRanking(ranks)>\n");	
+	println(createResult(volume, numberOfUnits, percentages, averages, ranks));
 }
