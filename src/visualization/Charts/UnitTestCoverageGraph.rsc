@@ -48,6 +48,9 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 	str previouslySelectedTreeType; 
 	int n = 350;
 	int previousN = 0;
+	
+	map[loc,int] methodComplexityMap = createMethodComplexityMap(projectData.analysis.metrics.compilationUnitMetrics);
+	
 	Figure treeMapView = vcat([
 							vcat([
 									scaleSlider(
@@ -64,7 +67,7 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 											previouslySelectedTreeType = selectedTreeType;
 											previousN = n;
 											
-											return createTreemap(selectedTreeType, n, projectData.analysis.unitTestCoverageMap, projectData.analysis.methods, projectData.analysis.metrics.locByType.methodSizeRel, projectData.model);
+											return createTreemap(selectedTreeType, n, projectData.analysis.unitTestCoverageMap, methodComplexityMap, projectData.analysis.metrics.locByType.methodSizeRel, projectData.model);
 										})
 									])
 								], center(),top());
@@ -72,7 +75,7 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 }
 
 
-private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCoverageMap, rel[loc name,loc src] methodLocRels, ComponentLOC methodSizeRel, M3 model) {
+private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCoverageMap, map[loc,int] methodComplexityMap, ComponentLOC methodSizeRel, M3 model) {
     Figures figures = [];
 	int i = 0;
 	
@@ -82,15 +85,15 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 		UnitTestCoverage coverageMap = unitTestCoverageMap[src];
 
 		coverageSum += methodSizeRel[src];
-		RiskLevel currentUnitTestRiskLevel = determineRiskLevelForUnitSize(methodSizeRel[src]);
+		RiskLevel currentUnitTestRiskLevel = determineRiskLevelForUnitComplexity(coverageMap.complexityCoverage);
 		figures+=box(
 					box(
 						vcat([						
-							createTreemap(src, coverageMap.methodCalls, methodLocRels, methodSizeRel, model)
+							createTreemap(src, coverageMap.methodCalls, methodComplexityMap, methodSizeRel, model)
 						]), shrink(0.8)
 					),
 					getArea(currentUnitTestRiskLevel), 
-					getSizeColor(currentUnitTestRiskLevel));
+					getSizeColor(currentUnitTestRiskLevel), popup(src.path[1..]),openDocumentOnClick(src));
 	}
 	
 	t = treemap(figures, width(n), height(n),resizable(false));
@@ -98,10 +101,10 @@ private Figure createTreemap(str state, int n, UnitTestCoverageMap unitTestCover
 	return t;
 }
 
-private Figure createTreemap(loc parentRef, list[loc] methodCalls, rel[loc name, loc src] methodLocRels, ComponentLOC methodSizeRel, M3 model){
+private Figure createTreemap(loc parentRef, list[loc] methodCalls, map[loc,int] methodComplexityMap, ComponentLOC methodSizeRel, M3 model){
 	rel[loc src, loc name] invertedDeclarations = invert(model.declarations);
 	if(size(methodCalls)>0){
-		return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitSize(methodSizeRel[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
+		return treemap([ box(getArea(determineRiskLevelForUnitSize(methodSizeRel[mth])), getInnerSizeColor(determineRiskLevelForUnitComplexity(methodComplexityMap[mth])), popup(min(invertedDeclarations[mth]).path[1..]), openDocumentOnClick(mth)) | loc mth <- methodCalls]);
 	}else{
 		return ellipse(fillColor("red"),popup(min(invertedDeclarations[parentRef]).path[1..]), openDocumentOnClick(parentRef));
 	}
