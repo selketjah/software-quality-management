@@ -33,7 +33,7 @@ public Figure renderDuplicationGraph(rel[loc, loc] duplicationRelationships) {
 									return previousN != n;
 								},Figure(){
 									previousN = n;
-									return graph(nodes, edges, hint("layered"), std(gap(5)), size(n), hgap(5), std(fontSize(n*3)));
+									return graph(nodes, edges, hint("layered"), std(gap(5)), size(n), hgap(2), std(fontSize(n*3)));
 								})
 							], size(1000, 600), resizable(false));
 	return graphView;

@@ -117,7 +117,7 @@ private Figure createTreemap(str state, int n, set[CompilationUnitMetric] compil
 		figures += fileBox;
 	}
 
-	t = treemap(figures, width(n*2), height(n), resizable(false));
+	t = treemap(figures, width(n*3), height(n), resizable(false));
 	     
 	return t;
 }
@@ -136,7 +136,7 @@ public Figure drawTreemap(ProjectVisData projectData) {
 										// if we change state here, we should be able to access it in computeFigure...
 										selectedTreeType = s;
 									}, 
-									center(), 
+									left(),
 									resizable(false)),
 							vcat([
 									scaleSlider(
@@ -144,7 +144,7 @@ public Figure drawTreemap(ProjectVisData projectData) {
 											int() { return 3000; }, 
 											int() { return n; },
 											void (int s) { n = s; },
-											width(600), center(), top(), gap(10), vgap(40), resizable(false)),
+											width(500), left(), top(), resizable(false)),
 											
 										computeFigure(bool(){
 											return (previouslySelectedTreeType != selectedTreeType) || previousN != n;
@@ -155,6 +155,6 @@ public Figure drawTreemap(ProjectVisData projectData) {
 											return createTreemap(selectedTreeType, n, projectData.analysis.metrics.compilationUnitMetrics);
 										})
 									])
-								], center(),top());
+								], size(1000, 500), left(),top(), resizable(false));
 	return treeMapView;
 }
