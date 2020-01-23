@@ -56,7 +56,7 @@ public void main(){
 
 public ProjectVisData retrieveProjectData(loc project){
 	ProjectData projectData;
-	tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Average averages, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] metricData;
+	tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] metricData;
 	
 	M3 currentProjectModel = createM3FromEclipseProject(project);
 	
@@ -68,14 +68,14 @@ public ProjectVisData retrieveProjectData(loc project){
 	}
 	
 	Ranks ranks = determineRanks(metricData.metrics);
-	projectData = <metricData.metrics, metricData.duplicationRelationships, metricData.methods, metricData.averages, ranks, metricData.unitTestCoverageMap>;
+	projectData = <metricData.metrics, metricData.duplicationRelationships, metricData.methods, ranks, metricData.unitTestCoverageMap>;
 	
-	printResult(metricData.volume, size(metricData.methods), metricData.percentages, metricData.averages, ranks);
+	printResult(metricData.volume, size(metricData.methods), metricData.percentages, ranks);
 	
 	return <project, currentProjectModel, projectData>;
 }
 
-public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Average averages, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] calculateMetrics(M3 currentProjectModel){
+public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] calculateMetrics(M3 currentProjectModel){
 
 	set[CompilationUnitMetric] compilationUnitMetricSet = {};
 	
@@ -103,5 +103,5 @@ public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc na
 	Percentages percentages = calculatePercentages(volume, duplication.duplicationRel, methodComplexityMap, unitTestCoverageMap);
 	Metrics metrics = <volume, compilationUnitMetricSet, <compilationUnitSizeRel, methodHolderSizeRel, methodSizeRel>, percentages>;
 	
-	return <metrics, duplication.duplicationLocationRel, methods, volume, averages, percentages, unitTestCoverageMap>;
+	return <metrics, duplication.duplicationLocationRel, methods, volume, percentages, unitTestCoverageMap>;
 }

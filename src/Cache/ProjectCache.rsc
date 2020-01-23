@@ -8,8 +8,8 @@ import structs::Average;
 import structs::Percentage;
 import structs::UnitTestCoverage;
 
-public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Average averages, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] loadProjectData(loc project){
-	return readTextValueFile(#tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Average averages, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap], generateProjectDataFileLocation(project));
+public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] loadProjectData(loc project){
+	return readTextValueFile(#tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap], generateProjectDataFileLocation(project));
 }
 
 public bool wasAlreadyCalculated(loc project){
@@ -21,6 +21,6 @@ public loc generateProjectDataFileLocation(loc project){
 	return dataFolder+project.authority+"data.sqm";
 }
 
-public void saveProjectData(loc project, tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Average averages, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] projectData){
+public void saveProjectData(loc project, tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] projectData){
 	writeTextValueFile(generateProjectDataFileLocation(project), projectData);
 }

@@ -54,12 +54,12 @@ public Figure rankBox(str amount, str measurementSign, str bottomText, Rank rank
 
 public Figure ranking(ProjectVisData projectData) {
 	volume = rankBox(toString(projectData.analysis.metrics.volume), "LOC", "VOLUME", projectData.analysis.ranks.volume);
-	averageUnitSize = rankBox(toString(projectData.analysis.averages.size), "AVERAGE", "UNIT SIZE", projectData.analysis.ranks.unitSize);
-	averageComplexity = rankBox(toString(projectData.analysis.averages.complexity), "AVERAGE", "COMPLEXITY", projectData.analysis.ranks.complexity);
+	//averageUnitSize = rankBox(toString(projectData.analysis.averages.size), "AVERAGE", "UNIT SIZE", projectData.analysis.ranks.unitSize);
+	//averageComplexity = rankBox(toString(projectData.analysis.averages.complexity), "AVERAGE", "COMPLEXITY", projectData.analysis.ranks.complexity);
 	duplicationPercentage = rankBox(toString(projectData.analysis.metrics.percentages.duplication), "%", "DUPLICATION", projectData.analysis.ranks.duplication);
 	unitTestCoveragePercentage = rankBox(toString(projectData.analysis.metrics.percentages.unitTestCoverage), "%", "UNIT TEST COVERAGE", projectData.analysis.ranks.unitTestCoverage);
 	
-	return hcat([volume, averageUnitSize, averageComplexity, duplicationPercentage, unitTestCoveragePercentage], gap(1));
+	return hcat([volume, duplicationPercentage, unitTestCoveragePercentage], gap(3));
 }
 
 public Figure maintainabilityBox(str bottomText, Rank rank, Color light, Color dark) {
@@ -86,7 +86,7 @@ public Figure maintainabilityScores(ProjectVisData projectData) {
 	b1 = box(mainTitle, resizable(false), size(650, 35), fillColor(leftSideColor), lineColor(rightSideColor));
 	
 	boxes = maintainabilityBoxes(projectData.analysis.ranks.maintainability);
-	b2 = box(boxes, resizable(false), size(650, 500), fillColor(leftSideColor), lineColor(rightSideColor));
+	b2 = box(boxes, resizable(false), size(650, 300), fillColor(leftSideColor), lineColor(rightSideColor));
 	
 	return vcat([ b1, b2 ], resizable(false));
 }

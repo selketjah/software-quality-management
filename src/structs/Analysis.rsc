@@ -5,4 +5,4 @@ import structs::Average;
 import structs::UnitTestCoverage;
 
 
-alias ProjectData = tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, Average averages, Ranks ranks, UnitTestCoverageMap unitTestCoverageMap];
+alias ProjectData = tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, Ranks ranks, UnitTestCoverageMap unitTestCoverageMap];
