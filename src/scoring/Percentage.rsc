@@ -8,9 +8,38 @@ import util::Math;
 import metrics::Duplicates;
 import metrics::UnitTestCoverage;
 import metrics::Complexity;
+import scoring::categories::CyclomaticComplexity;
+import scoring::categories::UnitSize;
 import structs::Percentage;
 import structs::Duplication;
 import structs::UnitTestCoverage;
+import structs::UnitMetrics;
+import structs::RiskLevel;
+
+private RiskLevelsPercentages determineCompilationUnitPercentages(set[CompilationUnitMetric] compilationUnitMetricsSet) {
+	int totalNumberOfUnits = 0;
+	map[RiskLevel risks, int _] complexityRiskLevelMap = ();
+	map[RiskLevel risks, int _] unitSizeRiskLevelMap = ();
+
+	for(<loc source, list[UnitMetric] compilationUnitMetrics> <- compilationUnitMetricsSet) {
+		int numberOfUnits = size(compilationUnitMetrics);
+		totalNumberOfUnits += numberOfUnits;
+		
+		for(<str name, loc method, int complexity, int size> <- compilationUnitMetrics) {
+			RiskLevel complexityRiskLevel = determineRiskLevelForUnitComplexity(complexity);
+			complexityRiskLevelMap[complexityRiskLevel] ? 0 += size;
+			
+			RiskLevel unitSizeRiskLevel = determineRiskLevelForUnitSize(size);
+			unitSizeRiskLevelMap[unitSizeRiskLevel] ? 0 += size;
+		}
+	}
+	
+	// calculate percentage per risk level
+	map[RiskLevel risks, int percentages] complexityDivisions = (risk : percent(complexityRiskLevelMap[risk], totalNumberOfUnits) | risk <- complexityRiskLevelMap.risks);
+	map[RiskLevel risks, int percentages] unitSizeDivisions = (risk : percent(unitSizeRiskLevelMap[risk], totalNumberOfUnits) | risk <- unitSizeRiskLevelMap.risks);
+	
+	return <complexityDivisions, unitSizeDivisions>;
+}
 
 private int determineUnitTestCoveragePercentageRank(map[loc, int] methodComplexityMap, UnitTestCoverageMap assertMaps) {
 	int asserts = 0;
@@ -37,9 +66,10 @@ private int determineDuplicationPercentage(int volume, DuplicateCodeRel duplicat
 	return percentage;
 }
 
-public Percentages calculatePercentages(int volume, DuplicateCodeRel duplicationRel, map[loc, int] methodComplexityMap, UnitTestCoverageMap assertMaps) {	
+public Percentages calculatePercentages(int volume, set[CompilationUnitMetric] compilationUnitMetricsSet, DuplicateCodeRel duplicationRel, map[loc, int] methodComplexityMap, UnitTestCoverageMap assertMaps) {	
 	int duplicationPercentage = determineDuplicationPercentage(volume, duplicationRel);
 	int unitTestCoveragePercentage = determineUnitTestCoveragePercentageRank(methodComplexityMap, assertMaps);
+	RiskLevelsPercentages riskLevelPercentages = determineCompilationUnitPercentages(compilationUnitMetricsSet);
 
-	return <duplicationPercentage, unitTestCoveragePercentage>;
+	return <duplicationPercentage, unitTestCoveragePercentage, riskLevelPercentages>;
 }

@@ -99,8 +99,7 @@ public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc na
 	
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
 	
-	Average averages = calculateAverages(methodComplexityMap , compilationUnitMetricSet);
-	Percentages percentages = calculatePercentages(volume, duplication.duplicationRel, methodComplexityMap, unitTestCoverageMap);
+	Percentages percentages = calculatePercentages(volume, compilationUnitMetricSet, duplication.duplicationRel, methodComplexityMap, unitTestCoverageMap);
 	Metrics metrics = <volume, compilationUnitMetricSet, <compilationUnitSizeRel, methodHolderSizeRel, methodSizeRel>, percentages>;
 	
 	return <metrics, duplication.duplicationLocationRel, methods, volume, percentages, unitTestCoverageMap>;

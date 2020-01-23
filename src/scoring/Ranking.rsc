@@ -21,6 +21,7 @@ import structs::Rank;
 import structs::Ranking;
 import structs::Maintainability;
 import structs::UnitMetrics;
+import structs::Percentage;
 
 private Rank determineOverallRank(Rank volume, Rank unitSize, Rank unitComplexity, Rank duplication, Rank unitTestCoverage) {
 	list[Rank] overall = [];
@@ -43,34 +44,10 @@ private map[MaintainabilityCharacteristic, Rank] determineMaintainabilityModel(R
 	);
 }
 
-private tuple[Rank unitSize, Rank complexity] determineCompilationUnitRank(int volume, set[CompilationUnitMetric] compilationUnitMetricsSet) {
-	int totalNumberOfUnits = 0;
-	map[RiskLevel risks, int _] complexityRiskLevelMap = ();
-	map[RiskLevel risks, int _] unitSizeRiskLevelMap = ();
-
-	for(<loc source, list[UnitMetric] compilationUnitMetrics> <- compilationUnitMetricsSet) {
-		int numberOfUnits = size(compilationUnitMetrics);
-		totalNumberOfUnits += numberOfUnits;
-		
-		for(<str name, loc method, int complexity, int size> <- compilationUnitMetrics) {
-			RiskLevel complexityRiskLevel = determineRiskLevelForUnitComplexity(complexity);
-			complexityRiskLevelMap[complexityRiskLevel] ? 0 += size;
-			
-			RiskLevel unitSizeRiskLevel = determineRiskLevelForUnitSize(size);
-			unitSizeRiskLevelMap[unitSizeRiskLevel] ? 0 += size;
-		}
-	}
-	
-	// calculate percentage per risk level
-	map[RiskLevel risks, int percentages] complexityDivisions = (risk : percent(complexityRiskLevelMap[risk], totalNumberOfUnits) | risk <- complexityRiskLevelMap.risks);
-	map[RiskLevel risks, int percentages] unitSizeDivisions = (risk : percent(unitSizeRiskLevelMap[risk], totalNumberOfUnits) | risk <- unitSizeRiskLevelMap.risks);
-	
+private tuple[Rank unitSize, Rank complexity] determineCompilationUnitRank(RiskLevelsPercentages riskLevelsPercentages) {
 	// group risk levels to determine rank
-	tuple[int, int, int] complexityRiskLevels = <complexityDivisions[\moderate()] ? 0, complexityDivisions[\high()] ? 0, complexityDivisions[\veryhigh()] ? 0>;
-	tuple[int, int, int] unitSizeRiskLevels = <unitSizeDivisions[\moderate()] ? 0, unitSizeDivisions[\high()] ? 0, unitSizeDivisions[\veryhigh()] ? 0>;
-	
-	println("Complexity risk levels: <complexityRiskLevels> ");
-	println("Unit size risk levels: <unitSizeRiskLevels> ");
+	tuple[int, int, int] complexityRiskLevels = <riskLevelsPercentages.complexityDivisions[\moderate()] ? 0, riskLevelsPercentages.complexityDivisions[\high()] ? 0, riskLevelsPercentages.complexityDivisions[\veryhigh()] ? 0>;
+	tuple[int, int, int] unitSizeRiskLevels = <riskLevelsPercentages.unitSizeDivisions[\moderate()] ? 0, riskLevelsPercentages.unitSizeDivisions[\high()] ? 0, riskLevelsPercentages.unitSizeDivisions[\veryhigh()] ? 0>;
 	
 	Rank complexityRank = determineComplexityRank(complexityRiskLevels);
 	Rank unitSizeRank = determineUnitSizeRank(unitSizeRiskLevels);
@@ -83,7 +60,7 @@ public Ranks determineRanks(Metrics metrics) {
 	Rank unitTestCoverageRank = determineUnitTestCoverageRank(metrics.percentages.unitTestCoverage);
 	
 	Rank duplicationRank = determineDuplicationRank(metrics.percentages.duplication);
-	tuple[Rank unitSizeRank, Rank unitComplexityRank] compilationUnitRanks = determineCompilationUnitRank(metrics.volume, metrics.compilationUnitMetrics);
+	tuple[Rank unitSizeRank, Rank unitComplexityRank] compilationUnitRanks = determineCompilationUnitRank(metrics.percentages.unitPercentages);
 	
 	Rank overallRank = calculateAverageRank([volumeRank, compilationUnitRanks.unitSizeRank, compilationUnitRanks.unitComplexityRank, duplicationRank, unitTestCoverageRank]);
 	map[MaintainabilityCharacteristic, Rank] maintainability = determineMaintainabilityModel(volumeRank, compilationUnitRanks.unitSizeRank, compilationUnitRanks.unitComplexityRank, duplicationRank, unitTestCoverageRank);
