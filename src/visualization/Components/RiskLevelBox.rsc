@@ -21,14 +21,20 @@ public str toPercentageString(int percentage) {
 	return toString(percentage) + "%";
 }
 
+public Figure riskLevelBox(int percentage, str level) {
+	simpleValue = text(toPercentageString(percentage), fontSize(20), titleColor);
+	simpleText = text(level, fontSize(10), titleColor);
+	return vcat([ simpleValue, simpleText ]);
+}
+
 public Figure riskLevelPercentagesText(map[RiskLevel risks, int percentages] riskLevelDivisions) {
 
 	tuple[int simple, int moderate, int high, int veryHigh] percentages = <riskLevelDivisions[\simple()] ? 0, riskLevelDivisions[\moderate()] ? 0, riskLevelDivisions[\high()] ? 0, riskLevelDivisions[\veryhigh()] ? 0>;
 
-	simpleTitle = text(toPercentageString(percentages.simple), fontSize(20), titleColor);
-	moderateTitle = text(toPercentageString(percentages.moderate), fontSize(20), titleColor);
-	highTitle = text(toPercentageString(percentages.high), fontSize(20), titleColor);
-	veryHighTitle = text(toPercentageString(percentages.veryHigh), fontSize(20), titleColor);
+	simpleTitle = riskLevelBox(percentages.simple, "LOW");	
+	moderateTitle = riskLevelBox(percentages.moderate, "MOD");
+	highTitle = riskLevelBox(percentages.high, "HIGH");
+	veryHighTitle = riskLevelBox(percentages.veryHigh, "VHIGH");
 	
 	return hcat([ simpleTitle, moderateTitle, highTitle, veryHighTitle ]);
 }
