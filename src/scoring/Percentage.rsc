@@ -17,15 +17,14 @@ import structs::UnitMetrics;
 import structs::RiskLevel;
 
 private RiskLevelsPercentages determineCompilationUnitPercentages(set[CompilationUnitMetric] compilationUnitMetricsSet) {
-	int totalNumberOfUnits = 0;
+	int totalSize = 0;
 	map[RiskLevel risks, int _] complexityRiskLevelMap = ();
 	map[RiskLevel risks, int _] unitSizeRiskLevelMap = ();
 
 	for(<loc source, list[UnitMetric] compilationUnitMetrics> <- compilationUnitMetricsSet) {
-		int numberOfUnits = size(compilationUnitMetrics);
-		totalNumberOfUnits += numberOfUnits;
-		
 		for(<str name, loc method, int complexity, int size> <- compilationUnitMetrics) {
+			totalSize += size;
+			
 			RiskLevel complexityRiskLevel = determineRiskLevelForUnitComplexity(complexity);
 			complexityRiskLevelMap[complexityRiskLevel] ? 0 += size;
 			
@@ -35,8 +34,8 @@ private RiskLevelsPercentages determineCompilationUnitPercentages(set[Compilatio
 	}
 	
 	// calculate percentage per risk level
-	map[RiskLevel risks, int percentages] complexityDivisions = (risk : percent(complexityRiskLevelMap[risk], totalNumberOfUnits) | risk <- complexityRiskLevelMap.risks);
-	map[RiskLevel risks, int percentages] unitSizeDivisions = (risk : percent(unitSizeRiskLevelMap[risk], totalNumberOfUnits) | risk <- unitSizeRiskLevelMap.risks);
+	map[RiskLevel risks, real percentages] complexityDivisions = (risk : percent(complexityRiskLevelMap[risk], totalSize) | risk <- complexityRiskLevelMap.risks);
+	map[RiskLevel risks, real percentages] unitSizeDivisions = (risk : percent(unitSizeRiskLevelMap[risk], totalSize) | risk <- unitSizeRiskLevelMap.risks);
 	
 	return <complexityDivisions, unitSizeDivisions>;
 }

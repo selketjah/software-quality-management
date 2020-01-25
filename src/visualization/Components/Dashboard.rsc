@@ -10,6 +10,7 @@ import String;
 
 import structs::Visualization;
 import visualization::Components::Legend;
+import visualization::Components::RiskLevelBox;
 
 import scoring::Rank;
 import scoring::Ranking;
@@ -54,12 +55,17 @@ public Figure rankBox(str amount, str measurementSign, str bottomText, Rank rank
 
 public Figure ranking(ProjectVisData projectData) {
 	volume = rankBox(toString(projectData.analysis.metrics.volume), "LOC", "VOLUME", projectData.analysis.ranks.volume);
-	//averageUnitSize = rankBox(toString(projectData.analysis.averages.size), "AVERAGE", "UNIT SIZE", projectData.analysis.ranks.unitSize);
-	//averageComplexity = rankBox(toString(projectData.analysis.averages.complexity), "AVERAGE", "COMPLEXITY", projectData.analysis.ranks.complexity);
 	duplicationPercentage = rankBox(toString(projectData.analysis.metrics.percentages.duplication), "%", "DUPLICATION", projectData.analysis.ranks.duplication);
 	unitTestCoveragePercentage = rankBox(toString(projectData.analysis.metrics.percentages.unitTestCoverage), "%", "UNIT TEST COVERAGE", projectData.analysis.ranks.unitTestCoverage);
 	
-	return hcat([volume, duplicationPercentage, unitTestCoveragePercentage], gap(3));
+	ranks = hcat([volume, duplicationPercentage, unitTestCoveragePercentage], gap(3));
+	
+	complexityRiskLevels = riskLevelBox("COMPLEXITY", projectData.analysis.ranks.complexity, projectData.analysis.metrics.percentages.unitPercentages.complexityDivisions);
+	unitSizeRiskLevels = riskLevelBox("UNIT SIZE", projectData.analysis.ranks.unitSize, projectData.analysis.metrics.percentages.unitPercentages.unitSizeDivisions);
+	
+	riskLevels = hcat([ complexityRiskLevels, unitSizeRiskLevels ]);
+	
+	return vcat([ ranks, riskLevels ], gap(3));
 }
 
 public Figure maintainabilityBox(str bottomText, Rank rank, Color light, Color dark) {
