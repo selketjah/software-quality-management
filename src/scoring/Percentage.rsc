@@ -34,8 +34,8 @@ private RiskLevelsPercentages determineCompilationUnitPercentages(set[Compilatio
 	}
 	
 	// calculate percentage per risk level
-	map[RiskLevel risks, real percentages] complexityDivisions = (risk : percent(complexityRiskLevelMap[risk], totalSize) | risk <- complexityRiskLevelMap.risks);
-	map[RiskLevel risks, real percentages] unitSizeDivisions = (risk : percent(unitSizeRiskLevelMap[risk], totalSize) | risk <- unitSizeRiskLevelMap.risks);
+	map[RiskLevel risks, int percentages] complexityDivisions = (risk : percent(complexityRiskLevelMap[risk], totalSize) | risk <- complexityRiskLevelMap.risks);
+	map[RiskLevel risks, int percentages] unitSizeDivisions = (risk : percent(unitSizeRiskLevelMap[risk], totalSize) | risk <- unitSizeRiskLevelMap.risks);
 	
 	return <complexityDivisions, unitSizeDivisions>;
 }
