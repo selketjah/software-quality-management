@@ -70,7 +70,7 @@ public ProjectVisData retrieveProjectData(loc project){
 	Ranks ranks = determineRanks(metricData.metrics);
 	projectData = <metricData.metrics, metricData.duplication, metricData.methods, ranks, metricData.unitTestCoverageMap>;
 	
-	//printResult(metricData.volume, size(metricData.methods), metricData.percentages, ranks);
+	printResult(metricData.volume, size(metricData.methods), metricData.percentages, ranks);
 	
 	return <project, currentProjectModel, projectData>;
 }
