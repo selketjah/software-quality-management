@@ -11,8 +11,6 @@ import metrics::Complexity;
 import structs::Average;
 import structs::UnitMetrics;
 
-
-
 private Totals calculateTotals(list[UnitMetric] compilationUnitMetrics) {
 	int numberOfUnits = size(compilationUnitMetrics);
 	int totalComplexity = 0;
