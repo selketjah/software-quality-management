@@ -37,13 +37,13 @@ public RiskLevel determineRiskLevelForUnitSize(int unitSize) {
 }
 
 public Rank determineUnitSizeRank(tuple[int moderate, int high, int veryHigh] riskLevelPercentage) {
-	if(riskLevelPercentage.moderate <= PLUSPLUS_BOUNDS.moderate || riskLevelPercentage.high <= PLUSPLUS_BOUNDS.high || riskLevelPercentage.veryHigh <= PLUSPLUS_BOUNDS.veryHigh) {
+	if(riskLevelPercentage.moderate <= PLUSPLUS_BOUNDS.moderate && riskLevelPercentage.high == PLUSPLUS_BOUNDS.high && riskLevelPercentage.veryHigh == PLUSPLUS_BOUNDS.veryHigh) {
 		return \plusplus();
-	} else if (riskLevelPercentage.moderate <= PLUS_BOUNDS.moderate || riskLevelPercentage.high <= PLUS_BOUNDS.high || riskLevelPercentage.veryHigh <= PLUS_BOUNDS.veryHigh) {
+	} else if (riskLevelPercentage.moderate <= PLUS_BOUNDS.moderate && riskLevelPercentage.high <= PLUS_BOUNDS.high && riskLevelPercentage.veryHigh == PLUS_BOUNDS.veryHigh) {
 		return \plus();
-	} else if (riskLevelPercentage.moderate <= NEUTRAL_BOUNDS.moderate || riskLevelPercentage.high <= NEUTRAL_BOUNDS.high || riskLevelPercentage.veryHigh <= NEUTRAL_BOUNDS.veryHigh) {
+	} else if (riskLevelPercentage.moderate <= NEUTRAL_BOUNDS.moderate && riskLevelPercentage.high <= NEUTRAL_BOUNDS.high && riskLevelPercentage.veryHigh == NEUTRAL_BOUNDS.veryHigh) {
 		return \neutral();
-	} else if (riskLevelPercentage.moderate <= MINUS_BOUNDS.moderate || riskLevelPercentage.high <= MINUS_BOUNDS.high || riskLevelPercentage.veryHigh <= MINUS_BOUNDS.veryHigh) {
+	} else if (riskLevelPercentage.moderate <= MINUS_BOUNDS.moderate && riskLevelPercentage.high <= MINUS_BOUNDS.high && riskLevelPercentage.veryHigh <= MINUS_BOUNDS.veryHigh) {
 		return \minus();
 	} else {
 		return \minusminus();
