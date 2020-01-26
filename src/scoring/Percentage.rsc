@@ -50,12 +50,16 @@ private int determineUnitTestCoveragePercentageRank(map[loc, int] methodComplexi
 	for(loc src <- assertMaps){
 		UnitTestCoverage info = assertMaps[src];
 		asserts += info.numberOfAsserts;
-		unitTestComplexity += methodComplexityMap[src];
+		unitTestComplexity += methodComplexityMap[src]-1;
 		
 	}
 	//uitgaand van 1 testcase test 1 CC pad
 	int totalComplexity = calculateTotalComplexity(methodComplexityMap);
-	int percentage = percent(size(assertMaps), totalComplexity - unitTestComplexity);
+
+	println("total: <totalComplexity> - uniTest: <unitTestComplexity> = <totalComplexity - unitTestComplexity>");
+	println("size <size(assertMaps)> / <totalComplexity - unitTestComplexity + 1>");
+
+	int percentage = percent(size(assertMaps), totalComplexity - unitTestComplexity + 1);
 	return percentage;
 }
 
