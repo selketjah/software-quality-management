@@ -74,8 +74,14 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 											int() { return n; },
 											void (int s) { n = s; },
 											width(600), center(), top(), gap(10), vgap(40), resizable(false)),
-											
-										computeFigure(bool(){
+									box(
+										vcat([
+											hcat([ ellipse(fillColor("red"), size(25,25), resizable(false)), text("A testmethod that does not call \nany code from current projecttree") ], left(), gap(15)),
+											hcat([ box(fillColor("pink"), size(25,25), resizable(false)), text("A method that has been called more than \nonce in multiple test methods") ], left(), gap(15)),
+											hcat([ box(size(25,25), resizable(false)), text("A method from the project tree that has been \ncalled only once") ], left(), gap(15))
+										]), gap(10), resizable(false)
+									),	
+									computeFigure(bool(){
 											return (previouslySelectedTreeType != selectedTreeType) || previousN != n;
 										},Figure(){
 											// redraw complete view with scaleslider each time a user interacts
