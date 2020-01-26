@@ -40,7 +40,7 @@ import structs::Ranking;
 import string::Print;
 import visualization::Visualization;
 
-import Cache::ProjectCache;
+import cache::ProjectCache;
 import structs::Analysis;
 
 

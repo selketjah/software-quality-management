@@ -1,4 +1,4 @@
-module Cache::ProjectCache
+module cache::ProjectCache
 
 import IO;
 import ValueIO;
