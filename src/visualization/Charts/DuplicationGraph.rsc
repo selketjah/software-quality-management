@@ -56,7 +56,6 @@ FProperty popup(str unitName, int duplicateLOC, int totalLoc, int duplicationPer
 	duplicationPercentageText = text("copy %: <duplicationPercentage>");
 	
 	message = vcat([ unitNameText, duplicationText ]);
-	println(message);
 	return mouseOver(box(message, resizable(false),gap(5), startGap(true), endGap(true), size(100, 100)));
 }
 

@@ -48,8 +48,8 @@ public void main(){
 	ProjectVisData projectData;
 	
 	//projectData = retrieveProjectData(|project://JabberPoint|);
-	projectData = retrieveProjectData(|project://smallsql|);
-	//projectData = retrieveProjectData(|project://hsqldb|);
+	//projectData = retrieveProjectData(|project://smallsql|);
+	projectData = retrieveProjectData(|project://hsqldb|);
 	
 	initializeVisualization(projectData);
 }
