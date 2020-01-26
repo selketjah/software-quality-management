@@ -21,9 +21,9 @@ import vis::Render;
 
 public Figure renderDuplicationGraph(DuplicationData duplicationData, ComponentLOC methodHolderSizeMap) {
 
-	list[str] graphTypes = ["Graph", "Treemap"];
+	list[str] graphTypes = ["Graph", "Duplication Overview"];
 		
-	int n = 200;
+	int n = 500;
 	int previousN = 0;
 	str selectedGraphType = graphTypes[1];
 	str previouslySelectedGraphType = "";
@@ -66,6 +66,7 @@ private Figure createDuplicationTreemap(int scale, DuplicateCodeRel duplicationR
 	Figures figures = [];
 	list[LineDecoration] currentDuplicateLineDecorations = [];
 	int currentDuplicationPercentage = 0;
+	
 	for(<loc src, set[list[int]] codeDupLocationSet> <-duplicationRel){	
 		if(size(codeDupLocationSet)>0){
 			currentDuplicateLineDecorations = generateLineDecorations(codeDupLocationSet);
@@ -77,20 +78,20 @@ private Figure createDuplicationTreemap(int scale, DuplicateCodeRel duplicationR
 							text("<src.file>"),
 							outline(currentDuplicateLineDecorations, methodHolderSizeMap[src], size(scale/12, scale/6), id("<src>"), getSizeColor(currentDuplicationPercentage))
 						])
-					, popup(src.file, currentDuplicateLocSize, currentDuplicationPercentage));
+					, gap(10), popup(src.file, currentDuplicateLocSize, methodHolderSizeMap[src], currentDuplicationPercentage));
 		}
 	}
 	
-	return hvcat(figures, gap(5), width(scale*2), height(scale), resizable(false));
+	return box(hvcat(figures, gap(15), width(scale*2), height(scale)), resizable(false));
 }
 
-FProperty popup(str unitName, int duplicateLOC, int duplicationPercentage) {
+FProperty popup(str unitName, int duplicateLOC, int totalLoc, int duplicationPercentage) {
 	unitNameText = text(unitName);
-	duplicationText = text("# duplicate LOC: <duplicateLOC>");
+	duplicationText = text("# duplicate LOC: <duplicateLOC>/<totalLoc>");
 	duplicationPercentageText = text("duplicate %: <duplicationPercentage>");
 	
 	message = vcat([ unitNameText, duplicationText, duplicationPercentageText ]);
-	
+	println(message);
 	return mouseOver(box(message, resizable(false),gap(5), startGap(true), endGap(true), size(100, 100)));
 }
 
