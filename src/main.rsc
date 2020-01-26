@@ -56,7 +56,7 @@ public void main(){
 
 public ProjectVisData retrieveProjectData(loc project){
 	ProjectData projectData;
-	tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] metricData;
+	SigMetricsResults metricData;
 	
 	M3 currentProjectModel = createM3FromEclipseProject(project);
 	
@@ -68,14 +68,14 @@ public ProjectVisData retrieveProjectData(loc project){
 	//}
 	
 	Ranks ranks = determineRanks(metricData.metrics);
-	projectData = <metricData.metrics, metricData.duplicationRelationships, metricData.methods, ranks, metricData.unitTestCoverageMap>;
+	projectData = <metricData.metrics, metricData.duplication, metricData.methods, ranks, metricData.unitTestCoverageMap>;
 	
 	printResult(metricData.volume, size(metricData.methods), metricData.percentages, ranks);
 	
 	return <project, currentProjectModel, projectData>;
 }
 
-public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc name,loc src] methods, int volume, Percentages percentages, UnitTestCoverageMap unitTestCoverageMap] calculateMetrics(M3 currentProjectModel){
+public SigMetricsResults calculateMetrics(M3 currentProjectModel){
 
 	set[CompilationUnitMetric] compilationUnitMetricSet = {};
 	
@@ -86,7 +86,7 @@ public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc na
 	map[loc src, list[str] linesOfCode] compilationUnitMap = getLinesOfCodeByType(compilationUnits, methodHolders, methods); 
 	
 	ComponentLOC compilationUnitSizeRel = calculateLinesOfCode(compilationUnits, compilationUnitMap);
-	ComponentLOC methodHolderSizeRel = calculateLinesOfCode(methodHolders, compilationUnitMap);
+	ComponentLOC methodHolderSizeMap = calculateLinesOfCode(methodHolders, compilationUnitMap);
 	ComponentLOC methodSizeRel = calculateLinesOfCode(methods, compilationUnitMap);
 	
 	tuple[DuplicateCodeRel duplicationRel, rel[loc, loc] duplicationLocationRel] duplication = calculateDuplicates(methodHolders, compilationUnitMap);
@@ -100,7 +100,7 @@ public tuple[Metrics metrics, rel[loc, loc] duplicationRelationships, rel[loc na
 	volume = ((0 | it + compilationUnitSizeRel[src] | loc src  <- compilationUnitSizeRel));
 	
 	Percentages percentages = calculatePercentages(volume, compilationUnitMetricSet, duplication.duplicationRel, methodComplexityMap, unitTestCoverageMap);
-	Metrics metrics = <volume, compilationUnitMetricSet, <compilationUnitSizeRel, methodHolderSizeRel, methodSizeRel>, percentages>;
+	Metrics metrics = <volume, compilationUnitMetricSet, <compilationUnitSizeRel, methodHolderSizeMap, methodSizeRel>, percentages>;
 	
-	return <metrics, duplication.duplicationLocationRel, methods, volume, percentages, unitTestCoverageMap>;
+	return <metrics, duplication, methods, volume, percentages, unitTestCoverageMap>;
 }

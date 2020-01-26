@@ -18,7 +18,7 @@ import metrics::UnitMetrics;
 import string::Trim;
 import structs::Duplication;
 
-public tuple[DuplicateCodeRel, rel[loc, loc]] calculateDuplicates(rel[loc name,loc src] methodHolders, map[loc src, list[str] linesOfCode] compilationUnitMap){
+public DuplicationData calculateDuplicates(rel[loc name,loc src] methodHolders, map[loc src, list[str] linesOfCode] compilationUnitMap){
 	DuplicateCodeRel duplicationRel = {};
 	list[loc] methodHolderDup = toList(range(methodHolders));
 	rel[loc, loc] duplicateionMapRel = {};
@@ -29,8 +29,6 @@ public tuple[DuplicateCodeRel, rel[loc, loc]] calculateDuplicates(rel[loc name,l
 			
 			if(size(union(range(codeRel)))>0){
 				duplicateionMapRel += <src,src2>;
-				//println("<src> has lines in common with <src2>");
-				//println("<codeRel>");
 			}
 			
 			duplicationRel += codeRel;

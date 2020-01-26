@@ -33,7 +33,7 @@ public Figure renderContent(Panel active, ProjectVisData projectData) {
 		case \heatmap(): content = drawTreemap(projectData);
 		case \architecture(): content = renderDependencyGraph(projectData);
 		case \interdependency(): content = renderInterdependenceGraph(projectData.model);
-		case \duplication(): content = renderDuplicationGraph(projectData.analysis.duplicationRelationships);
+		case \duplication(): content = renderDuplicationGraph(projectData.analysis.duplication, projectData.analysis.metrics.locByType.methodHolderSizeMap);
 		case \unitTestCoverage(): content = renderUnitTestCoverageGraph(projectData);
 	}
 

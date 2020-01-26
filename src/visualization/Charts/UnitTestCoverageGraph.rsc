@@ -105,6 +105,8 @@ private Figure createTreemap(str state, int n, map[loc, int] numberOfOccurrenceB
 		UnitTestCoverage coverageMap = unitTestCoverageMap[src];
 
 		RiskLevel currentUnitTestRiskLevel = determineRiskLevelForUnitComplexity(coverageMap.complexityCoverage);
+		
+		
 		figures+=box(
 					box(
 						vcat([						
@@ -112,7 +114,7 @@ private Figure createTreemap(str state, int n, map[loc, int] numberOfOccurrenceB
 						]), shrink(0.8)
 					),
 					getArea(currentUnitTestRiskLevel), 
-					getComplexityColor(currentUnitTestRiskLevel), popup(src.path[1..]),openDocumentOnClick(src));
+					getComplexityColor(currentUnitTestRiskLevel), popup(src.path[1..]), openDocumentOnClick(src));
 	}
 	
 	t = treemap(figures, width(n*2), height(n),resizable(false));

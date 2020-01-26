@@ -77,7 +77,7 @@ public Figure createDependencyGraph(int scale, ProjectVisData projectData, bool 
 	FProperty currentColor;
 	str currentShadowColor = "green";
 	
-	int maxLoc = max(range(projectData.analysis.metrics.locByType.methodHolderSizeRel));
+	int maxLoc = max(range(projectData.analysis.metrics.locByType.methodHolderSizeMap));
 	
 	for(<loc name, loc src> <- getMethodHoldingDeclerationsFromM3(projectData.model)){		
 		currentColor = fillColor(arbColor());
@@ -93,13 +93,13 @@ public Figure createDependencyGraph(int scale, ProjectVisData projectData, bool 
 		}
 		
 		if(hasSizeEffect){
-			int currentUnitLoc = projectData.analysis.metrics.locByType.methodHolderSizeRel[src];
+			int currentUnitLoc = projectData.analysis.metrics.locByType.methodHolderSizeMap[src];
 			real growFactor = 1.00 * currentUnitLoc/maxLoc;
 			boxSize = size(widthRef*scale*growFactor, heightRef*scale*growFactor);
 		}
 		
 		if(hasComplexityEffect){
-			RiskLevel riskLevel = determineRiskLevelForUnitComplexity(projectData.analysis.metrics.locByType.methodHolderSizeRel[src]);
+			RiskLevel riskLevel = determineRiskLevelForUnitComplexity(projectData.analysis.metrics.locByType.methodHolderSizeMap[src]);
 	
 			currentColor = getComplexityColor(riskLevel);
 		}
