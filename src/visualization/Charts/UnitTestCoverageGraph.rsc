@@ -76,9 +76,9 @@ public Figure renderUnitTestCoverageGraph(ProjectVisData projectData) {
 											width(600), center(), top(), gap(10), vgap(40), resizable(false)),
 									box(
 										vcat([
-											hcat([ ellipse(fillColor("red"), size(25,25), resizable(false)), text("A testmethod that does not call \nany code from current projecttree") ], left(), gap(15)),
-											hcat([ box(fillColor("pink"), size(25,25), resizable(false)), text("A method that has been called more than \nonce in multiple test methods") ], left(), gap(15)),
-											hcat([ box(size(25,25), resizable(false)), text("A method from the project tree that has been \ncalled only once") ], left(), gap(15))
+											hcat([ ellipse(fillColor("red"), size(25,25), resizable(false)), text("A test method that does not call any code from current project tree", size(125, 25), resizable(false)) ], gap(5), size(150, 30), resizable(false), left()),
+											hcat([ box(fillColor("pink"), size(25,25), resizable(false)), text("A method that has been called more than once in multiple test methods", size(125, 25), resizable(false)) ], gap(5), size(150, 30), resizable(false), left()),
+											hcat([ box(size(25,25), resizable(false)), text("A method from the project tree that has been called only once", size(125, 25), resizable(false)) ], gap(5), size(150, 30), resizable(false), left())
 										]), gap(10), resizable(false)
 									),	
 									computeFigure(bool(){
