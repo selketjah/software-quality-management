@@ -41,15 +41,15 @@ public Figure renderDependencyGraph(ProjectVisData projectData) {
 						hcat([
 							checkbox("Highlight abstract types", void(bool s){ addAbstractEffect = s;}),
 							checkbox("LOC indication", void(bool s){ addSizeEffect = s;}),
-							checkbox("Complexity indication", void(bool s){ addComplexityEffect = s;})
-						], top(), left(), vgap(20)),
-						vcat([
+							checkbox("Complexity indication", void(bool s){ addComplexityEffect = s;}),
 							scaleSlider(
 									int() { return 1; }, 
 									int() { return 20; }, 
 									int() { return n; },
 									void (int s) { n = s; },
-									width(500), resizable(false), vgap(60), left()),
+									width(500), height(20), top(), resizable(false), vgap(60), left())
+						], top(), left(), vgap(20), size(25,200), resizable(false)),
+						vcat([
 								computeFigure(bool(){
 									return previousN != n 
 												|| addAbstractEffect 	!= previousAbstractEffectValue 
@@ -63,7 +63,7 @@ public Figure renderDependencyGraph(ProjectVisData projectData) {
 									
 									return createDependencyGraph(n, projectData, addAbstractEffect, addSizeEffect, addComplexityEffect);						
 								})
-							], size(1000, 600), resizable(false))]);
+							], top(), size(1000, 600), resizable(false))], gap(50), top());
 	return graphView;
 }
 

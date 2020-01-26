@@ -53,7 +53,7 @@ public Figure renderInterdependenceGraph(M3 model) {
 									previousN = n;
 									return graph(nodes, edges, hint("layered"), std(gap(5)), size(n), hgap(5), std(fontSize(n*3)));
 								})
-							]);
+							], top());
 	
 	
 	return graphView;

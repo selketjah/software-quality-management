@@ -74,6 +74,7 @@ public Figure maintainabilityBox(str bottomText, Rank rank, Color light, Color d
 	
 	bottomTextTitle = text(bottomText, resizable(false), size(300, 25), subTitleColor);
 	b2 = box(bottomTextTitle, fillColor(dark), lineColor(dark), resizable(false), size(300, 25), shadow(true));
+	
 	return vcat([b1, b2], resizable(false), size(300, 25));
 }
 
@@ -108,5 +109,5 @@ public Figure renderDashboard(ProjectVisData projectData) {
 	rightRow2 = renderLegend(rgb(255,245,0), rgb(255,119,0), rgb(249, 2, 10), rgb(2, 245, 249));
 	row2 = hcat([ leftRow2, rightRow2 ]);
      
-	return vcat( [ sigTitle, row0, row1, row2 ]);
+	return vcat( [ sigTitle, row0, row1, row2, hcat([], size(50,100))]);
 }
