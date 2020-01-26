@@ -60,12 +60,12 @@ public ProjectVisData retrieveProjectData(loc project){
 	
 	M3 currentProjectModel = createM3FromEclipseProject(project);
 	
-	if(wasAlreadyCalculated(project)){
-		metricData = loadProjectData(project);
-	}else{
+	//if(wasAlreadyCalculated(project)){
+	//	metricData = loadProjectData(project);
+	//}else{
 		metricData = calculateMetrics(currentProjectModel);
-		saveProjectData(project, metricData);
-	}
+		//saveProjectData(project, metricData);
+	//}
 	
 	Ranks ranks = determineRanks(metricData.metrics);
 	projectData = <metricData.metrics, metricData.duplicationRelationships, metricData.methods, ranks, metricData.unitTestCoverageMap>;
