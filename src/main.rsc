@@ -47,8 +47,8 @@ import structs::Analysis;
 public void main(){
 	ProjectVisData projectData;
 	
-	projectData = retrieveProjectData(|project://JabberPoint|);
-	//projectData = retrieveProjectData(|project://smallsql|);
+	//projectData = retrieveProjectData(|project://JabberPoint|);
+	projectData = retrieveProjectData(|project://smallsql|);
 	//projectData = retrieveProjectData(|project://hsqldb|);
 	
 	initializeVisualization(projectData);

@@ -20,43 +20,8 @@ import visualization::Utils;
 import vis::Render;
 
 public Figure renderDuplicationGraph(DuplicationData duplicationData, ComponentLOC methodHolderSizeMap) {
-
-	list[str] graphTypes = ["Graph", "Duplication Overview"];
-		
-	int n = 500;
-	int previousN = 0;
-	str selectedGraphType = graphTypes[1];
-	str previouslySelectedGraphType = "";
-	Figure graphView = vcat([
-								combo(graphTypes, 
-									void(str s) {
-										// if we change state here, we should be able to access it in computeFigure...
-										selectedGraphType = s;
-										println(s);
-									}, 
-									left(),
-									resizable(false)),
-							scaleSlider(
-									int() { return 200; }, 
-									int() { return 3000; }, 
-									int() { return n; },
-									void (int s) { n = s; },
-									size(500, 50), resizable(false), left(), top()),
-								computeFigure(bool(){
-								println(n);
-									return previousN != n || selectedGraphType != previouslySelectedGraphType;
-								},Figure(){
-									previousN = n;
-									previouslySelectedGraphType = selectedGraphType;
-									println("redraw <selectedGraphType>");
-									if(previouslySelectedGraphType == graphTypes[0]){
-										return createDuplicationGraph(n, duplicationData.duplicationLocationRel);
-									}else{
-										return createDuplicationTreemap(n, duplicationData.duplicationRel, methodHolderSizeMap);
-									}
-								})
-							], size(1000, 600), resizable(false));
-	return graphView;
+	
+	return box(createDuplicationTreemap(1000, duplicationData.duplicationRel, methodHolderSizeMap), size(1000, 600), gap(20));
 }
 
 private Figure createDuplicationTreemap(int scale, DuplicateCodeRel duplicationRel, ComponentLOC methodHolderSizeMap){
@@ -82,15 +47,15 @@ private Figure createDuplicationTreemap(int scale, DuplicateCodeRel duplicationR
 		}
 	}
 	
-	return box(hvcat(figures, gap(15), width(scale*2), height(scale)), resizable(false));
+	return box(hvcat(figures, gap(15)));
 }
 
 FProperty popup(str unitName, int duplicateLOC, int totalLoc, int duplicationPercentage) {
 	unitNameText = text(unitName);
-	duplicationText = text("# duplicate LOC: <duplicateLOC>/<totalLoc>");
-	duplicationPercentageText = text("duplicate %: <duplicationPercentage>");
+	duplicationText = text("#LOC copied: <duplicateLOC>/<totalLoc>");
+	duplicationPercentageText = text("copy %: <duplicationPercentage>");
 	
-	message = vcat([ unitNameText, duplicationText, duplicationPercentageText ]);
+	message = vcat([ unitNameText, duplicationText ]);
 	println(message);
 	return mouseOver(box(message, resizable(false),gap(5), startGap(true), endGap(true), size(100, 100)));
 }
